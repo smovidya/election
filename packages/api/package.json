@@ -1,0 +1,16 @@
+{
+  "name": "@repo/api",
+  "type": "module",
+  "scripts": {
+    "start": "bun run main.ts",
+    "typecheck": "tsc"
+  },
+  "exports": "./src/index.ts",
+  "devDependencies": {
+    "@types/bun": "1",
+    "typescript": "5"
+  },
+  "dependencies": {
+    "elysia": "1"
+  }
+}
