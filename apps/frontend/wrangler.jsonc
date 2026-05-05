@@ -1,14 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "backend",
-  "main": "src/index.ts",
+  "name": "election-frontend",
+  // "main": "src/index.ts",
   "compatibility_date": "2026-05-05",
   "compatibility_flags": [
     "nodejs_compat",
     "global_fetch_strictly_public"
   ],
   "assets": {
-    "binding": "ASSETS",
+    // "binding": "ASSETS",
     "directory": "./dist"
   },
   "observability": {
@@ -22,6 +22,7 @@
     "pattern": "election.vidyachula.org",
     "custom_domain": true
   },
+  // wait. its all static page tho, no server code
   "vars": {
     "ENVIRONMENT": "dev"
   },
