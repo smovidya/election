@@ -1,24 +1,30 @@
 {
-	"name": "backend",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"test": "vitest",
-		"cf-typegen": "wrangler types",
-		"deploy:prod": "wrangler deploy --env production",
-		"deploy:staging": "wrangler deploy --env staging"
-	},
-	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.12.4",
-		"@types/node": "^25.6.0",
-		"typescript": "^5.5.2",
-		"vitest": "~3.2.0",
-		"wrangler": "^4.87.0"
-	},
-	"dependencies": {
-		"@repo/api": "workspace:*"
-	}
+  "name": "api-smovidya-election",
+  "scripts": {
+    "dev": "wrangler dev",
+    "format": "biome format --write ./src",
+    "lint": "biome lint ./src",
+    "deploy": "wrangler deploy --minify",
+    "prepare": "husky",
+    "db:excute": "wrangler d1 execute DB",
+    "type:gen": "wrangler types ./src/cf-types.d.ts"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/html": "^1.2.0",
+    "@elysiajs/swagger": "^1.2.2",
+    "@kitajs/html": "^4.2.7",
+    "@kitajs/ts-html-plugin": "^4.1.1",
+    "@sinclair/typebox": "^0.34.31",
+    "@types/node": "^22.13.13",
+    "elysia": "^1.2.25",
+    "firebase-auth-cloudflare-workers": "^2.0.6",
+    "neverthrow": "^8.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@cloudflare/workers-types": "^4.20250319.0",
+    "husky": "^9.1.7",
+    "wrangler": "4"
+  }
 }
