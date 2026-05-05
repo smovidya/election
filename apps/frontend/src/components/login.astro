@@ -1,0 +1,17 @@
+---
+import { Image } from "astro:assets";
+import Logo from "@/img/smoelec.webp";
+import Layout from "@/layouts/Layout.astro";
+import LoginButton from "../components/ui/LoginButton";
+---
+
+<Layout>
+  <div class="flex flex-col items-center justify-center min-h-screen">
+    <div>
+      <Image src={Logo} alt="smo vidya election" class="w-60" />
+    </div>
+    <div class="h-5"></div>
+    <LoginButton client:load />
+    <div class="text-sm font-noto mt-4 text-pink-600">กรุณาใช้ Email นิสิตในการเข้าสู่ระบบ</div>
+  </div>
+</Layout>

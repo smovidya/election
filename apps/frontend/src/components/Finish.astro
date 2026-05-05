@@ -1,0 +1,156 @@
+---
+import { Image } from "astro:assets";
+import BigBox from "@/pics/finish/BigBox.webp";
+import Logo from "@/pics/finish/ElectionLogo.webp";
+import download from "@/pics/finish/download.webp";
+import link from "@/pics/finish/link.webp";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <div id="captureArea" class="w-full min-h-screen bg-white flex justify-center">
+    <div class="w-[390px] flex flex-col items-center justify-center px-4 py-6">
+      <Image src={Logo} alt={"logo"} class="w-40 my-2" />
+
+      <div class="font-noto mb-7 font-medium text-pink text-lg text-center whitespace-pre-line">
+        <h class="leading-relaxed text-pink-500">
+          คุณได้ลงคะแนนเสียง
+          เสร็จสิ้นเป็นที่เรียบร้อยแล้ว
+        </h>
+      </div>
+
+      <Image src={BigBox} alt={"bigbox"} class="w-25 my-2" />
+
+      <div class="font-noto font-medium text-black text-md text-center whitespace-pre-line my-5 leading-relaxed">
+        <h>
+          ขอขอบคุณที่ร่วมเป็นส่วนหนึ่งในการลงคะแนนเสียง
+          เลือกตั้งคณะกรรมการบริหารสโมสรนิสิต
+          คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+          ประจำปีการศึกษา 2568
+        </h>
+      </div>
+
+      <div id="buttonGroup" class="flex flex-row gap-3 my-3">
+        <button id="screenshotBtn" class="bg-yellow px-5 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2">
+          <Image src={download} alt={"download"} class="w-5" />
+          <h1 class="font-normal font-noto text-sm text-brown">บันทึกภาพ</h1>
+        </button>
+        <button id="shareBtn" class="bg-yellow px-10 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2">
+          <Image src={link} alt={"share"} class="w-5" />
+          <h1 class="font-normal font-noto text-sm text-brown">แชร์</h1>
+        </button>
+      </div>
+
+      <div class="font-noto font-normal text-dgray text-sm text-center whitespace-pre-line my-3 leading-loose">
+        <h>
+          สามารถติดตามผลการเลือกตั้งได้ที่
+          Instagram : smovidya_official และ
+          Facebook : สโมสรนิสิตคณะวิทยาศาสตร์
+          จุฬาลงกรณ์มหาวิทยาลัย - CU Smovidya
+        </h>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const screenshotBtn = document.getElementById('screenshotBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const buttonGroup = document.getElementById('buttonGroup');
+
+    const hideButtons = () => {
+      if (buttonGroup) buttonGroup.style.display = 'none';
+    };
+
+    const showButtons = () => {
+      if (buttonGroup) buttonGroup.style.display = 'flex';
+    };
+
+    const stripUnsupportedColors = () => {
+      document.querySelectorAll('*').forEach(el => {
+        const computedStyle = getComputedStyle(el);
+        ['color', 'background-color', 'border-color'].forEach(prop => {
+          const value = computedStyle.getPropertyValue(prop);
+          if (value.includes('oklch') && el instanceof HTMLElement) {
+            el.style.setProperty(prop, '#000', 'important');
+          }
+        });
+      });
+    };
+
+    const loadHtml2Canvas = async () => {
+      try {
+        const module = await import('html2canvas');
+        return module.default;
+      } catch (error) {
+        console.error("Failed to load html2canvas:", error);
+        throw new Error("Failed to load screenshot library");
+      }
+    };
+
+    const captureScreenshot = async () => {
+        try {
+            hideButtons();
+            const captureArea = document.getElementById('captureArea');
+            if (!captureArea) throw new Error("Capture area not found");
+
+            await document.fonts.ready;
+            stripUnsupportedColors();
+
+            captureArea.style.backgroundColor = "#ffffff";
+
+            // ✅ Wait for rendering to fully settle before screenshot
+            await new Promise(resolve => setTimeout(resolve, 300)); // adjust if needed
+
+            const html2canvas = await loadHtml2Canvas();
+            const canvas = await html2canvas(captureArea, {
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            scale: 2,
+            logging: false,
+            allowTaint: true
+            });
+
+            showButtons();
+            return canvas.toDataURL('image/png');
+        } catch (error) {
+            showButtons();
+            console.error("Screenshot error:", error);
+            throw error;
+        }
+    };
+
+    if (screenshotBtn) {
+      screenshotBtn.addEventListener('click', async () => {
+        try {
+          const imgData = await captureScreenshot();
+          const link = document.createElement('a');
+          link.href = imgData;
+          link.download = 'voting-receipt.png';
+          link.click();
+        } catch (error) {
+          alert("เกิดข้อผิดพลาดในการบันทึกภาพ กรุณาลองใหม่อีกครั้ง");
+        }
+      });
+    }
+
+    if (shareBtn) {
+      shareBtn.addEventListener('click', async () => {
+        try {
+          // ใส่ลิงก์ที่ต้องการให้ผู้ใช้คัดลอก
+          const shareLink = 'https://smovidyaelection.pages.dev';
+          
+          // คัดลอกลิงก์ลงคลิปบอร์ด
+          await navigator.clipboard.writeText(shareLink);
+          
+          // แจ้งเตือนการคัดลอกสำเร็จ
+          alert('คัดลอกลิงก์ไปยังคลิปบอร์ดเรียบร้อยแล้ว!');
+        } catch (error) {
+          console.error("การคัดลอกลิงก์ผิดพลาด:", error);
+          alert("ไม่สามารถคัดลอกลิงก์ได้ กรุณาลองใหม่อีกครั้ง");
+        }
+      });
+    }
+  });
+</script>

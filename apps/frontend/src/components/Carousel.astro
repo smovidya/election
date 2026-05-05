@@ -1,0 +1,189 @@
+---
+import BN1 from "@/pics/main/project/1_1.webp";
+import FD1 from "@/pics/main/project/2_1.webp";
+import WC1 from "@/pics/main/project/3_1.webp";
+import TC1 from "@/pics/main/project/4_1.webp";
+import FG1 from "@/pics/main/project/5_1.webp";
+import OPH from "@/pics/main/project/6.webp";
+import ARTSCI from "@/pics/main/project/7.webp";
+import LOOK1 from "@/pics/main/project/8_1.webp";
+import CUKMITL from "@/pics/main/project/9.webp";
+import VLVU1 from "@/pics/main/project/10_1.webp";
+import Image from "astro/components/Image.astro";
+
+const Project = [
+	{ name: "โครงการปัจฉิมนิเทศ คณะวิทยาศาสตร์", pics: [BN1] },
+	{ name: "โครงการแรกพบจุฬาฯ", pics: [FD1] },
+	{ name: "โครงการเทศการต้อนรับนิสิตใหม่ คณะวิทยาศาสตร์", pics: [WC1] },
+	{ name: "โครงการไหว้ครูและปฐมนิเทศ", pics: [TC1] },
+	{ name: "โครงการกีฬาเพื่อนใหม่", pics: [FG1] },
+	{ name: "โครงการเปิดโลกคณะวิทยาศาสตร์", pics: [OPH] },
+	{ name: "โครงการเทศกาลเเห่งศาสตร์ศิลป์ คณะวิทยาศาสตร์", pics: [ARTSCI] },
+	{ name: "โครงการการกุศลภายใต้ชื่อ ลูกหมู 3 ตัว", pics: [LOOK1] },
+	{
+		name: "โครงการกีฬาสานสัมพันธ์\nคณะวิทยาศาสตร์ จุฬาฯ - ลาดกระบัง",
+		pics: [CUKMITL],
+	},
+	{ name: "โครงการถนนคนเดินเชื่อมสัมพันธ์วิศวฯ - วิทยาฯ ", pics: [VLVU1] },
+];
+---
+
+<div class="relative w-full max-w-md mx-auto overflow-hidden group">
+  <!-- ปรับ max-w-xl เป็น max-w-md -->
+  <!-- 3:2 Container -->
+  <div
+    class="relative w-full rounded-lg shadow-lg"
+    style="padding-top: 66.6667%"
+  >
+    {
+      Project.map((item) =>
+        item.pics.map((pic) => (
+          <div class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-500 ease-in-out">
+            <div class="absolute inset-0 w-full h-full p-8">
+              <Image
+                src={pic}
+                alt={item.name}
+                class="w-full h-full object-cover rounded-lg"
+                widths={[300, 400, 500]}
+                sizes="(max-width: 640px) 90vw, 400px"
+                loading="lazy"
+              />
+              <div class="absolute bottom-8 right-8 font-noto text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-md bg-black/40 whitespace-pre-line">
+                {item.name}
+              </div>
+            </div>
+          </div>
+        ))
+      )
+    }
+  </div>
+
+  <!-- ปรับขนาดปุ่มควบคุม -->
+  <button
+    id="prevBtn"
+    class="absolute left-1 top-1/2 -translate-y-1/2 text-white text-xl bg-black/30 hover:bg-black/50 rounded-full w-6 h-6 flex items-center justify-center transition-all duration-300 hover:scale-125"
+    aria-label="Previous slide"
+  >
+    ‹
+  </button>
+  <button
+    id="nextBtn"
+    class="absolute right-1 top-1/2 -translate-y-1/2 text-white text-xl bg-black/30 hover:bg-black/50 rounded-full w-6 h-6 flex items-center justify-center transition-all duration-300 hover:scale-125"
+    aria-label="Next slide"
+  >
+    ›
+  </button>
+</div>
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    let currentIndex = 0;
+    const slides = document.querySelectorAll(".carousel-slide");
+    const totalSlides = slides.length;
+    const nextBtn = document.querySelector("#nextBtn");
+    const prevBtn = document.querySelector("#prevBtn");
+    let autoSlideInterval;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    const SWIPE_THRESHOLD = 30;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("opacity-100", i === index);
+        slide.classList.toggle("opacity-0", i !== index);
+      });
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % totalSlides;
+      showSlide(currentIndex);
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+      showSlide(currentIndex);
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function stopAutoSlide() {
+      clearInterval(autoSlideInterval);
+    }
+
+    // Touch handling
+    const container = document.querySelector(".group");
+
+    container?.addEventListener("touchstart", (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      stopAutoSlide();
+    });
+
+    container?.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!touchStartX || !touchStartY) return;
+
+        const touchMoveX = e.touches[0].clientX;
+        const touchMoveY = e.touches[0].clientY;
+        const deltaX = touchMoveX - touchStartX;
+        const deltaY = touchMoveY - touchStartY;
+
+        // Prevent vertical scrolling if horizontal swipe
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
+
+    container?.addEventListener("touchend", (e) => {
+      if (!touchStartX || !touchStartY) return;
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      // Check if horizontal swipe
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > SWIPE_THRESHOLD) {
+          diff > 0 ? nextSlide() : prevSlide();
+        }
+      }
+
+      touchStartX = 0;
+      touchStartY = 0;
+      startAutoSlide();
+    });
+
+    // Button controls
+    nextBtn?.addEventListener("click", () => {
+      nextSlide();
+      stopAutoSlide();
+      startAutoSlide();
+    });
+
+    prevBtn?.addEventListener("click", () => {
+      prevSlide();
+      stopAutoSlide();
+      startAutoSlide();
+    });
+
+    // Keyboard controls
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") nextSlide();
+      if (e.key === "ArrowLeft") prevSlide();
+    });
+
+    // Initialize
+    showSlide(currentIndex);
+    startAutoSlide();
+
+    // Pause interactions
+    container?.addEventListener("mouseenter", stopAutoSlide);
+    container?.addEventListener("mouseleave", startAutoSlide);
+  });
+</script>

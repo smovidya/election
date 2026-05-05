@@ -1,0 +1,63 @@
+---
+---
+<div class="flex flex-col items-centerd">
+    <h class="font-noto text-dgray text-center text-md mb-2">จำนวนผู้ใช้สิทธิ์เลือกตั้งทั้งหมด</h>
+    <h1 id="counter" class="font-museo text-center text-dgray text-4xl mb-2">Loading...</h1>
+    <h class="font-noto text-dgray text-center text-sm">จากผู้มีสิทธิ์เลือกตั้ง 3,743 คน</h>
+</div>
+
+<script type="module">
+const counterElement = document.getElementById('counter');
+
+// Animate number function
+function animateCount(start, end, duration = 2000) {
+  const startTime = performance.now();
+  
+  function updateCount(currentTime) {
+    const elapsedTime = currentTime - startTime;
+    const progress = Math.min(elapsedTime / duration, 1);
+    const currentNumber = Math.floor(progress * (end - start) + start);
+    
+    // Format number with commas
+    counterElement.textContent = currentNumber.toLocaleString() + ' คน';
+    
+    if (progress < 1) {
+      requestAnimationFrame(updateCount);
+    }
+  }
+  
+  requestAnimationFrame(updateCount);
+}
+
+// Fetch actual data
+fetch('https://api-smovidya-election.bunyawatapp37204.workers.dev/api/voter-count')
+  .then(res => res.json())
+  .then(data => {
+    const actualCount = data.count;
+    // const actualCount = 303; // For testing purposes, replace with actual data
+    // Start animation from 0 to real count
+    animateCount(0, actualCount);
+    
+    // Remove loading animation once counting starts
+    counterElement.style.animation = '';
+  })
+  .catch(err => {
+    console.error(err);
+    counterElement.textContent = 'Error loading count';
+    counterElement.style.animation = '';
+  });
+
+// Add loading pulse animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  #counter {
+    animation: pulse 1s infinite;
+  }
+`;
+document.head.appendChild(style);
+</script>

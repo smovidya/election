@@ -1,0 +1,44 @@
+{
+	"name": "smo-election",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"lint": "biome check .",
+		"lint:fix": "biome check . --write",
+		"format": "biome format --write .",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"@astrojs/preact": "^4.0.8",
+		"@astrojs/react": "^4.2.1",
+		"@radix-ui/react-slot": "^1.1.2",
+		"@tailwindcss/vite": "^4.0.14",
+		"@types/js-cookie": "^3.0.6",
+		"@types/react": "^19.0.10",
+		"@types/react-dom": "^19.0.4",
+		"astro": "^5.5.2",
+		"axios": "^1.8.4",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"embla-carousel-react": "^8.6.0",
+		"firebase": "^11.6.0",
+		"html2canvas": "^1.4.1",
+		"js-cookie": "^3.0.5",
+		"lucide-react": "^0.482.0",
+		"preact": "^10.26.4",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"react-router-dom": "^7.5.0",
+		"tailwind-merge": "^3.0.2",
+		"tailwindcss": "^4.0.14",
+		"tailwindcss-animate": "^1.0.7"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"husky": "^9.1.7"
+	}
+}

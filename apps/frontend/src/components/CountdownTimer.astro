@@ -1,0 +1,119 @@
+<div id="countdown" class="font-museo text-center text-black">
+    <h2 id="countdown-label" class="font-noto text-sm font-light mb-1 text-lgray">จะเริ่มต้นใน...</h2>
+    <div class="flex justify-center items-center space-x-4">
+        <div id="days-container" class="text-center">
+            <div id="days" class="text-5xl font-light font-museo w-[60px]">00</div>
+            <div class="text-xl uppercase mt-1">Days</div>
+          </div>
+          <div id="hours-container" class="text-center hidden">
+            <div id="hours" class="text-5xl font-light font-museo w-[60px]">00</div>
+            <div class="text-xl uppercase mt-1">Hour</div>
+          </div>
+          <div id="colon2" class="text-3xl font-light font-museo hidden">:</div>
+          <div id="minutes-container" class="text-center hidden">
+            <div id="minutes" class="text-5xl font-light font-museo w-[60px]">00</div>
+            <div class="text-xl uppercase mt-1">Min</div>
+          </div>
+          <div id="colon3" class="text-3xl font-light font-museo hidden">:</div>
+          <div id="seconds-container" class="text-center hidden">
+            <div id="seconds" class="text-5xl font-light font-museo w-[60px]">00</div>
+            <div class="text-xl uppercase mt-1">Sec</div>
+          </div>          
+    </div>
+  </div>
+  
+  <script>
+    const initialTargetDate = new Date("2025-04-23T07:00:00");
+    let phase = 1;
+    let targetDate = initialTargetDate;
+  
+    function updateCountdown() {
+      const currentDate = new Date();
+      let difference = targetDate.getTime() - currentDate.getTime() + 1;
+  
+      const voteNowBtn = document.getElementById("vote-now-btn");
+  
+      const daysContainer = document.getElementById('days-container');
+      const hoursContainer = document.getElementById('hours-container');
+      const minutesContainer = document.getElementById('minutes-container');
+      const secondsContainer = document.getElementById('seconds-container');
+      const colon2 = document.getElementById('colon2');
+      const colon3 = document.getElementById('colon3');
+      const daysElement = document.getElementById('days');
+      const hoursElement = document.getElementById('hours');
+      const minutesElement = document.getElementById('minutes');
+      const secondsElement = document.getElementById('seconds');
+
+  
+      if (difference <= 0) {
+        if (phase === 1) {
+          // First countdown complete: move to phase 2 (voting time)
+          phase = 2;
+          targetDate = new Date("2025-04-23T18:00:00");
+          const countdownLabel = document.getElementById("countdown-label");
+          if (countdownLabel) {
+          countdownLabel.textContent = "เหลือเวลาเลือกอีก...";
+          }
+          
+          // Enable the vote button
+          if (voteNowBtn) {
+            voteNowBtn.classList.remove("pointer-events-none", "opacity-50", "bg-gray-400", "text-gray");
+            voteNowBtn.classList.add("cursor-pointer", "bg-yellow");
+          }
+  
+          return; // Skip rendering this frame; next tick will update countdown again
+        } else {
+          // Second countdown complete — now you can either:
+          // - clear the interval
+          // - or restart again
+          const countdownElement = document.getElementById('countdown');
+          if (countdownElement) {
+          countdownElement.innerHTML = '<div class="text-4xl font-bold font-museo">Voting ended</div>';
+          }
+          // Delete voteNowBtn if it exists
+          if (voteNowBtn) {
+          voteNowBtn.classList.add("pointer-events-none", "opacity-50", "bg-gray-400", "text-gray");
+          voteNowBtn.classList.remove("cursor-pointer", "bg-yellow");
+          }
+          clearInterval(timerInterval);
+          return;
+        }
+      }
+  
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+  
+      // Countdown display logic
+      if (days > 0) {
+      if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
+      if (daysContainer) daysContainer.classList.remove('hidden');
+      if (hoursContainer) hoursContainer.classList.add('hidden');
+      if (minutesContainer) minutesContainer.classList.add('hidden');
+      if (secondsContainer) secondsContainer.classList.add('hidden');
+      if (colon2) colon2.classList.add('hidden');
+      if (colon3) colon3.classList.add('hidden');
+      } else {
+      if (daysContainer) daysContainer.classList.add('hidden');
+      if (hoursContainer) hoursContainer.classList.remove('hidden');
+      if (minutesContainer) minutesContainer.classList.remove('hidden');
+      if (secondsContainer) secondsContainer.classList.remove('hidden');
+      if (colon2) colon2.classList.remove('hidden');
+      if (colon3) colon3.classList.remove('hidden');
+      if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
+      if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
+      if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
+      }
+  
+      // In Phase 1, disable the button
+      if (voteNowBtn && phase === 1) {
+        voteNowBtn.classList.add("pointer-events-none", "bg-gray-400", "text-gray");
+        voteNowBtn.classList.remove("cursor-pointer");
+      }
+    }
+  
+    // Run initially
+    updateCountdown();
+    const timerInterval = setInterval(updateCountdown, 1000);
+  </script>

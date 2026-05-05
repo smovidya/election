@@ -1,0 +1,663 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Logo from "@/pics/main/SmoElectionLogo.webp";
+import Image from "astro/components/Image.astro";
+---
+
+<Layout title="เลือกตั้งคณะกรรมการบริหารสโมสรนิสิต">
+  <div class="flex flex-col w-full h-auto bg-yellow select-none">
+    <div class="pt-10 mb-10 px-10">
+      <Image src={Logo} alt={"logo"} class="w-50 mb-8" />
+    </div>
+
+    <div
+      class="flex flex-col font-noto w-full h-auto rounded-t-4xl bg-white items-center pt-13 px-10"
+    >
+      <h1 class="text-xl font-bold text-center mt-11 mb-3">
+        ลงคะแนนเลือกตั้ง<br/>คณะกรรมการบริหารสโมสรนิสิต
+      </h1>
+      <h2 class="text-base text-gray-500 text-center mb-9">
+        คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย<br />ประจำปีการศึกษา 2568
+      </h2>
+      <hr class="my-6 border-gray-300" />
+
+      <form method="POST" action="/api/submit-vote" class="vote-form">
+        <!-- President -->
+        <section id="president" class="mb-12">
+          <h3 class="text-xl font-semibold">ตำแหน่งนายกสโมสร</h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นายจามิน จันทรสุวรรณ</p>
+              <br />
+              <p class="text-gray-600 text-xs">
+                ภาควิชาคณิตศาสตร์และคอมพิวเตอร์
+              </p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 3</p>
+            </div>
+            <Image
+              src="/images/01_นายก.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="president"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="president"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="president"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Vice President 1 -->
+        <section id="vice1" class="mb-12">
+          <h3 class="text-xl font-semibold">ตำแหน่งอุปนายกคนที่ 1</h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นายกิตติพัศ สิริเจิมจิตร</p>
+              <br />
+              <p class="text-gray-600 text-xs">ภาควิชาจุลชีววิทยา</p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 3</p>
+            </div>
+            <Image
+              src="/images/02_อุป 1.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="vice1"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="vice1"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="vice1"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Vice President 2 -->
+        <section id="vice2" class="mb-12">
+          <h3 class="text-xl font-semibold">ตำแหน่งอุปนายกคนที่ 2</h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นางสาวเอมอร พรมเพ็ง</p>
+              <br />
+              <p class="text-gray-600 text-xs">
+                ภาควิชาคณิตศาสตร์และคอมพิวเตอร์
+              </p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 3</p>
+            </div>
+            <Image
+              src="/images/03_อุป 2.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="vice2"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="vice2"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="vice2"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Head of Relation -->
+        <section id="relation" class="mb-12">
+          <h3 class="text-xl font-semibold">ตำแหน่งประธานฝ่ายนิสิตสัมพันธ์</h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นางสาวนันท์นภัส หงษ์แปด</p>
+              <br />
+              <p class="text-gray-600 text-xs">
+                หลักสูตรเทคโนโลยีชีวภาพ (นานาชาติ)
+              </p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 2</p>
+            </div>
+            <Image
+              src="/images/04_ฝ่ายนิสิตสัมพันธ์.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="relation"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="relation"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="relation"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Head of Sport -->
+        <section id="sport" class="mb-12">
+          <h3 class="text-xl font-semibold">ตำแหน่งประธานฝ่ายกีฬา</h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นางสาวเสาวลักษณ์ สังข์ขาว</p>
+              <br />
+              <p class="text-gray-600 text-xs">ภาควิชาวัสดุศาสตร์</p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 3</p>
+            </div>
+            <Image
+              src="/images/05_ฝ่ายกีฬา.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="sport"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="sport"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="sport"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Head of Acadamic -->
+        <section id="acadamic" class="mb-12">
+          <h3 class="text-xl font-semibold">ตำแหน่งประธานฝ่ายวิชาการ</h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นางสาวรณิดา สูงสุมาลย์</p>
+              <br />
+              <p class="text-gray-600 text-xs">ภาควิชาเคมี</p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 2</p>
+            </div>
+            <Image
+              src="/images/06_ฝ่ายวิชาการ.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="acadamic"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="acadamic"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="acadamic"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Head of Development -->
+        <section id="development" class="mb-12">
+          <h3 class="text-xl font-semibold">
+            ตำแหน่งประธานฝ่ายพัฒนาสังคมและบำเพ็ญประโยชน์
+          </h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นายวราวิชญ์ เชื้อสุวรรณรักษ์</p>
+              <br />
+              <p class="text-gray-600 text-xs">ภาควิชาวิทยาศาสตร์สิ่งแวดล้อม</p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 3</p>
+            </div>
+            <Image
+              src="/images/07_ฝ่ายพัฒน์.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="development"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="development"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="development"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Head of Treasurer -->
+        <section id="treasurer" class="mb-12">
+          <h3 class="text-xl font-semibold">ตำแหน่งเหรัญญิก</h3>
+          <p class="text-gray-600 mb-6">
+            กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+          </p>
+
+          <div class="flex h-32 mb-6 gap-1">
+            <div
+              class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+            >
+              <span class="text-sm font-bold text-purple-900">หมายเลข</span>
+              <span class="text-2xl font-bold text-purple-900">1</span>
+            </div>
+
+            <div class="p-3 w-3/5 bg-white shadow-lg">
+              <p class="font-bold text-sm">พรรค Sci-Served</p>
+              <p class="font-bold text-sm">นายชญานนท์ กุลวิภัชวัฒนา</p>
+              <br />
+              <p class="text-gray-600 text-xs">ภาควิชาเคมีเทคนิค</p>
+              <p class="text-gray-600 text-xs">ชั้นปีที่ 2</p>
+            </div>
+            <Image
+              src="/images/08_เหรัญญิก.webp"
+              alt="Candidate"
+              class="object-cover shadow-lg bg-white"
+              height={32}
+              width={96}
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="treasurer"
+                value="approve"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+                required
+              />
+              <span class="text-gray-700">รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="treasurer"
+                value="disapprove"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">ไม่รับรอง</span>
+            </label>
+            <label class="flex items-center space-x-3">
+              <input
+                type="radio"
+                name="treasurer"
+                value="abstain"
+                class="form-radio h-5 w-5 text-yellow checked:bg-yellow checked:border-yellow focus:ring-yellow"
+              />
+              <span class="text-gray-700">งดออกเสียง</span>
+            </label>
+          </div>
+        </section>
+        <hr class="my-8 border-gray-300" />
+
+        <!-- Submit Section -->
+        <div class="mt-12 text-center">
+          <button
+            type="submit"
+            class="bg-yellow text-black px-8 py-3 rounded-lg transition-colors"
+          >
+            ถัดไป
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline>
+  // ฟังก์ชันอ่านคุกกี้แบบไม่ใช้ library
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  // ฟังก์ชันตรวจสอบ Session
+  const checkSession = () => {
+    const sessionExpiry = getCookie('sessionExpiry');
+    
+    if (sessionExpiry) {
+      const now = Date.now();
+      if (now > parseInt(sessionExpiry)) {
+        // ลบคุกกี้และ redirect
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'sessionExpiry=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        window.location.href = "/";
+      } else {
+        // ตั้งเวลาเช็คซ้ำทุก 1 นาที
+        setTimeout(checkSession, 60 * 1000);
+      }
+    }
+  };
+
+  // เริ่มตรวจสอบเมื่อโหลดหน้า
+  checkSession();
+</script>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const voteForm = document.querySelector(".vote-form");
+
+    
+
+    if (voteForm) {
+      voteForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // ตรวจสอบข้อมูลและเก็บลง sessionStorage
+        const formData = new FormData(voteForm);
+        const voteData = {};
+        const positions = [
+          "president",
+          "vice1",
+          "vice2",
+          "relation",
+          "sport",
+          "acadamic",
+          "development",
+          "treasurer",
+        ];
+
+        // ตรวจสอบว่าทุกตำแหน่งถูกเลือก
+        let isValid = true;
+        positions.forEach((position) => {
+          if (!formData.get(position)) {
+            isValid = false;
+            const errorElement = document.querySelector(
+              `[name="${position}"]:not(:checked)`
+            );
+            errorElement
+              ?.closest("section")
+              ?.classList.add("border-2", "border-red-500");
+          }
+        });
+
+        if (!isValid) {
+          alert("กรุณาทำการเลือกในทุกตำแหน่งก่อนส่งคะแนน");
+          return;
+        }
+
+        // เก็บข้อมูลลง sessionStorage
+        positions.forEach((position) => {
+          voteData[position] = formData.get(position);
+        });
+        sessionStorage.setItem("voteData", JSON.stringify(voteData));
+
+        // เปลี่ยนเส้นทางไปหน้าสรุปผล
+        window.location.href = "/vote-summary";
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Add custom scrollbar for summary */
+  #summaryContent::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #summaryContent::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  #summaryContent::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  #summaryContent::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+</style>

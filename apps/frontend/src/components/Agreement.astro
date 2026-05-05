@@ -1,0 +1,78 @@
+<div class="bg-yellow min-h-screen flex items-center justify-center font-noto">
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-[350px]">
+      <div class="mb-4 space-y-1 text-base text-dgray">
+        <div class="flex justify-between">
+          <span>รหัสนิสิต</span>
+          <span id="studentId">Loading...</span>
+        </div>
+        <div class="flex justify-between">
+          <span>ชื่อ</span>
+          <span id="firstName">Loading...</span>
+        </div>
+        <div class="flex justify-between">
+          <span>นามสกุล</span>
+          <span id="lastName">Loading...</span>
+        </div>
+      </div>
+  
+      <div class="border-b border-black my-8"></div>
+  
+      <h1 class="text-center font-bold text-black text-xl mb-4">ข้อกำหนดและเงื่อนไข</h1>
+  
+      <ul class="list-disc pl-5 text-sm text-gray-700 space-y-2">
+        <li>ขณะนี้ท่านกำลังใช้งานเว็บไซต์และมองหน้าจอเพียงบุคคลเดียว โดยมิได้ถูกบังคับ ข่มเหงหรือชักจูงจากใครในการลงคะแนนเสียงเลือกตั้ง</li>
+        <li>ข้อมูลส่วนบุคคลของท่านถูกต้องทั้งหมด</li>
+        <li>ท่านมีเวลาทั้งสิ้น 30 นาที ในการเข้าสู่ระบบเพื่อทำการลงคะแนนเสียง จนเสร็จสิ้น</li>
+        <li>ท่านยอมรับคะแนนเสียงที่โหวตผ่านเว็บไซต์ เลือกตั้ง คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ให้ถือเป็นที่สิ้นสุด</li>
+      </ul>
+  
+      <div class="mt-12 flex justify-center">
+        <button class="bg-yellow hover:bg-yellow-500 transition text-black text-sm font-semibold py-2 px-4 rounded-xl shadow-md" onclick="window.location.href='/election'">
+          ยอมรับข้อกำหนดและเงื่อนไข
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script is:inline>
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Get token from cookies
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1];
+        
+    if (!cookieValue) {
+      console.error('No token found in cookies');
+      return;
+    }
+  
+    try {
+      const response = await fetch('https://api-smovidya-election.bunyawatapp37204.workers.dev/api/me', {
+        headers: {
+          'Authorization': `Bearer ${cookieValue}`
+        }
+      });
+  
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      
+      const { studentId, studentName } = await response.json();
+      
+      // Split name into first and last names
+      const [firstName, ...lastNameParts] = studentName.split(' ');
+      const lastName = lastNameParts.join(' ');
+  
+      // Update DOM elements
+      document.getElementById('studentId').textContent = studentId;
+      document.getElementById('firstName').textContent = firstName;
+      document.getElementById('lastName').textContent = lastName;
+  
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error (e.g., show error message to user)
+      document.querySelectorAll('[id]').forEach(el => {
+        el.textContent = 'ข้อมูลไม่พร้อมใช้งาน';
+      });
+    }
+  });
+  </script>

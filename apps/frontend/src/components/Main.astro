@@ -1,0 +1,118 @@
+---
+import { Image } from "astro:assets";
+import VoterCount from "@/components/VoterCount.astro";
+import Box from "@/pics/main/BoxIcon.webp";
+import Logo from "@/pics/main/SmoElectionLogo.webp";
+import Line from "@/pics/main/line.webp";
+import President from "@/pics/main/par1/01_president.webp";
+import VicePresident1 from "@/pics/main/par1/02_vicepresident1.webp";
+import VicePresident2 from "@/pics/main/par1/03_vicepresident2.webp";
+import StudentRelations from "@/pics/main/par1/04_studentrelations.webp";
+import Sport from "@/pics/main/par1/05_sport.webp";
+import Academic from "@/pics/main/par1/06_academic.webp";
+import PublicService from "@/pics/main/par1/07_publicservice.webp";
+import Treasurer from "@/pics/main/par1/08_treasurer.webp";
+import Carousel from "./Carousel.astro";
+import CountdownTimer from "./CountdownTimer.astro";
+
+const Policies = [
+	{
+		name: "นโยบายพรรค Sci-Served ",
+		policies: [
+			{
+				title: "พวกเราพรรค Sci-Served จะบริหารสโมสรฯ ด้วยวิสัยทัศน์ดังต่อไปนี้",
+				details: [
+					"สโมสรนิสิตคณะวิทยาศาสตร์ต้องเป็นองค์กรที่เข้าถึงได้ง่าย ใกล้ชิดและอยู่เคียงข้างนิสิตในคณะทุกคน พร้อมรับฟังปัญหาต่าง ๆ ภายในคณะ และนํามาแก้ไข พัฒนาในการดําเนินงานต่อไปอย่างมีประสิทธิภาพ",
+					"สโมสรนิสิตคณะวิทยาศาสตร์ ต้องเป็นพื้นที่ที่เปิดกว้างให้นิสิตทุกคนในคณะได้เข้ามาเรียนรู้ ฝึกฝน และพัฒนา ทักษะด้านต่าง ๆ ในการปฏิบัติงาน รวมถึงได้รับความสัมพันธ์มิตรภาพที่ดีกลับไป",
+					"โครงการต่าง ๆ ภายใต้สโมสรนิสิตคณะวิทยาศาสตร์ ต้องดําเนินงานอย่างมีประสิทธิภาพโดยคํานึงถึงผลประโยชน์ ของนิสิตในคณะเป็นสําคัญ และดูแลเอาใจใส่ ไม่ละเลยสุขภาวะของนิสิตผู้ปฏิบัติงานทุกคน",
+				],
+			},
+		],
+	},
+];
+
+const Party = [
+	{ num: "1", role: "นายกสโมสรนิสิต", routing: "/candidates/president", pic: President },
+	{ num: "1", role: "อุปนายกคนที่ 1", routing: "/candidates/vicepresident1", pic: VicePresident1 },
+	{ num: "1", role: "อุปนายกคนที่ 2", routing: "/candidates/vicepresident2", pic: VicePresident2 },
+	{ num: "1", role: "ประธานฝ่าย\nนิสิตสัมพันธ์", routing: "/candidates/studentaffairs", pic: StudentRelations },
+	{ num: "1", role: "ประธานฝ่ายกีฬา", routing: "/candidates/sports", pic: Sport },
+	{ num: "1", role: "ประธานฝ่ายวิชาการ", routing: "/candidates/academic", pic: Academic },
+	{ num: "1", role: "ประธานฝ่าย\nพัฒนาสังคม\nและบําเพ็ญประโยชน์", routing: "/candidates/social", pic: PublicService },
+	{ num: "1", role: "เหรัญญิก", routing: "/candidates/treasurer", pic: Treasurer },
+];
+---
+
+    <div class="flex flex-col w-full h-auto bg-yellow select-none">
+        <div class="pt-10 mb-10 px-10">
+            <Image src={Logo}  alt={"logo"} class="w-50 mb-8"/>
+            <div class="mb-10">
+                <h1 class="font-bold font-noto text-md">เลือกตั้งคณะกรรมการบริหารสโมสรนิสิต</h1>
+                <h2 class="font-light font-noto text-md mb-1">คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h2>
+                <h4 class="font-light font-noto text-xs text-lgray">ประจำปีการศึกษา 2568</h4>
+            </div>
+            <div class="place-content-center w-full h-35 rounded-2xl shadow-lg bg-white">
+                <CountdownTimer/>
+            </div>
+        </div>
+        <div class="flex flex-col w-full h-auto rounded-t-4xl bg-white items-center pt-13 px-10">
+            <h class="font-semibold font-noto text-md text-dgray mb-3">ลงคะแนนเสียง</h>
+            <a href="/login" id="vote-now-btn" class=" px-12 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2 pointer-events-none opacity-50">
+                <Image src={Box} alt={"box"} class="w-7"/>
+                <h1 class="font-semibold font-museo text-sm text-black ">VOTE NOW</h1>
+            </a>
+            <Image src={Line} alt={"line"} class="w-full my-10 pointer-events-none"/>
+            <div>
+                <VoterCount/>
+            </div>
+            <Image src={Line} alt={"line"} class="w-full my-10"/>
+            <div class="w-full h-auto flex flex-col shadow-lg rounded-xl py-7 px-5 font-noto mb-5">
+                {Policies.map((party) => (
+                    <h1 class="text-md text-center font-semibold text-black mb-2">{party.name}</h1>
+                    <div class="text-xs text-lgray font-light leading-relaxed">
+                        {party.policies.map((pol) => (
+                        <p>{pol.title}</p>
+                        <ul class="list-disc text-gray pl-5">
+                            {pol.details.map((item) => (
+                                <li class="marker:text-[0.625rem]">{item}</li>
+                            ))}
+                        </ul>
+                    ))}
+                    </div>
+                ))}
+            </div>
+            <div class="flex flex-col items-center w-full h-auto px-3">
+                <div class="flex flex-col items-center mt-5 mb-5">
+                    <h3 class="font-bold font-noto text-md text-dgray mb-1">รายชื่อและนโยบายผู้ลงสมัครเลือกตั้ง</h3>
+                    <h4 class="font-light font-noto text-sm text-dgray">คลิกเพื่อดูนโยบาย</h4>
+                </div>
+                <div class="w-full h-auto">
+                    {Party.map((item) => (
+                        <a href={item.routing} class="flex flex-row w-full justify-between gap-1 my-5 h-25">
+                            <div class="w-20 h-full flex flex-col justify-center align-center text-center ${item.bg} bg-sciserve">
+                                <h4 class="font-museo font-semibold text-[0.625rem]/2 text-white">หมายเลข</h4>
+                                <p class="font-museo text-5xl font-normal text-white">{item.num}</p>
+                            </div>
+                            <div class="w-80 flex flex-row items-center justify-between bg-[#F3F3F3]">
+                                <h2 class="font-noto font-normal text-md text-lgray pl-3 whitespace-pre-line">{item.role}</h2>
+                                <Image src={item.pic} alt={"party1"} class="h-full w-auto object-contain ml-auto pointer-events-none"/>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+            <Image src={Line} alt={"line"} class="w-full my-10"/>
+        </div>
+        <div class="flex flex-col w-full h-auto bg-white items-center">
+            <div class="flex flex-col w-full p-0">
+                <div class="font-noto font-bold text-dgray text-md mb-5">
+                    <h3 class="text-center">สโมสรนิสิตคณะวิทยาศาสตร์</h3>
+                    <h3 class="text-center">ปีการศึกษา 2567</h3>
+                </div>
+                <div class="w-full px-5">
+                    <Carousel/>
+                </div>
+                <div class="w-full h-10"></div>
+            </div>
+        </div>
+    </div>
