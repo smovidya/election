@@ -1,7 +1,9 @@
 packages:
-  - 'packages/*'
-  - 'apps/*'
+  - packages/*
+  - apps/*
 
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - '@firebase/util'
+  - esbuild
+  - protobufjs
