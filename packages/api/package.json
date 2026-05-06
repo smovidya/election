@@ -1,16 +1,22 @@
 {
   "name": "@repo/api",
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "typecheck": "tsc"
   },
-  "module": "src/index.ts",
-  "main": "src/index.ts",
   "devDependencies": {
     "@types/bun": "1",
     "typescript": "5"
   },
   "dependencies": {
-    "elysia": "1"
+    "@repo/constants": "workspace:*",
+    "@sinclair/typebox": "^0.34.49",
+    "elysia": "1",
+    "openapi-types": "^12.1.3"
   }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "@repo/constants",
+  "version": "1.0.0",
+  "description": "Election system constants for both frontend and backend",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "keywords": [],
+  "author": {
+    "name": "IT Dept of the Students' Union of Chulalongkorn University",
+    "email": "team@vidyachula.org",
+    "url": "https://vidyachula.org"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@10.12.4",
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "prettier": "^3.8.3",
+    "typescript": "^5.9.3"
+  }
+}
