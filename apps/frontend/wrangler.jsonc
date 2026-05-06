@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "election-frontend",
-  "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2026-05-05",
   "compatibility_flags": [
     "nodejs_compat",
