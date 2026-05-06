@@ -1,7 +1,10 @@
 {
   "name": "election-backend",
   "scripts": {
-    "dev": "wrangler dev"
+    "dev": "pnpm generate-types && wrangler dev",
+    "deploy:production": "wrangler deploy --env production",
+    "deploy:staging": "wrangler deploy --env staging",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
     "@repo/api": "workspace:*",
