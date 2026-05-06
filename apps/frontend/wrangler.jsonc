@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "election-frontend",
-  // "main": "src/index.ts",
+  "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2026-05-05",
   "compatibility_flags": [
     "nodejs_compat",
@@ -14,14 +14,6 @@
   "observability": {
     "enabled": true
   },
-  "build": {
-    "watch_dir": "./src",
-    "command": "pnpm dlx astro build"
-  },
-  "route": {
-    "pattern": "election.vidyachula.org",
-    "custom_domain": true
-  },
   // wait. its all static page tho, no server code
   "vars": {
     "ENVIRONMENT": "dev"
@@ -29,12 +21,18 @@
   "env": {
     "production": {
       "vars": {
-        "ENVIRONMENT": "production"
+        "ENVIRONMENT": "production",
+        "BACKEND_URL": "https://election-api.vidyachula.org"
+      },
+      "route": {
+        "pattern": "election.vidyachula.org",
+        "custom_domain": true
       },
     },
     "staging": {
       "vars": {
-        "ENVIRONMENT": "staging"
+        "ENVIRONMENT": "staging",
+        "BACKEND_URL": "https://election-api-staging.vidyachula.org"
       },
       "route": {
         "pattern": "election-staging.vidyachula.org",

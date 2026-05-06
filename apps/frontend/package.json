@@ -4,17 +4,19 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "astro dev",
+		"dev": "pnpm generate-types && astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
 		"lint": "biome check .",
 		"lint:fix": "biome check . --write",
 		"format": "biome format --write .",
-		"deploy:prod": "wrangler deploy --env production",
-		"deploy:staging": "wrangler deploy --env staging"
+		"deploy:production": "pnpm build && wrangler deploy --env production",
+		"deploy:staging": "pnpm build && wrangler deploy --env staging",
+		"generate-types": "wrangler types"
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^13.3.1",
 		"@astrojs/preact": "^5.1.2",
 		"@astrojs/react": "^5.0.4",
 		"@radix-ui/react-slot": "^1.2.4",
@@ -42,6 +44,9 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.14",
-		"wrangler": "^4.87.0"
+		"wrangler": "^4.88.0"
+	},
+	"overrides": {
+		"vite": "^7"
 	}
 }
