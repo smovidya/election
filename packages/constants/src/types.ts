@@ -26,6 +26,7 @@ export interface Party {
   party_id: AlphaNumericString | "independent";
   name: LocalizedString;
   visions: LocalizedString;
+  color: string;
 }
 
 export type RunningPositionIDs =

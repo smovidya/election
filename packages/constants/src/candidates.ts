@@ -43,6 +43,7 @@ export const parties = [
       th: "Creating SMO69, Where Ambition meet Connection: เปิดโอกาสให้นิสิตคณะวิทยาศาสตร์ทุกคนได้มี พื้นที่ในการเรียนรู้ และลองทำในสิ่งที่ชอบ ได้ มีพื้นที่ในการค้นหาตัวเอง และเป็น Community ที่จะสร้าง Connection ที่ดีให้แก่นิสิตคณะวิทยาศาสตร์ทุกคน",
       en: "Creating SMO69, Where Ambition meet Connection: Providing opportunities for all science students to have a space for learning and trying what they like, find themselves, and create a good community for all science students (Automatically translated from Thai)",
     },
+    color: "#D4BBDF",
   },
 ] satisfies Party[];
 

@@ -13,7 +13,8 @@ export const full_name =
  * - ss is the second (00-59)
  * - ±hh:mm is the time zone offset from UTC (e.g., +07:00 for UTC+7 aka Bangkok time)
  */
-export const voting_start_string = "2026-05-08T07:00:00+07:00";
+export const votingStartString = "2026-05-08T07:00:00+07:00";
+export const votingStart = new Date(votingStartString);
 
 /**
  * The date and time when the voting ends, in ISO 8601 format.
@@ -27,4 +28,5 @@ export const voting_start_string = "2026-05-08T07:00:00+07:00";
  * - ss is the second (00-59)
  * - ±hh:mm is the time zone offset from UTC (e.g., +07:00 for UTC+7 aka Bangkok time)
  */
-export const voting_end_string = "2026-05-15T17:00:00+07:00";
+export const votingEndString = "2026-05-15T17:00:00+07:00";
+export const votingEnd = new Date(votingEndString);
