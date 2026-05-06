@@ -13,5 +13,10 @@
     "moduleDetection": "force",
     "noUncheckedIndexedAccess": true,
     "noEmit": true,
+    "paths": {
+      "$lib/*": [
+        "./src/lib/*"
+      ]
+    }
   }
 }

@@ -1,142 +1,144 @@
-import { env } from "cloudflare:workers";
+import { AppEnv, Params } from "..";
 import Elysia, { type Static, t } from "elysia";
 import { Auth, type KeyStorer } from "firebase-auth-cloudflare-workers";
 // firebase-admin wont run on cf worker so i use this instead
 import { type Result, ResultAsync, err, ok } from "neverthrow";
 
 class NoKVStore implements KeyStorer {
-	async get() {
-		return null;
-	}
-	async put(value: string, expirationTtl: number) {}
+  async get() {
+    return null;
+  }
+  async put(value: string, expirationTtl: number) {}
 }
 
 export const User = t.Object({
-	studentId: t.String(),
-	studentName: t.String(),
+  studentId: t.String({
+    title: "Student ID",
+    description: "The student's ID, e.g. 60300000123",
+    examples: ["60300000123"],
+  }),
+  studentName: t.String({
+    title: "Student Name",
+    description: "The student's name, e.g. John Doe",
+    examples: ["John Doe", "สมชาย ใจดี"],
+  }),
 });
 export type User = Static<typeof User>;
 
 export const AuthUnauthorizedError = t.UnionEnum([
-	"missing-authorization",
-	"invalid-token",
+  "missing-authorization",
+  "invalid-token",
 ]);
 export const AuthForbiddenError = t.UnionEnum([
-	"not-chula",
-	"invalid-student-id",
-	"not-science-student",
+  "not-chula",
+  "invalid-student-id",
+  "not-science-student",
 ]);
 export const AuthError = t.Union([AuthUnauthorizedError, AuthForbiddenError]);
 export type AuthError = Static<typeof AuthError>;
 
 export class AuthService {
-	constructor(public headers: Record<string, string | undefined>) {}
+  constructor(
+    public headers: Record<string, string | undefined>,
+    public env: AppEnv,
+  ) {}
 
-	async getUser(): Promise<Result<User, AuthError>> {
-		if (
-			env.ENVIRONMENT === "dev" &&
-			this.headers.authorization?.startsWith("Basic ")
-		) {
-			console.log("[DEV] Using mock auth");
-			const [_, rawToken] = this.headers.authorization.split(" ");
+  async getStudentId(idToken: string) {
+    const auth = Auth.getOrInitialize(
+      this.env.GOOGLE_CLIENT_ID!,
+      new NoKVStore(),
+      // if we want to cache the public key used to verify the Firebase ID we can use this
+      // WorkersKVStoreSingle.getOrInitialize(env.PUBLIC_JWK_CACHE_KEY, env.PUBLIC_JWK_CACHE_KV)
+    );
 
-			if (!rawToken) {
-				return err("missing-authorization");
-			}
-			const token = Buffer.from(rawToken, "base64").toString("utf-8");
-			const [studentId, ...time] = token.split(":");
+    const token = await ResultAsync.fromPromise(
+      auth.verifyIdToken(idToken),
+      () => [],
+    );
 
-			console.log("[DEV] Mock student ID:", studentId);
-			console.log("[DEV] Mock time:", time.join(":") || "now");
+    if (token.isErr()) {
+      return err("invalid-token");
+    }
 
-			const rightVerifyResult = await this.verifyRight(studentId);
-			if (rightVerifyResult.isErr()) return rightVerifyResult;
+    const { email, name } = token.value;
+    if (!email) {
+      // wtf did you use to sign in
+      return err("invalid-token");
+    }
 
-			return ok({
-				studentId,
-				studentName: `Mock Name (${studentId})`,
-				currentTime: time ? new Date(time.join(":")) : new Date(),
-			});
-		}
+    const [studentId, domain] = email.split("@");
 
-		const [_, idToken] = this.headers.authorization?.split(" ") ?? [];
+    if (!studentId || !domain) {
+      return err("invalid-token");
+    }
 
-		if (!idToken) {
-			return err("missing-authorization");
-		}
+    if (!domain.endsWith("chula.ac.th")) {
+      return err("not-chula");
+    }
 
-		const authResult = await this.getStudentId(idToken);
+    const rightVerifyResult = await this.verifyRight(studentId);
+    if (rightVerifyResult.isErr()) {
+      return rightVerifyResult;
+    }
 
-		if (authResult.isErr()) {
-			return err(authResult.error);
-		}
+    return ok({ studentId, name });
+  }
 
-		return ok({
-			studentId: authResult.value.studentId,
-			studentName: authResult.value.name,
-			currentTime: new Date(),
-		});
-	}
+  async verifyRight(studentId: string) {
+    if (studentId.length !== 10) {
+      return err("invalid-student-id");
+    }
 
-	async getStudentId(idToken: string) {
-		const auth = Auth.getOrInitialize(
-			env.FIREBASE_PROJECT_ID,
-			new NoKVStore(),
-			// if we want to cache the public key used to verify the Firebase ID we can use this
-			// WorkersKVStoreSingle.getOrInitialize(env.PUBLIC_JWK_CACHE_KEY, env.PUBLIC_JWK_CACHE_KV)
-		);
+    // xxxxxxxx23 for science students
+    if (!/^\d{8}23$/.test(studentId)) {
+      return err("not-science-student");
+    }
 
-		const token = await ResultAsync.fromPromise(
-			auth.verifyIdToken(idToken),
-			() => [],
-		);
-
-		if (token.isErr()) {
-			return err("invalid-token");
-		}
-
-		const { email, name } = token.value;
-		if (!email) {
-			// wtf did you use to sign in
-			return err("invalid-token");
-		}
-
-		const [studentId, domain] = email.split("@");
-		if (!domain.endsWith("chula.ac.th")) {
-			return err("not-chula");
-		}
-
-		const rightVerifyResult = await this.verifyRight(studentId);
-		if (rightVerifyResult.isErr()) {
-			return rightVerifyResult;
-		}
-
-		return ok({ studentId, name });
-	}
-
-	async verifyRight(studentId: string) {
-		if (studentId.length !== 10) {
-			return err("invalid-student-id");
-		}
-
-		// xxxxxxxx23 for science students
-		if (!/^\d{8}23$/.test(studentId)) {
-			return err("not-science-student");
-		}
-
-		return ok();
-	}
+    return ok();
+  }
 }
 
-export const auth = () =>
-	new Elysia({ aot: false, name: "auth" }).derive(
-		{ as: "scoped" },
-		async ({ headers }) => {
-			const auth = new AuthService(headers);
-			const user = await auth.getUser();
-			return {
-				auth,
-				user,
-			};
-		},
-	);
+export const AuthModel = new Elysia({
+  aot: false,
+  name: "AuthModel",
+}).model({
+  UnauthorizedResponse: t.Object(
+    {
+      error: AuthUnauthorizedError,
+    },
+    {
+      title: "UnauthorizedResponse",
+      description:
+        "Response when the user is not authenticated or the token is invalid",
+    },
+  ),
+  ForbiddenResponse: t.Object(
+    {
+      error: AuthForbiddenError,
+    },
+    {
+      title: "ForbiddenResponse",
+      description:
+        "Response when the user is authenticated but not authorized to access the requested resource",
+    },
+  ),
+  LoginRequestBody: t.Object(
+    {
+      googleIdToken: t.String(),
+    },
+    {
+      title: "LoginRequestBody",
+      description: "Request body for the login endpoint",
+    },
+  ),
+  LoginSuccessResponse: t.Object(
+    {
+      jwtSessionToken: t.String(),
+    },
+    {
+      title: "Login success",
+      description: "Response when the user successfully logs in",
+    },
+  ),
+  MeSuccessResponse: User,
+});

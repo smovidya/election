@@ -73,6 +73,7 @@ export const candidates = [
       th: `1. ประธานฝ่ายนิสิตสัมพันธ์ สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ปีการศึกษา 2568\n2. ประธานโครงการเทศกาลต้อนรับนิสิตใหม่ คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ปีการศึกษา 2568\n3. ประธานโครงการตลาดนัดนิสิต เสือเหลือง แฟร์ 2026 (SUEALUEANG FAIR 2026)\n4. ประธานฝ่ายเนื้อหา โครงการกีฬาเพื่อนใหม่ ประจำปีการศึกษา 2568\n5. รองประธานโครงการถนนคนเดินเชื่อมสัมพันธ์ วิศวฯ-วิทยาฯ (Vid Love Vid U 2026)\n6. รองประธานโครงการ Science Chula Open House 2026\n7. รองประธานโครงการคัดเลือกพิธีกร คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ปีการศึกษา 2568\n8. เลขานุการ โครงการค่าย 3 สัญจร สอนสัมพันธ์ ครั้งที่ 2`,
       en: `1. Head of Student Relations, Science Student's Union, Chulalongkorn University, Academic Year 2568\n2. President of the Freshmen Festival, Faculty of Science, Chulalongkorn University, Academic Year 2568\n3. President of the SUEALUEANG FAIR 2026\n4. Content Head of the Freshmen Sports for the Academic Year 2568\n5. Vice President of the Vid Love Vid U 2026, a walking street connecting engineering and science faculties\n6. Vice President of the Science Chula Open House 2026\n7. Vice President of the Master of Ceremonies Selection, Faculty of Science, Chulalongkorn University, Academic Year 2568\n8. Secretary of the 3rd Roaming Relations Camp Teaching\n(Automatically translated from Thai)`,
     },
+    image: "/c1.jpg",
   },
   {
     candidate_id: "c2" as const,
@@ -96,6 +97,7 @@ export const candidates = [
       th: `1. สมาชิกฝ่ายนิสิตสัมพันธ์ สโมสรนิสิตคณะวิทยาศาสตร์ ปีการศึกษา 2568\n2. ประธานฝ่ายเนื้อหา โครงการกีฬาสานสัมพันธ์คณะวิทยาศาสตร์จุฬาฯ-ธรรมศาสตร์ ประจำปีการศึกษา 2568\n3. ประธานฝ่ายเวทีกลาง โครงการเปิดโลกคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ปี 2569 (Science Chula Open House 2026)\n4. หัวหน้าฝ่ายกิจกรรมกลาง โครงการเทศกาลต้อนรับนิสิตใหม่ คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ปีการศึกษา 2568\n5. หัวหน้าฝ่ายประสานผู้เข้าแข่งขัน โครงการคัดเลือกพิธีกร คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ปีการศึกษา 2568\n6. หัวหน้าฝ่ายประสานโชว์ โครงการตลาดนัดนิสิต เสือเหลือง แฟร์ 2026 (SUEALUEANG FAIR 2026)\n7. หัวหน้าฝ่ายนิทรรศการภาควิชา โครงการ Science Chula Open House 2026\n8. สมาชิกผู้นำเชียร์คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย (Vidya CU Cheerleader) รุ่นที่ 91\n9. สมาชิก Chulalongkorn University's Athletic Cheer (CU POMPOM) รุ่นที่ 76`,
       en: `1. Member of Student Relations, Science Student's Union, Academic Year 2568\n2. Content Head of the Science Faculty Sports-Bonding Event between Chula and Thammasat, Academic Year 2568\n3. Main Stage Head of the Science Chula Open House 2026\n4. Central Activities Head of the Freshmen Festival, Faculty of Science, Chulalongkorn University, Academic Year 2568\n5. Coordinator Head for Participants of the Master of Ceremonies Selection, Faculty of Science, Chulalongkorn University, Academic Year 2568\n6. Show Coordination Head of the SUEALUEANG FAIR 2026\n7. Department Exhibition Head of the Science Chula Open House 2026\n8. Member of Vidya CU Cheerleader (Science Faculty Cheer Leader), Generation 91\n9. Member of Chulalongkorn University's Athletic Cheer (CU POMPOM), Generation 76\n(Automatically translated from Thai)`,
     },
+    image: "/c2.jpg",
   },
   {
     candidate_id: "c3" as const,
@@ -119,5 +121,6 @@ export const candidates = [
       th: `1. ประธานโครงการค่าย 3 สัญจร สอนสัมพันธ์ครั้งที่ 2\n2. ประธานฝ่ายเนื้อหา โครงการกีฬาเพื่อนใหม่ ประจำปีการศึกษา 2568\n3. ประธานฝ่าย Event โครงการถนนคนเดินเชื่อมสัมพันธ์ วิศวฯ-วิทยาฯ (Vid Love Vid U 2026)\n4. หัวหน้าฝ่าย Graphic Design โครงการกีฬาสานสัมพันธ์คณะวิทยาศาสตร์จุฬาฯ-มหิดล ปีการศึกษา 2568\n5. หัวหน้าฝ่ายสถานที่ โครงการเทศกาลสานสัมพันธ์และต้อนรับนิสิตใหม่ ปีการศึกษา 2568 เข้าร่วม CU Freshmen Night 2025\n6. สมาชิกฝ่ายทะเบียนนักวิ่ง โครงการการกุศล ภายใต้ชื่อ "ห้าหมูนี่แชริตี้รัน 2026"`,
       en: `1. President of the 3rd Roaming Relations Teaching Camp\n2. Content Head of the Freshmen Sports Project, Academic Year 2568\n3. Event Head of the Vid Love Vid U 2026 Walking Street (Engineering-Science bonding)\n4. Graphic Design Head of the Science Faculty Sports-Bonding Event between Chula and Mahidol, Academic Year 2568\n5. Venue Head of the Bonding Festival and Freshmen Welcome Event, Academic Year 2568, participated in CU Freshmen Night 2025\n6. Runner Registration Member of the "Ha Moo Nee Charity Run 2026" charity project\n(Automatically translated from Thai)`,
     },
+    image: "/c3.jpg",
   },
 ] satisfies Candidate[];

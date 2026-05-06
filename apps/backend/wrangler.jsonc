@@ -12,22 +12,22 @@
 			"enabled": true,
 			"invocation_logs": true
 		},
-		"traces": {
-			"enabled": false
-		}
 	},
 	"upload_source_maps": true,
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
 	"vars": {
-		"ENVIRONMENT": "dev"
+		"ENVIRONMENT": "dev",
+		"FRONTEND_DOMAIN": "http://localhost:4321",
+		"GOOGLE_CLIENT_ID": "878635631561-996p9vdbemp1n3r7dcs91i9f0e6i25fi.apps.googleusercontent.com",
 	},
 	"env": {
 		"production": {
 			"vars": {
 				"ENVIRONMENT": "production",
-				"FRONTEND_DOMAIN": "election.vidyachula.org"
+				"FRONTEND_DOMAIN": "election.vidyachula.org",
+				"GOOGLE_CLIENT_ID": "878635631561-996p9vdbemp1n3r7dcs91i9f0e6i25fi.apps.googleusercontent.com",
 			},
 			"route": {
 				"pattern": "election-api.vidyachula.org",
@@ -50,7 +50,8 @@
 		"staging": {
 			"vars": {
 				"ENVIRONMENT": "staging",
-				"FRONTEND_DOMAIN": "election-staging.vidyachula.org"
+				"FRONTEND_DOMAIN": "election-staging.vidyachula.org",
+				"GOOGLE_CLIENT_ID": "878635631561-996p9vdbemp1n3r7dcs91i9f0e6i25fi.apps.googleusercontent.com",
 			},
 			"route": {
 				"pattern": "election-api-staging.vidyachula.org",

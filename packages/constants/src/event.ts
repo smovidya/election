@@ -30,3 +30,5 @@ export const votingStart = new Date(votingStartString);
  */
 export const votingEndString = "2026-05-15T17:00:00+07:00";
 export const votingEnd = new Date(votingEndString);
+
+export const isResultAnnounced = false;
