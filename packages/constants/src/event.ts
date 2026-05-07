@@ -3,7 +3,7 @@ export const full_name =
 export const short_name_th = "การเลือกตั้งซ่อม สโม 69";
 export const description =
   "การเลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569 จะจัดขึ้นเพื่อเลือกตั้งคณะกรรมการบริหารสโมสรนิสิตในตำแหน่งที่ยังว่างอยู่";
-export const eligibleVoters = 3001;
+// export const eligibleVoters = 3001;
 
 /**
  * The date and time when the voting starts, in ISO 8601 format.
@@ -17,7 +17,7 @@ export const eligibleVoters = 3001;
  * - ss is the second (00-59)
  * - ±hh:mm is the time zone offset from UTC (e.g., +07:00 for UTC+7 aka Bangkok time)
  */
-export const votingStartString = "2026-05-07T07:00:00+07:00";
+export const votingStartString = "2026-05-08T07:00:00+07:00";
 export const votingStart = new Date(votingStartString);
 
 /**
@@ -32,7 +32,7 @@ export const votingStart = new Date(votingStartString);
  * - ss is the second (00-59)
  * - ±hh:mm is the time zone offset from UTC (e.g., +07:00 for UTC+7 aka Bangkok time)
  */
-export const votingEndString = "2026-05-07T17:00:00+07:00";
+export const votingEndString = "2026-05-08T17:00:00+07:00";
 export const votingEnd = new Date(votingEndString);
 
 export const isResultAnnounced = false;
