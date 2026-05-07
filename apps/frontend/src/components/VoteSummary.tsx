@@ -1,3 +1,4 @@
+import { api } from "@/lib/api";
 import React, { useEffect, useState } from "react";
 
 const candidatesData: Record<string, any> = {
@@ -112,7 +113,7 @@ export default function VoteSummary() {
         { apiField: "secretary", voteKey: null },
         { apiField: "treasurer", voteKey: "treasurer" },
         { apiField: "student-relations", voteKey: "relation" },
-        { apiField: "academic", voteKey: "academic" }, 
+        { apiField: "academic", voteKey: "academic" },
         { apiField: "public-service", voteKey: "development" },
         { apiField: "art", voteKey: null },
         { apiField: "sport", voteKey: "sport" },
@@ -153,31 +154,41 @@ export default function VoteSummary() {
         return;
       }
 
-      const api = import.meta.env.PUBLIC_API_URL || "https://api-smovidya-election.bunyawatapp37204.workers.dev";
-
-      const _response = await fetch(`${api}/api/me`, {
+      // const _response = await fetch(`${api}/api/me`, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // });
+      const { data, error: e1 } = await api.auth.me.get({
         headers: {
           Authorization: `Bearer ${token}`,
-        },
+        }
       });
+      if (e1) {
+        throw e1;
+      }
 
-      if (!_response.ok) throw new Error("Failed to fetch user data");
+      const studentId = data.studentId as string;
 
-      const { studentId } = await _response.json() as any;
+      // if (!_response.ok) throw new Error("Failed to fetch user data");
+
+      // const { studentId } = await _response.json() as any;
+      // console.log(votes)
       const mockCurrentTime = new Date("2025-04-23T12:00:00+07:00").toISOString();
-      const response = await fetch(`${api}/api/vote`, {
-        method: "POST",
+      const { error } = await api.election["cast-vote"].post({
+        votes: votes as any
+      }, {
         headers: {
-          "Content-Type": "application/json",
+          // this is dev only?????
           Authorization: "Basic " + btoa(`${studentId}:${mockCurrentTime}`),
-        },
-        body: JSON.stringify({ votes }),
+        }
       });
 
-      if (response.ok) {
+      if (!error) {
         sessionStorage.removeItem("voteData");
         window.location.href = "/finish";
       } else {
+        console.error(error);
         alert("เกิดข้อผิดพลาดในการส่งคะแนน");
         setIsSubmitting(false);
       }
@@ -225,7 +236,7 @@ export default function VoteSummary() {
           // fallback to acadamic if academic wasn't found (astro code had a typo)
           const key = positionKey === 'acadamic' ? 'academic' : positionKey;
           const candidate = candidatesData[key];
-          
+
           if (!candidate) return null;
 
           return (
