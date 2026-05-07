@@ -1,5 +1,35 @@
 ---
 import AgreementCard from "@/components/AgreementCard";
+import { getImage } from "astro:assets";
+import { candidates, parties, running_positions, event } from "@repo/constants";
+import type { ImageMetadata } from "astro";
+
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+	"../assets/*.{jpg,jpeg,png,webp}",
+	{ eager: true },
+);
+
+const candidatesWithImages = await Promise.all(
+	candidates.map(async (candidate) => {
+		const filename = candidate.image ?? "";
+		const key = `../assets${filename}`;
+		const mod = imageModules[key];
+		let imageSrc = "";
+		if (mod) {
+			const optimized = await getImage({ src: mod.default, format: "webp" });
+			imageSrc = optimized.src;
+		}
+		return { ...candidate, imageSrc };
+	}),
+);
 ---
 
-<AgreementCard client:load />
+<AgreementCard
+  client:load
+  candidatesWithImages={candidatesWithImages}
+  parties={parties}
+  positions={running_positions}
+  eventName={event.full_name}
+  votingStartString={event.votingStartString}
+  votingEndString={event.votingEndString}
+/>

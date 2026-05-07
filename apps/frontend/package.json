@@ -22,6 +22,7 @@
 		"@elysia/eden": "^1.4.10",
 		"@radix-ui/react-slot": "^1.2.4",
 		"@repo/api": "workspace:*",
+		"@repo/constants": "workspace:*",
 		"@tailwindcss/vite": "^4.2.4",
 		"@types/js-cookie": "^3.0.6",
 		"@types/react": "^19.2.14",

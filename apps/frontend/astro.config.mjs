@@ -6,10 +6,10 @@ import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  output: "static",
-  integrations: [react()],
-  // adapter: cloudflare(),
+	vite: {
+		plugins: [tailwindcss()],
+	},
+	output: "static",
+	integrations: [react()],
+	// adapter: cloudflare(),
 });

@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
+import {
+	GoogleAuthProvider,
+	getAuth,
+	signInWithPopup,
+	signOut,
+} from "firebase/auth";
 import Cookies from "js-cookie";
 
 const firebaseConfig = {
@@ -39,13 +44,16 @@ export const signInWithGoogle = () => {
 			});
 
 			try {
-				const response = await fetch("https://api-smovidya-election.bunyawatapp37204.workers.dev/api/eligibility", {
-					method: "GET",
-					headers: {
-						// biome-ignore lint/style/useNamingConvention: <explanation>
-						Authorization: `Bearer ${token}`,
+				const response = await fetch(
+					"https://api-smovidya-election.bunyawatapp37204.workers.dev/api/eligibility",
+					{
+						method: "GET",
+						headers: {
+							// biome-ignore lint/style/useNamingConvention: <explanation>
+							Authorization: `Bearer ${token}`,
+						},
 					},
-				});
+				);
 				const data = await response.json();
 
 				if (data.eligible === false || data.reason === "voted-already") {

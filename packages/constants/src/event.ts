@@ -1,5 +1,6 @@
 export const full_name =
   "การเลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569";
+export const eligibleVoters = 3001;
 
 /**
  * The date and time when the voting starts, in ISO 8601 format.
@@ -37,4 +38,3 @@ export const officialElectionResult = {
   totalVotes: 0,
   votesByPosition: {},
 };
-
