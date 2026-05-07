@@ -75,12 +75,12 @@
       <h4 class="font-light font-noto text-xs text-lgray">
         {locale.current === "th" ? event.full_name : "Academic Year 2026"}
       </h4>
-      <div class="mt-6">
+      <!-- <div class="mt-6">
         <p class="text-center text-lgray font-light text-xs">
           {t.loginWith}
           <span class="font-normal"> 62734678347@student.chula.ac.th </span>
         </p>
-      </div>
+      </div> -->
     </div>
   </div>
 
