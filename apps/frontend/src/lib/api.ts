@@ -1,8 +1,13 @@
 import { treaty } from "@elysia/eden";
 import type { App } from "@repo/api";
-import { PUBLIC_BACKEND_URL } from "astro:env/client";
 
-export const api = treaty<App>(PUBLIC_BACKEND_URL! || "http://localhost:8787");
+export const api = treaty<App>(
+  import.meta.env.DEV
+    ? "http://localhost:8787"
+    : import.meta.env.PUBLIC_BACKEND_URL?.includes("staging")
+      ? "https://election-api-staging.vidyachula.org"
+      : "https://election-api.vidyachula.org",
+);
 
 export function authHeader() {
   const token = localStorage.getItem("session_token");
