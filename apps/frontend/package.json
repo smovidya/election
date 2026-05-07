@@ -11,8 +11,8 @@
 		"lint": "biome check .",
 		"lint:fix": "biome check . --write",
 		"format": "biome format --write .",
-		"deploy:production": "pnpm run astro build -- --mode production && wrangler deploy --env production",
-		"deploy:staging": "pnpm run astro build -- --mode staging && wrangler deploy --env staging",
+		"deploy:production": "pnpm run astro build --mode production && wrangler deploy --env production",
+		"deploy:staging": "pnpm run astro build --mode staging && wrangler deploy --env staging",
 		"generate-types": "wrangler types"
 	},
 	"dependencies": {
