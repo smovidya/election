@@ -4,11 +4,15 @@
     "dev": "pnpm generate-types && wrangler dev",
     "deploy:production": "wrangler deploy --env production",
     "deploy:staging": "wrangler deploy --env staging",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "db:seed": "pnpm wrangler d1 execute DB --local --file ./seed.sql",
+    "db:seed:production": "pnpm wrangler d1 execute DB --remote --env production --file ./seed.sql",
+    "db:seed:staging": "pnpm wrangler d1 execute DB --remote --env staging --file ./seed.sql"
   },
   "dependencies": {
     "@elysia/jwt": "^1.4.2",
     "@repo/api": "workspace:*",
+    "@types/node": "^22.19.17",
     "elysia": "^1.4.28"
   },
   "devDependencies": {
