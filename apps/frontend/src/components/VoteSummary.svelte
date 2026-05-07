@@ -37,7 +37,7 @@
       />
 
       <div class="mt-4 font-semibold">
-        {#if vote === "approve"}
+        {#if vote === c.candidate_id}
           <span
             class="px-4 py-2 rounded-lg bg-green-100 text-green-800 border-green-300 border"
           >
@@ -49,7 +49,7 @@
           >
             ไม่รับรอง
           </span>
-        {:else if vote === "abstain"}
+        {:else if vote === "no-vote"}
           <span
             class="px-4 py-2 rounded-lg bg-neutral-100 text-neutral-800 border-neutral-300 border"
           >
