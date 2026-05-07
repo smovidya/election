@@ -75,11 +75,13 @@ export default function MainCard({
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
-    if (window !== undefined) {
-      setIsLoggedIn(
-        !!localStorage.getItem("session_token")
-      );
+    if (!window) {
+      return;
     }
+    api.auth.me.get()
+      .then(({ data }) => {
+        setIsLoggedIn(!!data);
+      });
   }, []);
 
   useEffect(() => {
