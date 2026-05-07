@@ -3,15 +3,14 @@
   import VoterCount from "@/components/VoterCount.svelte";
   import { candidates, type SupportedLanguage } from "@repo/constants";
   import { api } from "@/lib/api";
-  import { getContext } from "svelte";
   import { i18n } from "@/lib/i18n";
+  import { locale } from "@/lib/utils";
 
   // Assuming Position and Choice types as specified
   type Position = string;
   type Choice = string | "disapprove" | "no-vote";
 
-  const getLang = getContext<(() => SupportedLanguage) | undefined>("lang");
-  const t = $derived(getLang ? i18n[getLang()] : i18n["th"]);
+  const t = $derived(i18n[locale.current]);
 
   type ElectionResultType = {
     totalVotes: number;

@@ -5,8 +5,7 @@
   import { i18n } from "@/lib/i18n";
   import VoteSummary from "./VoteSummary.svelte";
   import { api, authHeader } from "@/lib/api";
-
-  import { getContext } from "svelte";
+  import { locale } from "@/lib/utils";
 
   type Page = "vote" | "review";
 
@@ -17,8 +16,7 @@
   let { candidateImages }: Props = $props();
   const images = $derived(new Map(candidateImages));
 
-  const getLang = getContext<() => SupportedLanguage>("lang");
-  const t = $derived(i18n[getLang()]);
+  const t = $derived(i18n[locale.current]);
 
   let page = $state("vote" as Page);
   let votes: Record<string, string> = $state({});

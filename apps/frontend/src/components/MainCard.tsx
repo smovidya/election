@@ -1,11 +1,10 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api, authHeader } from "@/lib/api";
+import { useLocale } from "@/lib/utils";
 import {
-  event,
   type Candidate,
   type Party,
   type Position,
-  type SupportedLanguage,
 } from "@repo/constants";
 import { i18n } from "@/lib/i18n";
 
@@ -65,7 +64,7 @@ export default function MainCard({
   boxIconSrc,
   lineSrc,
 }: Props) {
-  const [lang, setLang] = useState<SupportedLanguage>("th");
+  const [lang, setLang] = useLocale();
   const [countdown, setCountdown] = useState<Countdown>(() =>
     computeCountdown(new Date(votingStartString), new Date(votingEndString)),
   );
@@ -118,7 +117,7 @@ export default function MainCard({
         <div className="flex justify-end mb-4">
           <button
             className="text-xs font-semibold border border-black/30 rounded-lg px-3 py-1 bg-white/40 hover:bg-white/70 transition"
-            onClick={() => setLang((l) => (l === "th" ? "en" : "th"))}
+            onClick={() => setLang(lang === "th" ? "en" : "th")}
           >
             {t.langToggle}
           </button>

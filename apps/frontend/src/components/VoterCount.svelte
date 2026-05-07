@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { getContext } from "svelte";
   import { i18n } from "@/lib/i18n";
+  import { locale } from "@/lib/utils";
   import type { SupportedLanguage } from "@repo/constants";
 
   interface Props {
@@ -10,8 +10,7 @@
 
   let { totalVotes = 326, loading = false }: Props = $props();
 
-  const getLang = getContext<(() => SupportedLanguage) | undefined>("lang");
-  const t = $derived(getLang ? i18n[getLang()] : i18n["th"]);
+  const t = $derived(i18n[locale.current]);
 
   let currentCount = $state(0);
 

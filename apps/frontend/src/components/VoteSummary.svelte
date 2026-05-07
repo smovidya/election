@@ -1,8 +1,8 @@
 <script lang="ts">
   import { candidates, running_positions, type SupportedLanguage } from "@repo/constants";
   import CandidateCard from "./CandidateCard.svelte";
-  import { getContext } from "svelte";
   import { i18n } from "@/lib/i18n";
+  import { locale } from "@/lib/utils";
 
   interface Props {
     images: Map<string, string>;
@@ -13,9 +13,8 @@
 
   let { votes, images, onBack, onConfirm }: Props = $props();
 
-  const getLang = getContext<() => SupportedLanguage>("lang");
-  const t = $derived(i18n[getLang()]);
-  const langId = $derived(getLang());
+  const t = $derived(i18n[locale.current]);
+  const langId = $derived(locale.current);
 
   function getPositionName(id: string) {
     return running_positions.find((it) => it.position_id === id)!.name[langId];

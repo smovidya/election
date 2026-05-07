@@ -6,8 +6,7 @@
   import { event, type SupportedLanguage } from "@repo/constants";
   import { i18n } from "@/lib/i18n";
   import Redirect from "./Redirect.svelte";
-
-  import { setContext } from "svelte";
+  import { locale } from "@/lib/utils";
 
   interface Props {
     candidateImages: [string, string][]; // we cant pass map from astro (i think)
@@ -15,13 +14,10 @@
 
   let { candidateImages }: Props = $props();
 
-  let lang: SupportedLanguage = $state("th");
-  setContext("lang", () => lang);
-
   // this needed to be in global store
-  const t = $derived(i18n[lang]);
+  const t = $derived(i18n[locale.current]);
   function toggleLanguage() {
-    lang = lang === "th" ? "en" : "th";
+    locale.current = locale.current === "th" ? "en" : "th";
   }
 
   let eligibility = $state(null) as null | {
@@ -77,7 +73,7 @@
         {t.eventSubtitle}
       </h2>
       <h4 class="font-light font-noto text-xs text-lgray">
-        {lang === "th" ? event.full_name : "Academic Year 2026"}
+        {locale.current === "th" ? event.full_name : "Academic Year 2026"}
       </h4>
       <div class="mt-6">
         <p class="text-center text-lgray font-light text-xs">

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { parties, type Candidate, type SupportedLanguage } from "@repo/constants";
-  import { getContext } from "svelte";
   import { i18n } from "@/lib/i18n";
+  import { locale } from "@/lib/utils";
 
   interface Props {
     candidate: Candidate;
@@ -11,9 +11,8 @@
 
   const { candidate: c, image, candidateNumber }: Props = $props();
 
-  const getLang = getContext<() => SupportedLanguage>("lang");
-  const t = $derived(getLang ? i18n[getLang()] : i18n["th"]);
-  const langId = $derived(getLang ? getLang() : "th");
+  const t = $derived(i18n[locale.current]);
+  const langId = $derived(locale.current);
 </script>
 
 <div class="flex h-32 mb-6 gap-1">

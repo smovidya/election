@@ -1,10 +1,4 @@
-import {
-  event,
-  type Candidate,
-  type Party,
-  type Position,
-  type SupportedLanguage,
-} from "@repo/constants";
+import { event } from "@repo/constants";
 
 
 export const i18n = {
