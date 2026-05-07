@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, authHeader } from "@/lib/api";
+import { useLocale } from "@/lib/utils";
 import type {
 	Candidate,
 	Party,
@@ -77,15 +78,15 @@ export default function AgreementCard({
 	votingStartString,
 	votingEndString,
 }: Props) {
-	const [lang, setLang] = useState<SupportedLanguage>("th");
+	const [lang, setLang] = useLocale();
 	const [studentId, setStudentId] = useState<string | null>(null);
 	const [studentName, setStudentName] = useState<string | null>(null);
 	const [error, setError] = useState(false);
 
-    const t = i18n[lang];
-    const find_party = (id: string) => {
-        return parties.find(item => item.party_id == id);
-    }
+	const t = i18n[lang];
+	const find_party = (id: string) => {
+		return parties.find(item => item.party_id == id);
+	};
 
 	useEffect(() => {
 		const headers = authHeader();
@@ -123,7 +124,7 @@ export default function AgreementCard({
 				<div className="flex justify-end mb-4">
 					<button
 						className="text-xs font-semibold border border-dgray rounded-lg px-3 py-1 hover:bg-yellow/30 transition"
-						onClick={() => setLang((l) => (l === "th" ? "en" : "th"))}
+						onClick={() => setLang(lang === "th" ? "en" : "th")}
 					>
 						{t.langToggle}
 					</button>
@@ -167,35 +168,35 @@ export default function AgreementCard({
 					{candidatesWithImages.map((c) => {
 						const position = positionMap[c.position_id];
 						const party = partyMap[c.party_id];
-                        return (
-                            <div className="relative h-20">
-    							<div
-    								key={c.candidate_id}
-    								className="flex items-center gap-3 rounded-xl border border-gray-200 p-2"
-    								// style={{ borderLeftColor: party?.color, borderLeftWidth: 4 }}
-    							>
-    								{c.imageSrc && (
-    									<img
-    										src={c.imageSrc}
-                                            alt={c.full_name}
+						return (
+							<div className="relative h-20">
+								<div
+									key={c.candidate_id}
+									className="flex items-center gap-3 rounded-xl border border-gray-200 p-2"
+								// style={{ borderLeftColor: party?.color, borderLeftWidth: 4 }}
+								>
+									{c.imageSrc && (
+										<img
+											src={c.imageSrc}
+											alt={c.full_name}
 
-    										className=" w-16 -top-4 left-1 absolute"
-    									/>
-    								)}
-    								<div className="text-xs text-dgray min-w-0 pl-16">
-    									<div className="font-semibold text-black text-sm truncate">
-                                            {c.full_name} <span className="text-xs text-gray-600 pl-1">({find_party(c.party_id)?.name[lang] ?? find_party(c.party_id)?.name.th})</span>
-    									</div>
-    									<p className="truncate">
-    										{position?.name[lang] ?? position?.name.th}
-                                        </p>
-    									<p className="truncate text-gray-400">
-    										{c.study_program[lang] ?? c.study_program.th} · {t.year}{" "}
-    										{c.study_year}
-    									</p>
-    								</div>
-    							</div>
-                            </div>
+											className=" w-16 -top-4 left-1 absolute"
+										/>
+									)}
+									<div className="text-xs text-dgray min-w-0 pl-16">
+										<div className="font-semibold text-black text-sm truncate">
+											{c.full_name} <span className="text-xs text-gray-600 pl-1">({find_party(c.party_id)?.name[lang] ?? find_party(c.party_id)?.name.th})</span>
+										</div>
+										<p className="truncate">
+											{position?.name[lang] ?? position?.name.th}
+										</p>
+										<p className="truncate text-gray-400">
+											{c.study_program[lang] ?? c.study_program.th} · {t.year}{" "}
+											{c.study_year}
+										</p>
+									</div>
+								</div>
+							</div>
 						);
 					})}
 				</div>

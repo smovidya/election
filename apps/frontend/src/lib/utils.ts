@@ -11,7 +11,12 @@ export function cn(...inputs: ClassValue[]) {
 
 const _locale = new State<SupportedLanguage>("th");
 if (typeof window !== "undefined") {
-	_locale.current = localStorage.getItem("locale") as any ?? "th";
+	const a = localStorage.getItem("locale") as any ?? "th";
+	if (a !== "en" && a !== "th") {
+		_locale.current = "th";
+	} else {
+		_locale.current = a;
+	}
 }
 export const locale = {
 	get current() {

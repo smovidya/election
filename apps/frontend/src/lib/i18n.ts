@@ -41,7 +41,14 @@ export const i18n = {
     votesSuffix: " เสียง",
     loading: "กำลังโหลด...",
     errorTitle: "เกิดข้อผิดพลาดไม่ทราบสาเหตุ",
-    errorPrefix: "เกิดข้อผิดพลาด"
+    errorPrefix: "เกิดข้อผิดพลาด",
+    finishSuccess: "คุณได้ลงคะแนนเสียง เสร็จสิ้นเป็นที่เรียบร้อยแล้ว",
+    finishThankYou: "ขอขอบคุณที่ร่วมเป็นส่วนหนึ่งในการลงคะแนนเสียง\nเลือกตั้งคณะกรรมการบริหารสโมสรนิสิต คณะวิทยาศาสตร์\nจุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2568",
+    share: "แชร์",
+    followResults: "สามารถติดตามผลการเลือกตั้งได้ที่ Instagram : smovidya_official และ\nFacebook : สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย - CU\nSmovidya",
+    shareTitle: "ผลการลงคะแนนเสียง",
+    shareText: "ฉันได้ลงคะแนนเสียงเลือกตั้งสโมสรนิสิตคณะวิทยาศาสตร์ จุฬาฯ เรียบร้อยแล้ว!",
+    errorTryAgain: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
   },
   en: {
     langToggle: "TH",
@@ -82,6 +89,13 @@ export const i18n = {
     votesSuffix: " votes",
     loading: "Loading...",
     errorTitle: "Unknown error occurred",
-    errorPrefix: "Error occurred: "
+    errorPrefix: "Error occurred: ",
+    finishSuccess: "You have successfully cast your vote",
+    finishThankYou: "Thank you for participating in the voting process\nfor the Student Union Executive Committee of the Faculty of Science,\nChulalongkorn University, Academic Year 2025",
+    share: "Share",
+    followResults: "You can follow the election results on Instagram: smovidya_official and\nFacebook: สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย - CU\nSmovidya",
+    shareTitle: "Voting Results",
+    shareText: "I have successfully voted in the Chulalongkorn Faculty of Science Student Union Election!",
+    errorTryAgain: "An error occurred. Please try again."
   },
 } as const;

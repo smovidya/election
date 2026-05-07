@@ -1,12 +1,12 @@
-import { useState } from "react";
 import type { Candidate, Position, SupportedLanguage, Party } from "@repo/constants";
 import { CornerDownLeft } from "lucide-react";
+import { useLocale } from "@/lib/utils";
 
 interface Props {
-    candidate: Candidate;
-    position: Position;
-    imageSrc?: string;
-    party?: Party;
+  candidate: Candidate;
+  position: Position;
+  imageSrc?: string;
+  party?: Party;
 }
 
 const i18n = {
@@ -27,12 +27,12 @@ const i18n = {
 } as const;
 
 export default function CandidateCard({
-    candidate,
-    position,
-    imageSrc,
-    party
+  candidate,
+  position,
+  imageSrc,
+  party
 }: Props) {
-  const [lang, setLang] = useState<SupportedLanguage>("th");
+  const [lang, setLang] = useLocale();
   const t = i18n[lang];
 
   const positionName = position?.name[lang] ?? position?.name.th ?? "";
@@ -43,8 +43,8 @@ export default function CandidateCard({
   const experience =
     candidate.personal_experience[lang] ??
     candidate.personal_experience.th ??
-      "";
-    const partyColor = party?.color;
+    "";
+  const partyColor = party?.color;
   return (
     <>
       <div style={{ backgroundColor: partyColor ?? "#FACC15" }} className={`w-full pt-12 pb-24 `}>
@@ -55,7 +55,7 @@ export default function CandidateCard({
             </a>
             <button
               className="text-xs font-semibold border border-black/30 rounded-lg px-3 py-1 bg-white/40 hover:bg-white/70 transition"
-              onClick={() => setLang((l) => (l === "th" ? "en" : "th"))}
+              onClick={() => setLang(lang === "th" ? "en" : "th")}
             >
               {t.langToggle}
             </button>
