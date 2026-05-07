@@ -42,7 +42,7 @@
     const formattedVotes = [];
     for (const [key, value] of Object.entries(votes)) {
       formattedVotes.push({
-        choise: value,
+        choice: value,
         position: key,
       });
     }

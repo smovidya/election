@@ -57,7 +57,7 @@
             type="radio"
             bind:group={votes[c.position_id]}
             name={c.candidate_id}
-            value="approve"
+            value={c.candidate_id}
             class="h-5 w-5"
             required
           />
@@ -78,7 +78,7 @@
             type="radio"
             bind:group={votes[c.position_id]}
             name={c.candidate_id}
-            value="abstain"
+            value="no-vote"
             class="h-5 w-5"
           />
           <span class="text-gray-700">งดออกเสียง</span>
