@@ -224,6 +224,12 @@ export function createApp(adapter: Adapter, params: Params) {
               });
             }
 
+            if (!user.value) {
+              return status(401, {
+                error: "invalid-token" as const,
+              });
+            }
+
             return user.value;
           },
           {
@@ -302,6 +308,10 @@ export function createApp(adapter: Adapter, params: Params) {
               return status(401, { error: user.error });
             }
 
+            if (!user.value) {
+              return status(401, { error: "invalid-token" as const });
+            }
+
             const periodCheck = election.votingPeriodChecker({ currentTime });
             if (periodCheck.isErr()) {
               return status(403, { error: periodCheck.error });
@@ -351,6 +361,10 @@ export function createApp(adapter: Adapter, params: Params) {
           async ({ election, user, auth, status }) => {
             if (user.isErr()) {
               return status(401, { error: user.error });
+            }
+
+            if (!user.value) {
+              return status(401, { error: "invalid-token" as const });
             }
 
             const verifyRight = await auth.verifyRight(user.value.studentId);
