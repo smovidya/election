@@ -1,6 +1,5 @@
 import { err, ok, type Result, ResultAsync } from "neverthrow";
 import type { Choice, ElectionResult, Position, Vote } from "./schema";
-import { hashVoterId } from "./hash";
 import { candidates, type OfficialElectionResult } from "@repo/constants";
 import { AppEnv } from "../..";
 
@@ -12,20 +11,25 @@ export class ElectionModel {
   ) {}
 
   async addVotes({ voterId, votes }: { voterId: string; votes: Vote[] }) {
-    const { value: hashedVoterId } = await hashVoterId(voterId, this.jwtSecret);
     const now = new Date().toISOString();
     const voteStatements = votes.map((vote) =>
       this.db
         .prepare(
           "INSERT INTO ballots (id, studentIdHash, position, choice, createdAt) VALUES (?, ?, ?, ?, ?)",
         )
-        .bind(crypto.randomUUID(), hashedVoterId, vote.position, String(vote.choice), now),
+        .bind(
+          crypto.randomUUID(),
+          voterId,
+          vote.position,
+          String(vote.choice),
+          now,
+        ),
     );
     const addVoterStatement = this.db
       .prepare(
         "INSERT INTO voters (studentId, createdAt) VALUES (?, ?) ON CONFLICT(studentId) DO NOTHING",
       )
-      .bind(hashedVoterId, now);
+      .bind(voterId, now);
     voteStatements.push(addVoterStatement);
 
     const result = await ResultAsync.fromPromise(
@@ -39,10 +43,9 @@ export class ElectionModel {
   }
 
   async isVoted({ voterId }: { voterId: string }) {
-    const { value: hashedVoterId } = await hashVoterId(voterId, this.jwtSecret);
     const prepared = this.db
       .prepare("SELECT * FROM ballots WHERE studentIdHash = ?")
-      .bind(hashedVoterId);
+      .bind(voterId);
 
     const result = await ResultAsync.fromPromise(prepared.all(), () => []);
 
