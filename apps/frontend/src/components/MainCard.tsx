@@ -73,7 +73,7 @@ export default function MainCard({
 
   const t = i18n[lang];
 
-  const isLoggedIn = localStorage.getItem("session_token") != null;
+  const isLoggedIn = window && localStorage.getItem("session_token") != null;
 
   useEffect(() => {
     const start = new Date(votingStartString);
