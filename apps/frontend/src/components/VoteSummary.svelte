@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { candidates, running_positions } from "@repo/constants";
+  import { candidates, running_positions, type SupportedLanguage } from "@repo/constants";
   import CandidateCard from "./CandidateCard.svelte";
+  import { getContext } from "svelte";
+  import { i18n } from "@/lib/i18n";
 
   interface Props {
     images: Map<string, string>;
@@ -11,15 +13,19 @@
 
   let { votes, images, onBack, onConfirm }: Props = $props();
 
+  const getLang = getContext<() => SupportedLanguage>("lang");
+  const t = $derived(i18n[getLang()]);
+  const langId = $derived(getLang());
+
   function getPositionName(id: string) {
-    return running_positions.find((it) => it.position_id === id)!.name.th;
+    return running_positions.find((it) => it.position_id === id)!.name[langId];
   }
 </script>
 
 <!-- REwrite needed, if there are more than 1 party -->
-<h1 class="text-xl font-bold text-center mt-16">ยืนยันการลงคะแนน</h1>
+<h1 class="text-xl font-bold text-center mt-16">{t.reviewTitle}</h1>
 <h2 class="text-base text-gray-500 text-center text-pretty">
-  โปรดตรวสอบข้อมูลอีกครั้งแล้วกดยืนยันเพื่อส่งการลงคะแนน
+  {t.reviewSubtitle}
 </h2>
 
 <div class="space-y-8">
@@ -27,7 +33,7 @@
     {@const vote = votes[c.position_id]}
     <section class="mb-12 mt-12">
       <h3 class="text-xl font-semibold mb-4">
-        ตำแหน่ง{getPositionName(c.position_id)}
+        {t.position}{getPositionName(c.position_id)}
       </h3>
 
       <CandidateCard
@@ -41,19 +47,19 @@
           <span
             class="px-4 py-2 rounded-lg bg-green-100 text-green-800 border-green-300 border"
           >
-            รับรอง
+            {t.approve}
           </span>
         {:else if vote === "disapprove"}
           <span
             class="px-4 py-2 rounded-lg bg-red-100 text-red-800 border-red-300 border"
           >
-            ไม่รับรอง
+            {t.disapprove}
           </span>
         {:else if vote === "no-vote"}
           <span
             class="px-4 py-2 rounded-lg bg-neutral-100 text-neutral-800 border-neutral-300 border"
           >
-            งดออกเสียง
+            {t.abstain}
           </span>
         {/if}
       </div>
@@ -66,13 +72,13 @@
     onclick={() => onBack()}
     class="bg-neutral-100 hover:bg-neutral-100/50 px-8 py-2.5 font-medium shadow rounded-md"
   >
-    แก้ไขคะแนน
+    {t.editVote}
   </button>
 
   <button
     onclick={() => onConfirm()}
     class="bg-yellow hover:bg-yellow/90 px-8 py-2.5 font-medium shadow rounded-md"
   >
-    ยืนยัน
+    {t.confirm}
   </button>
 </div>

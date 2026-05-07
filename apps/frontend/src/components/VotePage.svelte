@@ -4,7 +4,10 @@
     candidates,
     running_positions,
     type Candidate,
+    type SupportedLanguage,
   } from "@repo/constants";
+  import { getContext } from "svelte";
+  import { i18n } from "@/lib/i18n";
 
   type CandidateId = Candidate["candidate_id"];
 
@@ -18,8 +21,12 @@
 
   const { images = new Map(), onSubmit, votes = $bindable() }: Props = $props();
 
+  const getLang = getContext<() => SupportedLanguage>("lang");
+  const t = $derived(i18n[getLang()]);
+  const langId = $derived(getLang());
+
   function getPositionName(id: string) {
-    return running_positions.find((it) => it.position_id === id)!.name.th;
+    return running_positions.find((it) => it.position_id === id)!.name[langId];
   }
 
   function onsubmit(event: SubmitEvent) {
@@ -28,11 +35,11 @@
   }
 </script>
 
-<h1 class="text-xl font-bold text-center mt-16 mb-3">
-  ลงคะแนนเลือกตั้ง<br />คณะกรรมการบริหารสโมสรนิสิต
+<h1 class="text-xl font-bold text-center mt-16 mb-3 whitespace-pre-line">
+  {t.votePageTitle}
 </h1>
-<h2 class="text-base text-gray-500 text-center mb-9">
-  คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย<br />ประจำปีการศึกษา 2568
+<h2 class="text-base text-gray-500 text-center mb-9 whitespace-pre-line">
+  {t.votePageSubtitle}
 </h2>
 
 <form {onsubmit}>
@@ -40,11 +47,11 @@
   {#each candidates as c}
     <section class="w-full mb-8">
       <h3 class="text-xl font-semibold">
-        ตำแหน่ง{getPositionName(c.position_id)}
+        {t.position}{getPositionName(c.position_id)}
       </h3>
 
       <p class="text-gray-600 mb-6">
-        กรุณาเลือก รับรอง ไม่รับรอง หรืองดออกเสียง
+        {t.instruction}
       </p>
 
       <CandidateCard
@@ -63,7 +70,7 @@
             class="h-5 w-5"
             required
           />
-          <span class="text-gray-700">รับรอง</span>
+          <span class="text-gray-700">{t.approve}</span>
         </label>
         <label class="flex items-center space-x-3">
           <input
@@ -73,7 +80,7 @@
             value="disapprove"
             class="h-5 w-5"
           />
-          <span class="text-gray-700">ไม่รับรอง</span>
+          <span class="text-gray-700">{t.disapprove}</span>
         </label>
         <label class="flex items-center space-x-3">
           <input
@@ -83,7 +90,7 @@
             value="no-vote"
             class="h-5 w-5"
           />
-          <span class="text-gray-700">งดออกเสียง</span>
+          <span class="text-gray-700">{t.abstain}</span>
         </label>
       </div>
     </section>
@@ -96,7 +103,7 @@
     <button
       class="bg-yellow hover:bg-yellow/90 px-8 py-2.5 font-medium shadow rounded-md"
     >
-      ยืนยัน
+      {t.confirm}
     </button>
   </div>
 </form>

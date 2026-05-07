@@ -7,6 +7,8 @@
   import { i18n } from "@/lib/i18n";
   import Redirect from "./Redirect.svelte";
 
+  import { setContext } from "svelte";
+
   interface Props {
     candidateImages: [string, string][]; // we cant pass map from astro (i think)
   }
@@ -14,6 +16,8 @@
   let { candidateImages }: Props = $props();
 
   let lang: SupportedLanguage = $state("th");
+  setContext("lang", () => lang);
+
   // this needed to be in global store
   const t = $derived(i18n[lang]);
   function toggleLanguage() {
@@ -42,7 +46,7 @@
     });
 
     if (error) {
-      alert(`เกิดข้อผิดพลาดไม่ทราบสาเหตุ`);
+      alert(`${t.errorTitle}`);
       eligibility = {};
       return;
     }
@@ -77,7 +81,7 @@
       </h4>
       <div class="mt-6">
         <p class="text-center text-lgray font-light text-xs">
-          กำลังเข้าสู่ระบบด้วยบัญชี
+          {t.loginWith}
           <span class="font-normal"> 62734678347@student.chula.ac.th </span>
         </p>
       </div>
@@ -86,7 +90,7 @@
 
   {#if eligibility == null}
     <div class="w-full h-24 flex items-center justify-center">
-      <p class="text-yellow-800">กำลังโหลด...</p>
+      <p class="text-yellow-800">{t.loading}</p>
     </div>
   {:else if eligibility.eligible}
     <VoteRouter {candidateImages} />

@@ -1,10 +1,17 @@
 <script lang="ts">
+  import { getContext } from "svelte";
+  import { i18n } from "@/lib/i18n";
+  import type { SupportedLanguage } from "@repo/constants";
+
   interface Props {
     totalVotes?: number;
     loading?: boolean;
   }
 
   let { totalVotes = 326, loading = false }: Props = $props();
+
+  const getLang = getContext<(() => SupportedLanguage) | undefined>("lang");
+  const t = $derived(getLang ? i18n[getLang()] : i18n["th"]);
 
   let currentCount = $state(0);
 
@@ -37,7 +44,7 @@
 
 <div class="flex flex-col items-center">
   <h3 class="font-noto text-dgray text-center text-md mb-2">
-    จำนวนผู้ใช้สิทธิ์เลือกตั้งทั้งหมด
+    {t.totalVoters}
   </h3>
 
   <h1
@@ -45,12 +52,11 @@
     class="font-museo text-center text-dgray text-4xl mb-2"
     class:animate-pulse={loading}
   >
-    {loading ? "Loading..." : `${currentCount.toLocaleString()} คน`}
+    {loading ? t.loading : `${currentCount.toLocaleString()}${t.voterSuffix}`}
   </h1>
-<!-- 
   <h3 class="font-noto text-dgray text-center text-sm">
-    จากผู้มีสิทธิ์เลือกตั้ง 3,743 คน
-  </h3> -->
+    {t.eligibleVoters}
+  </h3>
 </div>
 
 <style>

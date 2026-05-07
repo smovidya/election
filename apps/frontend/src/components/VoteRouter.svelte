@@ -6,6 +6,8 @@
   import VoteSummary from "./VoteSummary.svelte";
   import { api, authHeader } from "@/lib/api";
 
+  import { getContext } from "svelte";
+
   type Page = "vote" | "review";
 
   interface Props {
@@ -14,6 +16,9 @@
 
   let { candidateImages }: Props = $props();
   const images = $derived(new Map(candidateImages));
+
+  const getLang = getContext<() => SupportedLanguage>("lang");
+  const t = $derived(i18n[getLang()]);
 
   let page = $state("vote" as Page);
   let votes: Record<string, string> = $state({});
@@ -52,7 +57,7 @@
 
     console.log({ data, error });
     if (error) {
-      alert(`เกิดข้อผิดพลาด ${JSON.stringify(error)}`);
+      alert(`${t.errorPrefix} ${JSON.stringify(error)}`);
     } else {
       window.location.href = "/finish";
     }

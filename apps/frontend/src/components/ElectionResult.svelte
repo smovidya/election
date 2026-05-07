@@ -1,13 +1,17 @@
 <script lang="ts">
-  // unfinished
   import CandidateCard from "@/components/CandidateCard.svelte";
   import VoterCount from "@/components/VoterCount.svelte";
-  import { candidates } from "@repo/constants";
+  import { candidates, type SupportedLanguage } from "@repo/constants";
   import { api } from "@/lib/api";
+  import { getContext } from "svelte";
+  import { i18n } from "@/lib/i18n";
 
   // Assuming Position and Choice types as specified
   type Position = string;
   type Choice = string | "disapprove" | "no-vote";
+
+  const getLang = getContext<(() => SupportedLanguage) | undefined>("lang");
+  const t = $derived(getLang ? i18n[getLang()] : i18n["th"]);
 
   type ElectionResultType = {
     totalVotes: number;
@@ -74,9 +78,9 @@
                 disapproveCount,
                 totalVotesForPosition,
               ),
-              votesReceivedCount: `${count} เสียง`,
-              disapproveCount: `${disapproveCount} เสียง`,
-              abstainCount: `${votes["no-vote"] || 0} เสียง`,
+              votesReceivedCount: `${count}${t.votesSuffix}`,
+              disapproveCount: `${disapproveCount}${t.votesSuffix}`,
+              abstainCount: `${votes["no-vote"] || 0}${t.votesSuffix}`,
             };
           });
 
@@ -87,7 +91,7 @@
 </script>
 
 {#await resultsPromise}
-  <div class="py-20 text-center font-noto">กำลังโหลดข้อมูล...</div>
+  <div class="py-20 text-center font-noto">{t.loadingData}</div>
 {:then result}
   <div
     class="shadow-lg bg-white min-w-full h-54 rounded-2xl flex flex-col items-center justify-center mb-8"
