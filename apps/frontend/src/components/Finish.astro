@@ -38,17 +38,10 @@ import Layout from "../layouts/Layout.astro";
       <div id="buttonGroup" class="flex flex-row gap-3 my-3">
         <button
           id="screenshotBtn"
-          class="bg-yellow px-5 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2"
-        >
-          <Image src={download} alt={"download"} class="w-5" />
-          <h1 class="font-normal font-noto text-sm text-brown">บันทึกภาพ</h1>
-        </button>
-        <button
-          id="shareBtn"
-          class="bg-yellow px-10 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2"
+          class="bg-yellow py-3 rounded-2xl shadow-lg inline-flex items-center gap-2 px-10"
         >
           <Image src={link} alt={"share"} class="w-5" />
-          <h1 class="font-normal font-noto text-sm text-brown">แชร์</h1>
+          <h1 class="font-medium font-noto text-base text-brown">แชร์</h1>
         </button>
       </div>
 
@@ -68,7 +61,6 @@ import Layout from "../layouts/Layout.astro";
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const screenshotBtn = document.getElementById("screenshotBtn");
-    const shareBtn = document.getElementById("shareBtn");
     const buttonGroup = document.getElementById("buttonGroup");
 
     const hideButtons = () => {
@@ -102,65 +94,84 @@ import Layout from "../layouts/Layout.astro";
     };
 
     const captureScreenshot = async () => {
-      try {
-        hideButtons();
-        const captureArea = document.getElementById("captureArea");
-        if (!captureArea) throw new Error("Capture area not found");
+        try {
+            hideButtons();
+            const captureArea = document.getElementById("captureArea");
+            if (!captureArea) throw new Error("Capture area not found");
 
-        await document.fonts.ready;
-        stripUnsupportedColors();
+            await document.fonts.ready;
+            stripUnsupportedColors();
 
-        captureArea.style.backgroundColor = "#ffffff";
+            // Force white on everything
+            captureArea.style.backgroundColor = "#ffffff";
+            document.body.style.backgroundColor = "#ffffff";
+            document.documentElement.style.backgroundColor = "#ffffff";
 
-        // ✅ Wait for rendering to fully settle before screenshot
-        await new Promise((resolve) => setTimeout(resolve, 300)); // adjust if needed
+            await new Promise((resolve) => setTimeout(resolve, 300));
 
-        const html2canvas = await loadHtml2Canvas();
-        const canvas = await html2canvas(captureArea, {
-          backgroundColor: "#ffffff",
-          useCORS: true,
-          scale: 2,
-          logging: false,
-          allowTaint: true,
-        });
+            const html2canvas = await loadHtml2Canvas();
+            const canvas = await html2canvas(captureArea, {
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            scale: 2,
+            logging: false,
+            allowTaint: true,
+            onclone: (clonedDoc) => {
+                const clonedArea = clonedDoc.getElementById("captureArea");
+                if (clonedArea) {
+                clonedArea.style.setProperty("background-color", "#ffffff", "important");
+                }
+                clonedDoc.body.style.setProperty("background-color", "#ffffff", "important");
+                clonedDoc.documentElement.style.setProperty("background-color", "#ffffff", "important");
+            },
+            });
 
-        showButtons();
-        return canvas.toDataURL("image/png");
-      } catch (error) {
-        showButtons();
-        console.error("Screenshot error:", error);
-        throw error;
-      }
+            showButtons();
+            return canvas;
+        } catch (error) {
+            showButtons();
+            console.error("Screenshot error:", error);
+            throw error;
+        }
     };
 
     if (screenshotBtn) {
       screenshotBtn.addEventListener("click", async () => {
         try {
-          const imgData = await captureScreenshot();
-          const link = document.createElement("a");
-          link.href = imgData;
-          link.download = "voting-receipt.png";
-          link.click();
-        } catch (error) {
-          alert("เกิดข้อผิดพลาดในการบันทึกภาพ กรุณาลองใหม่อีกครั้ง");
-        }
-      });
-    }
+          const canvas = await captureScreenshot();
 
-    if (shareBtn) {
-      shareBtn.addEventListener("click", async () => {
-        try {
-          // ใส่ลิงก์ที่ต้องการให้ผู้ใช้คัดลอก
-          const shareLink = "https://smovidyaelection.pages.dev";
+          // แปลง canvas → Blob
+          const blob = await new Promise<Blob>((resolve, reject) =>
+            canvas.toBlob(
+              (b) => (b ? resolve(b) : reject(new Error("Blob failed"))),
+              "image/png"
+            )
+          );
 
-          // คัดลอกลิงก์ลงคลิปบอร์ด
-          await navigator.clipboard.writeText(shareLink);
+          const file = new File([blob], "voting-receipt.png", {
+            type: "image/png",
+          });
 
-          // แจ้งเตือนการคัดลอกสำเร็จ
-          alert("คัดลอกลิงก์ไปยังคลิปบอร์ดเรียบร้อยแล้ว!");
-        } catch (error) {
-          console.error("การคัดลอกลิงก์ผิดพลาด:", error);
-          alert("ไม่สามารถคัดลอกลิงก์ได้ กรุณาลองใหม่อีกครั้ง");
+          // ถ้า browser รองรับ Web Share API + share ไฟล์ได้
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: "ผลการลงคะแนนเสียง",
+              text: "ฉันได้ลงคะแนนเสียงเลือกตั้งสโมสรนิสิตคณะวิทยาศาสตร์ จุฬาฯ เรียบร้อยแล้ว!",
+              files: [file],
+            });
+          } else {
+            // Fallback: ดาวน์โหลดปกติถ้า browser ไม่รองรับ
+            const url = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "voting-receipt.png";
+            a.click();
+          }
+        } catch (error: any) {
+          // ผู้ใช้กด cancel ไม่ต้องแสดง error
+          if (error?.name !== "AbortError") {
+            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+          }
         }
       });
     }
