@@ -112,8 +112,7 @@
 }
 
 @theme {
-	--font-museo: "MuseoModerno", "serif";
-	--font-noto: "Noto Sans Thai Looped", "sans-serif";
+	--default-font-family: "Noto Sans Thai Looped Variable", "sans-serif";
 
 	--color-yellow: #fbc02b;
 	--color-lgray: #4b4b48;
