@@ -1,88 +1,6 @@
 import { api } from "@/lib/api";
-import React, { useEffect, useState } from "react";
-
-const candidatesData: Record<string, any> = {
-  president: {
-    position: "ตำแหน่งนายกสโมสร",
-    studentId: "6534304723",
-    number: 1,
-    party: "Sci-Served",
-    name: "นายจามิน จันทรสุวรรณ",
-    department: "ภาควิชาคณิตศาสตร์และคอมพิวเตอร์",
-    year: "ชั้นปีที่ 3",
-    image: "/images/01_นายก.webp",
-  },
-  vice1: {
-    position: "ตำแหน่งอุปนายกคนที่ 1",
-    number: 1,
-    studentId: "6531306423",
-    party: "Sci-Served",
-    name: "นายกิตติพัศ สิริเจิมจิตร",
-    department: "ภาควิชาจุลชีววิทยา",
-    year: "ชั้นปีที่ 3",
-    image: "/images/02_อุป 1.webp",
-  },
-  vice2: {
-    position: "ตำแหน่งอุปนายกคนที่ 2",
-    number: 1,
-    studentId: "6534357023",
-    party: "Sci-Served",
-    name: "นางสาวเอมอร พรมเพ็ง",
-    department: "ภาควิชาคณิตศาสตร์และคอมพิวเตอร์",
-    year: "ชั้นปีที่ 3",
-    image: "/images/03_อุป 2.webp",
-  },
-  relation: {
-    position: "ตำแหน่งประธานฝ่ายนิสิตสัมพันธ์",
-    number: 1,
-    party: "Sci-Served",
-    studentId: "6638029023",
-    name: "นางสาวนันท์นภัส หงษ์แปด",
-    department: "หลักสูตรเทคโนโลยีชีวภาพ (นานาชาติ)",
-    year: "ชั้นปีที่ 2",
-    image: "/images/04_ฝ่ายนิสิตสัมพันธ์.webp",
-  },
-  sport: {
-    position: "ตำแหน่งประธานฝ่ายกีฬา",
-    number: 1,
-    party: "Sci-Served",
-    studentId: "6634095623",
-    name: "นางสาวเสาวลักษณ์ สังข์ขาว",
-    department: "ภาควิชาวัสดุศาสตร์",
-    year: "ชั้นปีที่ 3",
-    image: "/images/05_ฝ่ายกีฬา.webp",
-  },
-  academic: { // Note: changed from 'acadamic' to 'academic' for consistency (though old code used 'acadamic')
-    position: "ตำแหน่งประธานฝ่ายวิชาการ",
-    number: 1,
-    party: "Sci-Served",
-    studentId: "6532334123",
-    name: "นางสาวรณิดา สูงสุมาลย์",
-    department: "ภาควิชาเคมี",
-    year: "ชั้นปีที่ 2",
-    image: "/images/06_ฝ่ายวิชาการ.webp",
-  },
-  development: {
-    position: "ตำแหน่งประธานฝ่ายพัฒนาสังคมและบำเพ็ญประโยชน์",
-    number: 1,
-    party: "Sci-Served",
-    studentId: "6533279523",
-    name: "นายวราวิชญ์ เชื้อสุวรรณรักษ์",
-    department: "ภาควิชาวิทยาศาสตร์สิ่งแวดล้อม",
-    year: "ชั้นปีที่ 3",
-    image: "/images/07_ฝ่ายพัฒน์.webp",
-  },
-  treasurer: {
-    position: "ตำแหน่งเหรัญญิก",
-    number: 1,
-    party: "Sci-Served",
-    studentId: "6632417723",
-    name: "นายชญานนท์ กุลวิภัชวัฒนา",
-    department: "ภาควิชาเคมีเทคนิค",
-    year: "ชั้นปีที่ 2",
-    image: "/images/08_เหรัญญิก.webp",
-  },
-};
+import { candidates } from "@repo/constants";
+import { useEffect, useState } from "react";
 
 export default function VoteSummary() {
   const [voteData, setVoteData] = useState<Record<string, string> | null>(null);
@@ -125,7 +43,7 @@ export default function VoteSummary() {
         }
 
         const voteValue = voteData[pos.voteKey] || voteData[pos.voteKey === 'academic' ? 'acadamic' : pos.voteKey];
-        const candidate = candidatesData[pos.voteKey];
+        candidates
 
         switch (voteValue) {
           case "approve":
