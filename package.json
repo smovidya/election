@@ -2,7 +2,13 @@
   "name": "election",
   "version": "1.0.0",
   "description": "SMO Vidya Chula Election System",
-  "scripts": {},
+  "scripts": {
+    "dev": "pnpm --filter 'election-*' run dev",
+    "deploy:staging": "pnpm --filter 'election-*' run deploy:staging",
+    "deploy:production": "pnpm --filter 'election-*' run deploy:production",
+    "seed": "pnpm --filter 'election-backend' run seed",
+    "format": "pnpm --filter '*' run format"
+  },
   "keywords": [],
   "author": {
     "name": "IT Dept of the Students' Union of Chulalongkorn University",

@@ -5,32 +5,32 @@ import CandidateLayout from "@/layouts/CandidateLayout.astro";
 import { getImage } from "astro:assets";
 
 const imageModules = import.meta.glob<{ default: ImageMetadata }>(
-  "../assets/*.{jpg,jpeg,png,webp}",
-  { eager: true },
+	"../assets/*.{jpg,jpeg,png,webp}",
+	{ eager: true },
 );
 
 export async function getStaticPaths() {
-  return [
-    ...candidates.map((candidate) => ({
-      params: { candidateId: candidate.candidate_id },
-    })),
-  ];
+	return [
+		...candidates.map((candidate) => ({
+			params: { candidateId: candidate.candidate_id },
+		})),
+	];
 }
 
 const { candidateId } = Astro.params;
 const candidate = candidates.find((c) => c.candidate_id === candidateId);
 const position = running_positions.find(
-  (p) => p.position_id === candidate?.position_id,
+	(p) => p.position_id === candidate?.position_id,
 );
 
 let imageSrc = "";
 if (candidate?.image) {
-  const key = `../assets${candidate.image}`;
-  const mod = imageModules[key];
-  if (mod?.default) {
-    const optimized = await getImage({ src: mod.default, format: "webp" });
-    imageSrc = optimized.src;
-  }
+	const key = `../assets${candidate.image}`;
+	const mod = imageModules[key];
+	if (mod?.default) {
+		const optimized = await getImage({ src: mod.default, format: "webp" });
+		imageSrc = optimized.src;
+	}
 }
 ---
 
