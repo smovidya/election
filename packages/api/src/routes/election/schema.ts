@@ -34,7 +34,7 @@ export const Choice = t.Union(
   {
     description:
       'The student ID of the candidate or "no-vote" (cast no vote when multiple candidate) or "disapprove (when there is only one candidate)',
-    examples: [1234567823, "no-vote", "disapprove"],
+    examples: ["c1", "no-vote", "disapprove"],
   },
 );
 export type Choice = Static<typeof Choice>;
