@@ -13,7 +13,7 @@ export default defineConfig({
   // adapter: cloudflare(),
   env: {
     schema: {
-      PUBLIC_BACKEND_URL: envField.string({
+      API_URL: envField.string({
         context: "client",
         access: "public",
         default: "http://localhost:8787",
