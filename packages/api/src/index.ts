@@ -109,9 +109,23 @@ export function createApp(adapter: Adapter, params: Params) {
       const user = await fromPromise(
         jwt.verify(token, {
           issuer: "mookrob.vidyachula.org",
-        }) as Promise<{ studentId: string; studentName: string }>,
+        }) as Promise<{ studentId: string; studentName: string } | false>,
         () => "invalid-token" as const,
       );
+
+      if (user.isErr()) {
+        return {
+          auth,
+          user: err(user.error),
+        };
+      }
+
+      if (!user.value) {
+        return {
+          auth,
+          user: err("invalid-token" as const),
+        };
+      }
 
       return {
         auth,
@@ -347,6 +361,7 @@ export function createApp(adapter: Adapter, params: Params) {
             const isVotedResult = await election.isVoted({
               voterId: user.value.studentId,
             });
+
             if (isVotedResult.isErr()) {
               return status(500, { error: isVotedResult.error });
             }
