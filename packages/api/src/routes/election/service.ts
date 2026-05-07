@@ -1,8 +1,8 @@
 import { type Static, t } from "elysia";
 import { err, ok } from "neverthrow";
-import { event, running_positions } from "@repo/constants";
+import { candidates, event, running_positions } from "@repo/constants";
 import { ElectionModel } from "./model";
-import type { ElectionResult, Vote } from "./schema";
+import type { Choice, ElectionResult, Vote } from "./schema";
 import { AppEnv } from "../..";
 
 export const ElectionPeriodError = t.UnionEnum([
@@ -85,22 +85,22 @@ export class ElectionService {
       return ok(cached.value);
     }
 
-    const defaultVoteCount = () => ({
-      "no-vote": 0,
-      disapprove: 0,
-    });
+    const defaultVoteCount = (): Record<Choice, number> =>
+      Object.fromEntries([
+        ...candidates.map((c) => [c.candidate_id, 0]),
+        ["no-vote", 0],
+        ["disapprove", 0],
+      ]) as Record<Choice, number>;
 
     // Initialize result object with default values
     const result: ElectionResult = {
       totalVotes: 0,
-      votesByPosition: {
-        ...Object.fromEntries(
-          running_positions.map((position) => [
-            position,
-            { "no-vote": 0, disapprove: 0 },
-          ]),
-        ),
-      },
+      votesByPosition: Object.fromEntries(
+        running_positions.map((position) => [
+          position.position_id,
+          defaultVoteCount(),
+        ]),
+      ) as ElectionResult["votesByPosition"],
     };
 
     // Get total votes count
