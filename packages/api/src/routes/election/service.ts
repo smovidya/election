@@ -81,8 +81,8 @@ export class ElectionService {
 
   async getElectionResults() {
     const cached = await this.model.getCachedElectionResult();
-    if (cached) {
-      return ok(cached);
+    if (cached.isOk() && cached.value !== null) {
+      return ok(cached.value);
     }
 
     const defaultVoteCount = () => ({
