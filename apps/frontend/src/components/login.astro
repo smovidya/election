@@ -4,13 +4,21 @@ import Logo from "@/assets/logo-color-light.png";
 import LoginButton from "../components/ui/SignInWithGoogle.tsx";
 ---
 
-<div class="flex flex-col items-center justify-center min-h-screen">
+<div class="flex flex-col items-center justify-center relative min-h-screen grid-animated-container">
+  <div
+    class="absolute inset-0 z-0"
+    style={{
+      backgroundImage: `
+        radial-gradient(circle at 30% 70%, rgba(173, 216, 230, 0.35), transparent 60%),
+        radial-gradient(circle at 70% 30%, rgba(255, 182, 193, 0.4), transparent 60%)`,
+    }}
+  />
   <div>
-    <Image src={Logo} alt="smo vidya election" class="w-60" />
+    <Image src={Logo} alt="smo vidya election" class="w-40" />
   </div>
   <div class="h-5"></div>
   <LoginButton client:load />
-  <div class="text-sm font-noto mt-4 text-pink-600">
+  <div class="text-sm font-noto mt-4 text-pink-600 px-10 text-center">
     ใช้ Email นิสิต (6xxxxxxx23@student.chula.ac.th) ในการเข้าสู่ระบบเท่านั้น
   </div>
 </div>
