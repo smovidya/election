@@ -32,7 +32,7 @@ export const i18n = {
   },
   en: {
     langToggle: "TH",
-    eventTitle: "By-Election of the Student Union Committee",
+    eventTitle: "Re-Election of the Student Union Committee",
     eventSubtitle: "Faculty of Science, Chulalongkorn University",
     countdownBefore: "Starting in...",
     countdownDuring: "Time remaining...",

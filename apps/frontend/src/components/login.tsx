@@ -25,7 +25,7 @@ function LoginContainer() {
                     <img src={Logo.src} alt='logo_color' className=' w-full h-full object-contain' />
                 </div>
                 <LoginButton />
-                <div className="text-sm font-noto mt-4 text-pink-600 text-center">
+                <div className="text-sm font-noto text-pink-600 text-center">
                     ใช้ Email นิสิต <br/> (6xxxxxxx23@student.chula.ac.th) <br/> ในการเข้าสู่ระบบเท่านั้น
                 </div>
             </div>

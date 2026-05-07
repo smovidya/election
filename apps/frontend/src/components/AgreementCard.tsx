@@ -82,7 +82,10 @@ export default function AgreementCard({
 	const [studentName, setStudentName] = useState<string | null>(null);
 	const [error, setError] = useState(false);
 
-	const t = i18n[lang];
+    const t = i18n[lang];
+    const find_party = (id: string) => {
+        return parties.find(item => item.party_id == id);
+    }
 
 	useEffect(() => {
 		const token = localStorage.getItem("session_token");
@@ -113,7 +116,7 @@ export default function AgreementCard({
 	);
 
 	return (
-		<div className="bg-yellow min-h-screen p-8 flex items-center justify-center font-noto">
+		<div className="bg-yellow min-h-screen p-3 flex items-center justify-center font-noto">
 			<div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
 				{/* Lang switcher */}
 				<div className="flex justify-end mb-4">
@@ -130,7 +133,7 @@ export default function AgreementCard({
 					<p className="font-semibold text-black text-sm leading-snug">
 						{lang === "th"
 							? eventName
-							: "By-election of the Science Student Union Committee, Faculty of Science, Chulalongkorn University 2026"}
+							: "Re-election of the Science Student Union Committee, Faculty of Science, Chulalongkorn University 2026"}
 					</p>
 					<p className="text-xs">
 						<span className="font-medium">{t.votingPeriod}: </span>
@@ -163,32 +166,35 @@ export default function AgreementCard({
 					{candidatesWithImages.map((c) => {
 						const position = positionMap[c.position_id];
 						const party = partyMap[c.party_id];
-						return (
-							<div
-								key={c.candidate_id}
-								className="flex items-center gap-3 rounded-xl border border-gray-200 p-2"
-								style={{ borderLeftColor: party?.color, borderLeftWidth: 4 }}
-							>
-								{c.imageSrc && (
-									<img
-										src={c.imageSrc}
-										alt={c.full_name}
-										className="w-12 h-12 rounded-lg object-cover shrink-0"
-									/>
-								)}
-								<div className="text-xs text-dgray min-w-0">
-									<p className="font-semibold text-black text-sm truncate">
-										{c.full_name}
-									</p>
-									<p className="truncate">
-										{position?.name[lang] ?? position?.name.th}
-									</p>
-									<p className="truncate text-gray-400">
-										{c.study_program[lang] ?? c.study_program.th} · {t.year}{" "}
-										{c.study_year}
-									</p>
-								</div>
-							</div>
+                        return (
+                            <div className="relative h-20">
+    							<div
+    								key={c.candidate_id}
+    								className="flex items-center gap-3 rounded-xl border border-gray-200 p-2"
+    								// style={{ borderLeftColor: party?.color, borderLeftWidth: 4 }}
+    							>
+    								{c.imageSrc && (
+    									<img
+    										src={c.imageSrc}
+                                            alt={c.full_name}
+
+    										className=" w-16 -top-4 left-1 absolute"
+    									/>
+    								)}
+    								<div className="text-xs text-dgray min-w-0 pl-16">
+    									<div className="font-semibold text-black text-sm truncate">
+                                            {c.full_name} <span className="text-xs text-gray-600 pl-1">({find_party(c.party_id)?.name[lang] ?? find_party(c.party_id)?.name.th})</span>
+    									</div>
+    									<p className="truncate">
+    										{position?.name[lang] ?? position?.name.th}
+                                        </p>
+    									<p className="truncate text-gray-400">
+    										{c.study_program[lang] ?? c.study_program.th} · {t.year}{" "}
+    										{c.study_year}
+    									</p>
+    								</div>
+    							</div>
+                            </div>
 						);
 					})}
 				</div>

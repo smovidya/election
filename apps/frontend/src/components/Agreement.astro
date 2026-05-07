@@ -12,7 +12,8 @@ const imageModules = import.meta.glob<{ default: ImageMetadata }>(
 const candidatesWithImages = await Promise.all(
 	candidates.map(async (candidate) => {
 		const filename = candidate.image ?? "";
-		const key = `../assets${filename}`;
+		const removeFilename = filename.replace(/(\.[^.]+)$/, "_remove.png");
+		const key = `../assets${removeFilename}`;
 		const mod = imageModules[key];
 		let imageSrc = "";
 		if (mod) {
