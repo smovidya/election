@@ -1,5 +1,5 @@
 ---
-import { candidates, running_positions } from "@repo/constants";
+import { candidates, running_positions, parties } from "@repo/constants";
 import type { ImageMetadata } from "astro";
 import CandidateLayout from "@/layouts/CandidateLayout.astro";
 import { getImage } from "astro:assets";
@@ -39,4 +39,5 @@ if (candidate?.image) {
   candidate={candidate!}
   position={position!}
   imageSrc={imageSrc}
+  parties={parties[0]}
 />

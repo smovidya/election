@@ -1,15 +1,16 @@
 ---
 import Layout from "./Layout.astro";
 import CandidateCard from "@/components/CandidateCard";
-import type { Candidate, Position } from "@repo/constants";
+import type { Candidate, Position, Party } from "@repo/constants";
 
 interface Props {
 	candidate: Candidate;
 	position: Position;
 	imageSrc?: string;
+	parties?: Party;
 }
 
-const { candidate, position, imageSrc } = Astro.props;
+const { candidate, position, imageSrc, parties } = Astro.props;
 ---
 
 <Layout>
@@ -17,6 +18,7 @@ const { candidate, position, imageSrc } = Astro.props;
     candidate={candidate}
     position={position}
     imageSrc={imageSrc}
+    party={parties}
     client:load
   />
   <slot />
