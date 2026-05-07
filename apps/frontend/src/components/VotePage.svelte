@@ -8,6 +8,8 @@
 
   type CandidateId = Candidate["candidate_id"];
 
+  type Position = string;
+  type Choice = string;
   interface Props {
     images: Map<CandidateId, string>;
     onSubmit: () => any;

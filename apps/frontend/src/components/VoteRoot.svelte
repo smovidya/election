@@ -48,13 +48,6 @@
     }
     eligibility = data;
   }
-
-  function getMessage(code: string) {
-    if (code === "voted-already") {
-      return "คุณใช้สิทธิ์เลือกตั้งไปแล้ว";
-    }
-    return code;
-  }
 </script>
 
 <div class="flex flex-col w-full min-h-screen bg-yellow select-none">
