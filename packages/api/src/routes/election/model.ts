@@ -13,18 +13,19 @@ export class ElectionModel {
 
   async addVotes({ voterId, votes }: { voterId: string; votes: Vote[] }) {
     const { value: hashedVoterId } = await hashVoterId(voterId, this.jwtSecret);
+    const now = new Date().toISOString();
     const voteStatements = votes.map((vote) =>
       this.db
         .prepare(
-          "INSERT INTO ballots (studentIdHash, position, choice) VALUES (?, ?, ?)",
+          "INSERT INTO ballots (id, studentIdHash, position, choice, createdAt) VALUES (?, ?, ?, ?, ?)",
         )
-        .bind(hashedVoterId, vote.position, String(vote.choice)),
+        .bind(crypto.randomUUID(), hashedVoterId, vote.position, String(vote.choice), now),
     );
     const addVoterStatement = this.db
       .prepare(
-        "INSERT INTO voters (studentId) VALUES (?) ON CONFLICT(studentId) DO NOTHING",
+        "INSERT INTO voters (studentId, createdAt) VALUES (?, ?) ON CONFLICT(studentId) DO NOTHING",
       )
-      .bind(hashedVoterId);
+      .bind(hashedVoterId, now);
     voteStatements.push(addVoterStatement);
 
     const result = await ResultAsync.fromPromise(
@@ -56,7 +57,7 @@ export class ElectionModel {
   async currentVoterCount() {
     // TODO: Maybe add some cache here (;ater)
     const prepared = this.db.prepare(
-      "SELECT COUNT(DISTINCT studentIdHash) FROM ballots",
+      "SELECT COUNT(DISTINCT studentIdHash) as count FROM ballots",
     );
 
     const result = await ResultAsync.fromPromise(prepared.first(), (e) => e);
@@ -67,7 +68,7 @@ export class ElectionModel {
     }
 
     return ok({
-      count: (result.value?.["COUNT(DISTINCT studentIdHash)"] as number) || 0,
+      count: (result.value?.count as number) || 0,
     });
   }
 
