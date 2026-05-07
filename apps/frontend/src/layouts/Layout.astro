@@ -24,12 +24,17 @@ import { event } from "@repo/constants";
         const nobuiltinbrowser = document.querySelector(
           "[data-nobuiltinbrowser]",
         );
-        if (nobuiltinbrowser) {
+        const main = document.querySelector("main.contents");
+        if (nobuiltinbrowser && main) {
           nobuiltinbrowser.classList.remove("hidden");
+          main.classList.add("hidden");
         }
-        const url = new URL(window.location.href);
-        url.searchParams.set("openExternalBrowser", "1");
-        window.location.href = url.toString();
+
+        if (navigator.userAgent.includes("Line")) {
+          const url = new URL(window.location.href);
+          url.searchParams.set("openExternalBrowser", "1");
+          window.location.href = url.toString();
+        }
       }
     </script>
   </head>

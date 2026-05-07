@@ -1,7 +1,11 @@
 <script lang="ts">
+  import { api, authHeader } from "@/lib/api";
   import { onMount } from "svelte";
   import VoteRouter from "./VoteRouter.svelte";
-  import { api, authHeader } from "@/lib/api";
+  import LogoImg from "@/assets/logo-black.png";
+  import { event, type SupportedLanguage } from "@repo/constants";
+  import { i18n } from "@/lib/i18n";
+  import Redirect from "./Redirect.svelte";
 
   interface Props {
     candidateImages: [string, string][]; // we cant pass map from astro (i think)
@@ -9,16 +13,91 @@
 
   let { candidateImages }: Props = $props();
 
-  onMount(async () => {
+  let lang: SupportedLanguage = $state("th");
+  // this needed to be in global store
+  const t = $derived(i18n[lang]);
+  function toggleLanguage() {
+    lang = lang === "th" ? "en" : "th";
+  }
+
+  let eligibility = $state(null) as null | {
+    reason?: string;
+    eligible?: boolean;
+  };
+
+  onMount(() => {
+    load();
+  });
+
+  async function load() {
     const headers = authHeader();
     if (!headers) {
       // redirect back to login page
-      return
+      window.location.href = "/";
+      return;
     }
-    await api.election.eligibility.get({
+
+    const { data, error } = await api.election.eligibility.get({
       headers,
     });
-  });
+
+    if (error) {
+      alert(`เกิดข้อผิดพลาดไม่ทราบสาเหตุ`);
+      eligibility = {};
+      return;
+    }
+    eligibility = data;
+  }
+
+  function getMessage(code: string) {
+    if (code === "voted-already") {
+      return "คุณใช้สิทธิ์เลือกตั้งไปแล้ว";
+    }
+    return code;
+  }
 </script>
 
-<VoteRouter {candidateImages} />
+<div class="flex flex-col w-full min-h-screen bg-yellow select-none">
+  <div class="pt-6 mb-4 px-10">
+    <div class="flex justify-end mb-4">
+      <button
+        class="text-xs font-semibold border border-black/30 rounded-lg px-3 py-1 bg-white/40 hover:bg-white/70 transition"
+        onclick={toggleLanguage}
+      >
+        {t.langToggle}
+      </button>
+    </div>
+
+    <img
+      src={LogoImg.src}
+      alt="SMO Election Logo"
+      class="w-20 mb-8 pointer-events-none"
+    />
+
+    <div>
+      <h1 class="font-bold font-noto text-md">{t.eventTitle}</h1>
+      <h2 class="font-light font-noto text-md mb-1">
+        {t.eventSubtitle}
+      </h2>
+      <h4 class="font-light font-noto text-xs text-lgray">
+        {lang === "th" ? event.full_name : "Academic Year 2026"}
+      </h4>
+      <div class="mt-6">
+        <p class="text-center text-lgray font-light text-xs">
+          กำลังเข้าสู่ระบบด้วยบัญชี
+          <span class="font-normal"> 62734678347@student.chula.ac.th </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {#if eligibility == null}
+    <div class="w-full h-24 flex items-center justify-center">
+      <p class="text-yellow-800">กำลังโหลด...</p>
+    </div>
+  {:else if eligibility.eligible}
+    <VoteRouter {candidateImages} />
+  {:else}
+    <Redirect href="/finish" />
+  {/if}
+</div>

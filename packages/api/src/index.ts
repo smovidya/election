@@ -109,9 +109,23 @@ export function createApp(adapter: Adapter, params: Params) {
       const user = await fromPromise(
         jwt.verify(token, {
           issuer: "mookrob.vidyachula.org",
-        }) as Promise<{ studentId: string; studentName: string }>,
+        }) as Promise<{ studentId: string; studentName: string } | false>,
         () => "invalid-token" as const,
       );
+
+      if (user.isErr()) {
+        return {
+          auth,
+          user: err(user.error),
+        };
+      }
+
+      if (!user.value) {
+        return {
+          auth,
+          user: err("invalid-token" as const),
+        };
+      }
 
       return {
         auth,
@@ -210,6 +224,12 @@ export function createApp(adapter: Adapter, params: Params) {
               });
             }
 
+            if (!user.value) {
+              return status(401, {
+                error: "invalid-token" as const,
+              });
+            }
+
             return user.value;
           },
           {
@@ -288,6 +308,10 @@ export function createApp(adapter: Adapter, params: Params) {
               return status(401, { error: user.error });
             }
 
+            if (!user.value) {
+              return status(401, { error: "invalid-token" as const });
+            }
+
             const periodCheck = election.votingPeriodChecker({ currentTime });
             if (periodCheck.isErr()) {
               return status(403, { error: periodCheck.error });
@@ -339,6 +363,10 @@ export function createApp(adapter: Adapter, params: Params) {
               return status(401, { error: user.error });
             }
 
+            if (!user.value) {
+              return status(401, { error: "invalid-token" as const });
+            }
+
             const verifyRight = await auth.verifyRight(user.value.studentId);
             if (verifyRight.isErr()) {
               return status(403, { error: verifyRight.error });
@@ -347,6 +375,7 @@ export function createApp(adapter: Adapter, params: Params) {
             const isVotedResult = await election.isVoted({
               voterId: user.value.studentId,
             });
+
             if (isVotedResult.isErr()) {
               return status(500, { error: isVotedResult.error });
             }
