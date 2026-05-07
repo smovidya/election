@@ -44,9 +44,15 @@ importers:
       '@astrojs/react':
         specifier: ^5.0.4
         version: 5.0.4(@types/node@25.6.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(jiti@2.7.0)(lightningcss@1.32.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@elysia/eden':
+        specifier: ^1.4.10
+        version: 1.4.10(elysia@1.4.28(@sinclair/typebox@0.34.49)(@types/bun@1.3.13)(exact-mirror@1.0.0(typebox@1.1.38))(file-type@22.0.1)(openapi-types@12.1.3)(typescript@5.9.3))
       '@radix-ui/react-slot':
         specifier: ^1.2.4
         version: 1.2.4(@types/react@19.2.14)(react@19.2.6)
+      '@repo/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@tailwindcss/vite':
         specifier: ^4.2.4
         version: 4.2.4(vite@7.3.2(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0))
@@ -71,6 +77,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      elysia:
+        specifier: ^1.4.28
+        version: 1.4.28(@sinclair/typebox@0.34.49)(@types/bun@1.3.13)(exact-mirror@1.0.0(typebox@1.1.38))(file-type@22.0.1)(openapi-types@12.1.3)(typescript@5.9.3)
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.6)

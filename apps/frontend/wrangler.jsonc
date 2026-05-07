@@ -15,13 +15,14 @@
   },
   // wait. its all static page tho, no server code
   "vars": {
-    "ENVIRONMENT": "dev"
+    "ENVIRONMENT": "dev",
+    "PUBLIC_BACKEND_URL": "http://localhost:8787"
   },
   "env": {
     "production": {
       "vars": {
         "ENVIRONMENT": "production",
-        "BACKEND_URL": "https://election-api.vidyachula.org"
+        "PUBLIC_BACKEND_URL": "https://election-api.vidyachula.org"
       },
       "route": {
         "pattern": "election.vidyachula.org",
@@ -31,7 +32,7 @@
     "staging": {
       "vars": {
         "ENVIRONMENT": "staging",
-        "BACKEND_URL": "https://election-api-staging.vidyachula.org"
+        "PUBLIC_BACKEND_URL": "https://election-api-staging.vidyachula.org"
       },
       "route": {
         "pattern": "election-staging.vidyachula.org",

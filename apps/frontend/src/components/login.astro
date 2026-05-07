@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import Logo from "@/img/smoelec.webp";
 import Layout from "@/layouts/Layout.astro";
-import LoginButton from "../components/ui/LoginButton";
+import LoginButton from "../components/ui/SignInWithGoogle.astro";
 ---
 
 <Layout>
@@ -12,6 +12,8 @@ import LoginButton from "../components/ui/LoginButton";
     </div>
     <div class="h-5"></div>
     <LoginButton client:load />
-    <div class="text-sm font-noto mt-4 text-pink-600">กรุณาใช้ Email นิสิตในการเข้าสู่ระบบ</div>
+    <div class="text-sm font-noto mt-4 text-pink-600">
+      ใช้ Email นิสิต (6xxxxxxx23@student.chula.ac.th) ในการเข้าสู่ระบบเท่านั้น
+    </div>
   </div>
 </Layout>

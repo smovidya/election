@@ -315,6 +315,7 @@ export function createApp(adapter: Adapter, params: Params) {
           },
         ),
     );
+
   return app;
 }
 
