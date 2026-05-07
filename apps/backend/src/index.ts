@@ -5,6 +5,8 @@ import { env } from 'cloudflare:workers';
 const app = createApp(CloudflareAdapter, {
 	isDev: env.ENVIRONMENT === 'dev',
 	DB: env.DB,
+	// @ts-expect-error - KVNamespace typing is weird
+	KV: env.KV,
 	SITE_URL: env.FRONTEND_DOMAIN || 'https://localhost:4321',
 	GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
 	JWT_SECRET: env.JWT_SECRET,
