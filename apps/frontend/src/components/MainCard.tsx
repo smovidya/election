@@ -196,7 +196,7 @@ export default function MainCard({
           {t.voteLabel}
         </span>
         <a
-          href={isLoggedIn ? "/election" : "/login"}
+          href={isLoggedIn ? "/agreement" : "/login"}
           className={`px-12 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2 ${canVote
             ? "cursor-pointer bg-yellow"
             : "pointer-events-none opacity-50"
