@@ -18,8 +18,7 @@ export const currentTime = (env: AppEnv) =>
 
         console.log("[DEV] Mock time:", time.join(":") || "now");
 
-        // early return???
-        if (time) {
+        if (time.length) {
           const date = new Date(time.join(":"));
           if (!Number.isNaN(date.valueOf())) {
             // sometime we will get an invalid date
