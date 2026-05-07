@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import "../styles/fonts.css";
+import { event } from "@repo/constants";
 ---
 
 <!doctype html>
@@ -10,7 +11,10 @@ import "../styles/fonts.css";
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/assets/icon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>SMO68 election</title>
+    <title>{event.short_name_th}</title>
+    <meta name="description" content={event.description} />
+    <meta property="og:title" content={event.short_name_th} />
+    <meta property="og:description" content={event.description} />
   </head>
 
   <body class="max-w-md mx-auto">
