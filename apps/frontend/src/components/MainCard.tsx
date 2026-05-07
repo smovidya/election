@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import {
   event,
@@ -9,7 +9,7 @@ import {
 } from "@repo/constants";
 import { i18n } from "@/lib/i18n";
 
-type CandidateWithImage = Candidate & { imageSrc: string };
+type CandidateWithImage = Candidate & { imageSrc: string; };
 
 interface Props {
   candidatesWithImages: CandidateWithImage[];
@@ -73,6 +73,15 @@ export default function MainCard({
 
   const t = i18n[lang];
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    if (window !== undefined) {
+      setIsLoggedIn(
+        !!localStorage.getItem("session_token")
+      );
+    }
+  }, []);
+
   useEffect(() => {
     const start = new Date(votingStartString);
     const end = new Date(votingEndString);
@@ -93,7 +102,7 @@ export default function MainCard({
           | undefined;
         if (typeof count === "number") setVoterCount(count);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const partyMap = Object.fromEntries(parties.map((p) => [p.party_id, p]));
@@ -184,12 +193,11 @@ export default function MainCard({
           {t.voteLabel}
         </span>
         <a
-          href="/login"
-          className={`px-12 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2 ${
-            canVote
-              ? "cursor-pointer bg-yellow"
-              : "pointer-events-none opacity-50"
-          }`}
+          href={isLoggedIn ? "/election" : "/login"}
+          className={`px-12 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2 ${canVote
+            ? "cursor-pointer bg-yellow"
+            : "pointer-events-none opacity-50"
+            }`}
         >
           <img src={boxIconSrc} alt="" className="w-7 pointer-events-none" />
           <span className="font-semiboldtext-sm text-black">{t.voteBtn}</span>

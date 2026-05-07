@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, authHeader } from "@/lib/api";
 import type {
 	Candidate,
 	Party,
@@ -7,7 +7,7 @@ import type {
 	SupportedLanguage,
 } from "@repo/constants";
 
-type CandidateWithImage = Candidate & { imageSrc: string };
+type CandidateWithImage = Candidate & { imageSrc: string; };
 
 interface Props {
 	candidatesWithImages: CandidateWithImage[];
@@ -88,13 +88,14 @@ export default function AgreementCard({
     }
 
 	useEffect(() => {
-		const token = localStorage.getItem("session_token");
-		if (!token) {
+		const headers = authHeader();
+		if (!headers) {
 			setError(true);
 			return;
 		}
+
 		api.auth.me
-			.get({ headers: { Authorization: `Bearer ${token}` } })
+			.get({ headers })
 			.then(({ data, error }) => {
 				if (error || !data) {
 					setError(true);
