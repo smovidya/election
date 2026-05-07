@@ -33,7 +33,6 @@
 		"clsx": "^2.1.1",
 		"elysia": "^1.4.28",
 		"embla-carousel-react": "^8.6.0",
-		"firebase": "^12.12.1",
 		"html2canvas": "^1.4.1",
 		"js-cookie": "^3.0.5",
 		"lucide-react": "^1.14.0",

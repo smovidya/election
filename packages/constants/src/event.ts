@@ -17,7 +17,7 @@ export const eligibleVoters = 3001;
  * - ss is the second (00-59)
  * - ±hh:mm is the time zone offset from UTC (e.g., +07:00 for UTC+7 aka Bangkok time)
  */
-export const votingStartString = "2026-05-08T07:00:00+07:00";
+export const votingStartString = "2026-05-07T07:00:00+07:00";
 export const votingStart = new Date(votingStartString);
 
 /**
