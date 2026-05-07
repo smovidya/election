@@ -6,7 +6,6 @@ const apiUrl = import.meta.env.DEV
   ? "http://localhost:8787"
   : API_URL || "http://localhost:8787";
 
-console.log("API URL:", apiUrl);
 export const api = treaty<App>(apiUrl);
 
 export function authHeader() {
