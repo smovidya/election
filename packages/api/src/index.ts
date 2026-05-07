@@ -1,6 +1,6 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { type CloudflareAdapter } from "elysia/adapter/cloudflare-worker";
-import { type D1Database } from "@cloudflare/workers-types";
+import { KVNamespace, type D1Database } from "@cloudflare/workers-types";
 import { openapi, fromTypes } from "@elysia/openapi";
 import { cors } from "@elysiajs/cors";
 import jwt from "@elysiajs/jwt";
@@ -12,6 +12,7 @@ import { err, fromPromise } from "neverthrow";
 export type Params = {
   isDev: boolean;
   DB?: D1Database;
+  KV?: KVNamespace;
   SITE_URL?: string;
   GOOGLE_CLIENT_ID?: string;
   JWT_SECRET: string;
@@ -20,6 +21,7 @@ export type Params = {
 export type AppEnv = {
   IS_DEV: boolean;
   DB: D1Database;
+  KV: KVNamespace;
   SITE_URL: string;
   GOOGLE_CLIENT_ID: string;
   JWT_SECRET: string;
@@ -31,6 +33,7 @@ export function createApp(adapter: Adapter, params: Params) {
   const env = {
     IS_DEV: params.isDev,
     DB: params.DB,
+    KV: params.KV,
     SITE_URL: params.SITE_URL,
     GOOGLE_CLIENT_ID: params.GOOGLE_CLIENT_ID,
     JWT_SECRET: params.JWT_SECRET,
@@ -56,7 +59,6 @@ export function createApp(adapter: Adapter, params: Params) {
       }),
     )
     .use(currentTime(env))
-    .decorate("election", new ElectionService())
     .derive(async ({ headers, jwt }) => {
       const auth = new AuthService(headers, env);
       const [_, token] = headers.authorization?.split(" ") ?? [];
@@ -140,6 +142,32 @@ export function createApp(adapter: Adapter, params: Params) {
             },
           },
         ),
+    )
+    .get("/health", () => ({ status: "ok" as const }), {
+      detail: {
+        description: "Health check endpoint",
+      },
+      response: {
+        200: t.Object({
+          status: t.Literal("ok"),
+        }),
+      },
+    })
+    .group("/election", (app) =>
+      app
+        .decorate("election", new ElectionService(env.DB, env.JWT_SECRET))
+        .get("/voter-count", async ({ election }) => {
+          const countResult = await election.currentVoterCount();
+
+          if (countResult.isErr()) {
+            return err(countResult.error);
+          }
+
+          return countResult.value;
+        })
+        .get("/result", () => {})
+        .post("/cast-vote", () => {})
+        .get("/eligibility", () => {}),
     );
   // .group("", (app) =>
   //   app.use(auth(env)).guard(
@@ -158,6 +186,7 @@ export function createApp(adapter: Adapter, params: Params) {
   //           });
   //         }
   //       },
+  // .decorate("election", new ElectionService())
   //     },
   //     (app) =>
   //       app
