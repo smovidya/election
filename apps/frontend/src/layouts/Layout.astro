@@ -21,6 +21,12 @@ import { event } from "@repo/constants";
         navigator.userAgent.includes("Instagram") ||
         navigator.userAgent.includes("FBAV")
       ) {
+        const nobuiltinbrowser = document.querySelector(
+          "[data-nobuiltinbrowser]",
+        );
+        if (nobuiltinbrowser) {
+          nobuiltinbrowser.classList.remove("hidden");
+        }
         const url = new URL(window.location.href);
         url.searchParams.set("openExternalBrowser", "1");
         window.location.href = url.toString();
@@ -38,7 +44,7 @@ import { event } from "@repo/constants";
     <main class="contents">
       <slot />
     </main>
-    <div data-nobuiltinbrowser class="text-center mt-4">
+    <div data-nobuiltinbrowser class="text-center mt-4 hidden p-5">
       <h1 class="text-xl font-bold mb-2">
         โปรดเปิดในเบราว์เซอร์ภายนอกเพื่อใช้งานเว็บไซต์นี้อย่างเต็มประสิทธิภาพ
       </h1>
