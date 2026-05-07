@@ -15,9 +15,38 @@ import { event } from "@repo/constants";
     <meta name="description" content={event.description} />
     <meta property="og:title" content={event.short_name_th} />
     <meta property="og:description" content={event.description} />
+    <script>
+      if (
+        navigator.userAgent.includes("Line") ||
+        navigator.userAgent.includes("Instagram") ||
+        navigator.userAgent.includes("FBAV")
+      ) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("openExternalBrowser", "1");
+        window.location.href = url.toString();
+      }
+    </script>
   </head>
 
-  <body class="max-w-md mx-auto">
-    <slot />
-  </body>
+  <noscript>
+    <p class="text-center mt-4">
+      โปรดเปิดใช้งาน JavaScript เพื่อใช้งานเว็บไซต์นี้อย่างเต็มประสิทธิภาพ
+    </p>
+
+    <body class="max-w-md mx-auto">
+      <main class="contents">
+        <slot />
+      </main>
+      <div data-nobuiltinbrowser class="text-center mt-4">
+        <h1 class="text-xl font-bold mb-2">
+          โปรดเปิดในเบราว์เซอร์ภายนอกเพื่อใช้งานเว็บไซต์นี้อย่างเต็มประสิทธิภาพ
+        </h1>
+        <p class="text-lg mt-2">
+          เว็บไซต์นี้ไม่สามารถใช้งานใน Line/Instagram/Facebook in-app browser
+          ได้ กรุณาเปิดลิงก์นี้ในเบราว์เซอร์ภายนอก เช่น Chrome, Safari หรือ
+          Firefox เพื่อให้เว็บไซต์ทำงานได้อย่างถูกต้อง
+        </p>
+      </div>
+    </body>
+  </noscript>
 </html>
