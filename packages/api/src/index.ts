@@ -55,7 +55,7 @@ export function createApp(adapter: Adapter, params: Params) {
   })
     .use(
       cors({
-        origin: params.isDev ? "*" : /.*\.vidyachula\.org$/,
+        origin: "*",
       }),
     )
     .use(
