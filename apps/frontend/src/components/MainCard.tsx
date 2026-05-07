@@ -23,53 +23,6 @@ interface Props {
   lineSrc: string;
 }
 
-const i18n = {
-	th: {
-		langToggle: "EN",
-		eventTitle: "เลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต",
-		eventSubtitle: "คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
-		countdownBefore: "จะเริ่มต้นใน...",
-		countdownDuring: "เหลือเวลาเลือกตั้งอีก...",
-		countdownEnded: "สิ้นสุดการเลือกตั้งแล้ว",
-		days: "วัน",
-		hours: "ชั่วโมง",
-		minutes: "นาที",
-		seconds: "วินาที",
-		voteLabel: "ลงคะแนนเสียง",
-		voteBtn: "VOTE NOW",
-		totalVoters: "จำนวนผู้ใช้สิทธิ์เลือกตั้งทั้งหมด",
-		eligibleVoters: `จากผู้มีสิทธิ์เลือกตั้ง ${event.eligibleVoters} คน`,
-		voterSuffix: " คน",
-		policiesTitle: "นโยบายพรรค",
-		candidatesTitle: "รายชื่อและนโยบายผู้ลงสมัครเลือกตั้ง",
-		candidatesHint: "คลิกเพื่อดูนโยบาย",
-		numberLabel: "หมายเลข",
-		yearLabel: "ชั้นปีที่",
-	},
-	en: {
-		langToggle: "TH",
-		eventTitle: "By-Election of the Student Union Committee",
-		eventSubtitle: "Faculty of Science, Chulalongkorn University",
-		countdownBefore: "Starting in...",
-		countdownDuring: "Time remaining...",
-		countdownEnded: "Voting has ended",
-		days: "Days",
-		hours: "Hours",
-		minutes: "Min",
-		seconds: "Sec",
-		voteLabel: "Cast Your Vote",
-		voteBtn: "VOTE NOW",
-		totalVoters: "Total Voters",
-		eligibleVoters: `out of ${event.eligibleVoters} eligible voters`,
-		voterSuffix: " voters",
-		policiesTitle: "Party Policy",
-		candidatesTitle: "Candidates & Policies",
-		candidatesHint: "Click to view policies",
-		numberLabel: "No.",
-		yearLabel: "Year",
-	},
-} as const;
-
 type Phase = "before" | "during" | "ended";
 
 interface Countdown {
