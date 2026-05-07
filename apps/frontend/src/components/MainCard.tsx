@@ -1,5 +1,5 @@
 import { use, useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, authHeader } from "@/lib/api";
 import {
   event,
   type Candidate,
@@ -78,7 +78,9 @@ export default function MainCard({
     if (!window) {
       return;
     }
-    api.auth.me.get()
+    api.auth.me.get({
+      headers: authHeader() ?? {}
+    })
       .then(({ data }) => {
         setIsLoggedIn(!!data);
       });
@@ -98,11 +100,10 @@ export default function MainCard({
     api.election["voter-count"]
       .get()
       .then(({ data }) => {
-        // Eden may infer either voterCount or count depending on schema resolution
-        const count = (data as Record<string, unknown>)?.voterCount as
-          | number
-          | undefined;
-        if (typeof count === "number") setVoterCount(count);
+        const count = data?.voterCount.count;
+        if (count !== undefined) {
+          setVoterCount(count);
+        }
       })
       .catch(() => { });
   }, []);
