@@ -25,7 +25,8 @@ const position = running_positions.find(
 
 let imageSrc = "";
 if (candidate?.image) {
-	const key = `../../assets${candidate.image}`;
+	const removeFilename = candidate.image.replace(/(\.[^.]+)$/, "_remove.png");
+	const key = `../../assets${removeFilename}`;
 	const mod = imageModules[key];
 	if (mod?.default) {
 		const optimized = await getImage({ src: mod.default, format: "webp" });

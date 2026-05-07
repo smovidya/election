@@ -42,10 +42,6 @@ export default function CandidateCard({
     candidate.personal_experience[lang] ??
     candidate.personal_experience.th ??
     "";
-
-  const processedImageSrc = imageSrc
-    ? imageSrc.split(".")[0] + "_remove.png"
-    : undefined;
   return (
     <>
       <div className="w-full bg-yellow pt-12 pb-24 ">
@@ -79,7 +75,7 @@ export default function CandidateCard({
             <div className="absolute -right-10 -bottom-10 w-50 mt-0 shrink-0 z-2">
               {imageSrc && (
                 <img
-                  src={processedImageSrc}
+                  src={imageSrc}
                   alt={candidate?.full_name}
                   className="w-full -translate-y-2"
                   style={{ objectPosition: "top" }}
