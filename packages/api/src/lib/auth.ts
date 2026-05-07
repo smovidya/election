@@ -1,15 +1,12 @@
 import { AppEnv, Params } from "..";
 import Elysia, { type Static, t } from "elysia";
-import { Auth, type KeyStorer } from "firebase-auth-cloudflare-workers";
-// firebase-admin wont run on cf worker so i use this instead
+import { createRemoteJWKSet, jwtVerify } from "jose";
 import { type Result, ResultAsync, err, ok } from "neverthrow";
 
-class NoKVStore implements KeyStorer {
-  async get() {
-    return null;
-  }
-  async put(value: string, expirationTtl: number) {}
-}
+const GOOGLE_JWKS = createRemoteJWKSet(
+  new URL("https://www.googleapis.com/oauth2/v3/certs"),
+);
+const GOOGLE_ISSUERS = ["https://accounts.google.com", "accounts.google.com"];
 
 export const User = t.Object({
   studentId: t.String({
@@ -44,24 +41,22 @@ export class AuthService {
   ) {}
 
   async getStudentId(idToken: string) {
-    const auth = Auth.getOrInitialize(
-      this.env.GOOGLE_CLIENT_ID!,
-      new NoKVStore(),
-      // if we want to cache the public key used to verify the Firebase ID we can use this
-      // WorkersKVStoreSingle.getOrInitialize(env.PUBLIC_JWK_CACHE_KEY, env.PUBLIC_JWK_CACHE_KV)
-    );
-
     const token = await ResultAsync.fromPromise(
-      auth.verifyIdToken(idToken),
-      () => [],
+      jwtVerify(idToken, GOOGLE_JWKS, {
+        issuer: GOOGLE_ISSUERS,
+        audience: this.env.GOOGLE_CLIENT_ID!,
+      }),
+      (e) => e,
     );
 
     if (token.isErr()) {
+      console.error("Failed to verify ID token", token.error);
       return err("invalid-token");
     }
 
-    const { email, name } = token.value;
+    const { email, name } = token.value.payload as { email?: string; name?: string };
     if (!email) {
+      console.error("Email not found in token", token.value);
       // wtf did you use to sign in
       return err("invalid-token");
     }
@@ -69,15 +64,18 @@ export class AuthService {
     const [studentId, domain] = email.split("@");
 
     if (!studentId || !domain) {
+      console.error("Invalid email format", email);
       return err("invalid-token");
     }
 
     if (!domain.endsWith("chula.ac.th")) {
+      console.error("Email domain is not chula.ac.th", email);
       return err("not-chula");
     }
 
     const rightVerifyResult = await this.verifyRight(studentId);
     if (rightVerifyResult.isErr()) {
+      console.log("User does not have the right to access the system", email, rightVerifyResult.error);
       return rightVerifyResult;
     }
 
@@ -86,11 +84,13 @@ export class AuthService {
 
   async verifyRight(studentId: string) {
     if (studentId.length !== 10) {
+      console.error("Student ID does not have 10 characters", studentId);
       return err("invalid-student-id");
     }
 
     // xxxxxxxx23 for science students
     if (!/^\d{8}23$/.test(studentId)) {
+      console.error("Student ID does not match the pattern for science students", studentId); 
       return err("not-science-student");
     }
 
