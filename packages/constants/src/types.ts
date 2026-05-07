@@ -1,4 +1,4 @@
-import { running_positions, parties } from "./candidates";
+import { running_positions, parties, candidates } from "./candidates";
 
 /**
  * a string that only contains letters, underscores, or numbers. This is used for IDs of positions, parties, and candidates.
@@ -44,4 +44,24 @@ export interface Candidate {
   personal_mission: LocalizedString;
   personal_experience: LocalizedString;
   image?: string;
+}
+
+export type CandidateWithPosition = Candidate & {
+  position: Position;
+};
+
+export type PossibleVoteChoices =
+  | (typeof candidates)[number]["candidate_id"]
+  | "no-vote"
+  | "disapprove";
+
+export interface OfficialElectionResult {
+  totalVotes: number;
+  votesByPosition: Array<{
+    position_id: RunningPositionIDs;
+    votesByChoice: Array<{
+      choice: PossibleVoteChoices;
+      count: number;
+    }>;
+  }>;
 }

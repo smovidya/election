@@ -32,3 +32,9 @@ export const votingEndString = "2026-05-15T17:00:00+07:00";
 export const votingEnd = new Date(votingEndString);
 
 export const isResultAnnounced = false;
+
+export const officialElectionResult = {
+  totalVotes: 0,
+  votesByPosition: {},
+};
+
