@@ -9,8 +9,8 @@ import {
   AuthService,
   AuthUnauthorizedError,
   AuthForbiddenError,
+  User,
 } from "$lib/auth";
-import { currentTime } from "$lib/time";
 import {
   ElectionService,
   ElectionPeriodError,
@@ -69,7 +69,33 @@ export function createApp(adapter: Adapter, params: Params) {
         secret: env.JWT_SECRET,
       }),
     )
-    .use(currentTime(env))
+    .derive(({ headers }) => {
+      const now = new Date();
+      if (env.IS_DEV && headers.authorization?.startsWith("Basic ")) {
+        const [_, rawToken] = headers.authorization.split(" ");
+
+        if (rawToken) {
+          const token = Buffer.from(rawToken, "base64").toString("utf-8");
+          const [__, ...time] = token.split(":"); // js is shit
+
+          console.log("[DEV] Mock time:", time.join(":") || "now");
+
+          if (time.length) {
+            const date = new Date(time.join(":"));
+            if (!Number.isNaN(date.valueOf())) {
+              // sometime we will get an invalid date
+              return {
+                currentTime: date,
+              };
+            }
+          }
+        }
+      }
+
+      return {
+        currentTime: now,
+      };
+    })
     .derive(async ({ headers, jwt }) => {
       const auth = new AuthService(headers, env);
       const [_, token] = headers.authorization?.split(" ") ?? [];
@@ -94,7 +120,47 @@ export function createApp(adapter: Adapter, params: Params) {
     })
     .group("/auth", (app) =>
       app
-        .use(AuthModel)
+        .model({
+          UnauthorizedResponse: t.Object(
+            {
+              error: AuthUnauthorizedError,
+            },
+            {
+              title: "UnauthorizedResponse",
+              description:
+                "Response when the user is not authenticated or the token is invalid",
+            },
+          ),
+          ForbiddenResponse: t.Object(
+            {
+              error: AuthForbiddenError,
+            },
+            {
+              title: "ForbiddenResponse",
+              description:
+                "Response when the user is authenticated but not authorized to access the requested resource",
+            },
+          ),
+          LoginRequestBody: t.Object(
+            {
+              googleIdToken: t.String(),
+            },
+            {
+              title: "LoginRequestBody",
+              description: "Request body for the login endpoint",
+            },
+          ),
+          LoginSuccessResponse: t.Object(
+            {
+              jwtSessionToken: t.String(),
+            },
+            {
+              title: "Login success",
+              description: "Response when the user successfully logs in",
+            },
+          ),
+          MeSuccessResponse: User,
+        })
         .post(
           "/login",
           async ({ body, jwt, auth, status }) => {
