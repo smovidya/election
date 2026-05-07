@@ -4,7 +4,7 @@
   import { event, type SupportedLanguage } from "@repo/constants";
   import { i18n } from "@/lib/i18n";
   import VoteSummary from "./VoteSummary.svelte";
-  import { api } from "@/lib/api";
+  import { api, authHeader } from "@/lib/api";
 
   type Page = "vote" | "review";
 
@@ -52,9 +52,7 @@
         votes: formattedVotes as any,
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: authHeader()!
       },
     );
 
