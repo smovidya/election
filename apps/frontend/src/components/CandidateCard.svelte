@@ -18,10 +18,12 @@
 
 <div class="flex h-32 mb-6 gap-1">
   <div
-    class="flex flex-col w-1/5 items-center justify-center bg-purple-100 shadow-lg"
+    class="flex flex-col w-1/5 items-center justify-center shadow-lg"
+    style="background: {parties.find((it) => it.party_id === c.party_id)!
+      .color};"
   >
-    <span class="text-sm font-bold text-purple-900">{t.numberLabel}</span>
-    <span class="text-2xl font-bold text-purple-900">{candidateNumber}</span>
+    <span class="text-xs font-bold text-white">{t.numberLabel}</span>
+    <span class="text-2xl font-bold text-white">{candidateNumber}</span>
   </div>
 
   <div class="p-3 w-3/5 bg-white shadow-lg">
