@@ -47,10 +47,10 @@
   >
     {loading ? "Loading..." : `${currentCount.toLocaleString()} คน`}
   </h1>
-
+<!-- 
   <h3 class="font-noto text-dgray text-center text-sm">
     จากผู้มีสิทธิ์เลือกตั้ง 3,743 คน
-  </h3>
+  </h3> -->
 </div>
 
 <style>

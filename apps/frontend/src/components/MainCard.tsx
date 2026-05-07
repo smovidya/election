@@ -222,9 +222,9 @@ export default function MainCard({
               ? voterCount.toLocaleString() + t.voterSuffix
               : "..."}
           </span>
-          <span className="font-noto text-dgray text-center text-sm">
+          {/* <span className="font-noto text-dgray text-center text-sm">
             {t.eligibleVoters}
-          </span>
+          </span> */}
         </div>
 
         <img
