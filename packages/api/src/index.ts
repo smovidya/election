@@ -118,7 +118,7 @@ export function createApp(adapter: Adapter, params: Params) {
               t: "session",
               studentId: userResult.value.studentId,
               studentName: userResult.value.name,
-              exp: Math.floor(Date.now() / 1000) + 60 * 60 * 3, // 3 hours
+              exp: Math.floor(Date.now() / 1000) + 60 * 30, // 30 minutes
               nbf: Math.floor(Date.now() / 1000) - 60, // 1 minute ago to prevent clock skew issues
             });
 
@@ -170,15 +170,24 @@ export function createApp(adapter: Adapter, params: Params) {
           "election",
           new ElectionService(env.DB, env.JWT_SECRET, env.KV),
         )
-        .get("/voter-count", async ({ election }) => {
-          const countResult = await election.currentVoterCount();
+        .get(
+          "/voter-count",
+          async ({ election, status }) => {
+            const countResult = await election.currentVoterCount();
 
-          if (countResult.isErr()) {
-            return err(countResult.error);
-          }
+            if (countResult.isErr()) {
+              return status(500, { error: countResult.error });
+            }
 
-          return countResult.value;
-        })
+            return { voterCount: countResult.value };
+          },
+          {
+            detail: {
+              description:
+                "Get the current number of voters who have cast their votes",
+            },
+          },
+        )
         .get(
           "/result",
           async ({ election, currentTime, status }) => {
