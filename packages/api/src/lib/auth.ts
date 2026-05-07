@@ -68,8 +68,8 @@ export class AuthService {
       return err("invalid-token");
     }
 
-    if (!domain.endsWith("chula.ac.th")) {
-      console.error("Email domain is not chula.ac.th", email);
+    if (!domain.endsWith("student.chula.ac.th")) {
+      console.error("Email domain is not student.chula.ac.th", email);
       return err("not-chula");
     }
 
