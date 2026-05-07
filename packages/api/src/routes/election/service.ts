@@ -3,6 +3,7 @@ import { err, ok } from "neverthrow";
 import { event, running_positions } from "@repo/constants";
 import { ElectionModel } from "./model";
 import type { ElectionResult, Vote } from "./schema";
+import { AppEnv } from "../..";
 
 export const ElectionPeriodError = t.UnionEnum([
   "election-not-started",
@@ -20,7 +21,15 @@ export const VoteError = t.UnionEnum([
 export type VoteError = Static<typeof VoteError>;
 
 export class ElectionService {
-  constructor(private model = new ElectionModel()) {}
+  private model: ElectionModel;
+
+  constructor(
+    d1: AppEnv["DB"],
+    jwtSecret: AppEnv["JWT_SECRET"],
+    kv: AppEnv["KV"],
+  ) {
+    this.model = new ElectionModel(d1, jwtSecret, kv);
+  }
 
   votingPeriodChecker({ currentTime }: { currentTime?: Date }) {
     const now = currentTime || new Date();
@@ -109,8 +118,8 @@ export class ElectionService {
 
     // Populate the results from SQL query
     for (const voteCount of voteCountsResult.value) {
-      const { position, candidateId, count } = voteCount;
-      result.votesByPosition[position][candidateId] = count;
+      const { position, choice, count } = voteCount;
+      result.votesByPosition[position][choice] = count;
     }
 
     const task = await this.model.setCachedElectionResult(result);

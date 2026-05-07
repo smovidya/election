@@ -1,5 +1,5 @@
 import { type Static, t } from "elysia";
-import { running_positions } from "@repo/constants";
+import { running_positions, candidates } from "@repo/constants";
 
 export const Position = t.Union([
   ...running_positions.map((position) =>
@@ -14,12 +14,13 @@ export type Position = Static<typeof Position>;
 
 // export type Position = (typeof electionInfo.positions)[number];
 
-export const CandidateId = t.Union(
+export const Choice = t.Union(
   [
-    t.Number({
-      description: "Student ID of the candidate",
-      title: "Student ID",
-    }),
+    ...candidates.map((candidate) =>
+      t.Literal(candidate.candidate_id, {
+        description: `ลงคะแนนให้ ${candidate.full_name} (${candidate.party_id})`,
+      }),
+    ),
     t.Literal("no-vote", {
       title: "No Vote",
       description:
@@ -36,10 +37,10 @@ export const CandidateId = t.Union(
     examples: [1234567823, "no-vote", "disapprove"],
   },
 );
-export type CandidateId = Static<typeof CandidateId>;
+export type Choice = Static<typeof Choice>;
 
 export const Vote = t.Object({
-  candidateId: CandidateId,
+  choice: Choice,
   position: Position,
 });
 export type Vote = Static<typeof Vote>;
@@ -52,7 +53,7 @@ export const ElectionResult = t.Object({
     description: "Total votes casted",
     examples: [123456],
   }),
-  votesByPosition: t.Record(Position, t.Record(CandidateId, t.Number()), {
+  votesByPosition: t.Record(Position, t.Record(Choice, t.Number()), {
     description:
       "A record of position and a record of candidate (including `no-vote` and `disapprove`) and their vote count",
     examples: [
@@ -60,14 +61,14 @@ export const ElectionResult = t.Object({
         president: {
           "no-vote": 530,
           disapprove: 490,
-          6734444444: 1,
-          6735555555: 1,
+          c1: 1,
+          c2: 1,
         },
         "vice-president": {
           "no-vote": 12,
           disapprove: 34,
-          6736666666: 56,
-          6737777777: 78,
+          c3: 56,
+          c4: 78,
         },
       },
     ],
@@ -76,5 +77,5 @@ export const ElectionResult = t.Object({
 // typescript cant infer each case of Position as a literal so we need to create this manually
 export type ElectionResult = {
   totalVotes: number;
-  votesByPosition: Record<Position, Record<CandidateId, number>>;
+  votesByPosition: Record<Position, Record<Choice, number>>;
 };

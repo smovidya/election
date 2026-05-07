@@ -1,161 +1,154 @@
-import { env } from "cloudflare:workers";
 import { err, ok, type Result, ResultAsync } from "neverthrow";
-import type { CandidateId, ElectionResult, Position, Vote } from "./schema";
+import type { Choice, ElectionResult, Position, Vote } from "./schema";
+import { hashVoterId } from "./hash";
+import { candidates, type OfficialElectionResult } from "@repo/constants";
+import { AppEnv } from "../..";
 
 export class ElectionModel {
-	async addVotes({ voterId, votes }: { voterId: string; votes: Vote[] }) {
-		const voteStatements = votes.map((vote) =>
-			env.DB.prepare(
-				"INSERT INTO votes (voterId, candidateId, position) VALUES (?, ?, ?)",
-			).bind(voterId, String(vote.candidateId), vote.position),
-		);
+  constructor(
+    public db: AppEnv["DB"],
+    public jwtSecret: AppEnv["JWT_SECRET"],
+    public kv: AppEnv["KV"],
+  ) {}
 
-		const result = await ResultAsync.fromPromise(
-			env.DB.batch(voteStatements),
-			() => [],
-		);
+  async addVotes({ voterId, votes }: { voterId: string; votes: Vote[] }) {
+    const { value: hashedVoterId } = await hashVoterId(voterId, this.jwtSecret);
+    const voteStatements = votes.map((vote) =>
+      this.db
+        .prepare(
+          "INSERT INTO ballots (studentIdHash, position, choice) VALUES (?, ?, ?)",
+        )
+        .bind(hashedVoterId, vote.position, String(vote.choice)),
+    );
+    const addVoterStatement = this.db
+      .prepare(
+        "INSERT INTO voters (studentId) VALUES (?) ON CONFLICT(studentId) DO NOTHING",
+      )
+      .bind(hashedVoterId);
+    voteStatements.push(addVoterStatement);
 
-		if (result.isErr()) return err("internal-error");
+    const result = await ResultAsync.fromPromise(
+      this.db.batch(voteStatements),
+      () => [],
+    );
 
-		return result.value.every((r) => r.success) ? ok() : err("internal-error");
-	}
+    if (result.isErr()) return err("internal-error");
 
-	async isVoted({ voterId }: { voterId: string }) {
-		const prepared = env.DB.prepare(
-			"SELECT * FROM votes WHERE voterId = ?",
-		).bind(voterId);
+    return result.value.every((r) => r.success) ? ok() : err("internal-error");
+  }
 
-		const result = await ResultAsync.fromPromise(prepared.all(), () => []);
+  async isVoted({ voterId }: { voterId: string }) {
+    const { value: hashedVoterId } = await hashVoterId(voterId, this.jwtSecret);
+    const prepared = this.db
+      .prepare("SELECT * FROM ballots WHERE studentIdHash = ?")
+      .bind(hashedVoterId);
 
-		if (result.isErr()) {
-			console.error(result.error);
-			return err("internal-error");
-		}
+    const result = await ResultAsync.fromPromise(prepared.all(), () => []);
 
-		return ok({ isVoted: result.value.results.length > 0 });
-	}
+    if (result.isErr()) {
+      console.error(result.error);
+      return err("internal-error");
+    }
 
-	async currentVoterCount() {
-		// TODO: Maybe add some cache here (;ater)
-		const prepared = env.DB.prepare(
-			"SELECT COUNT(DISTINCT voterId) FROM votes",
-		);
+    return ok({ isVoted: result.value.results.length > 0 });
+  }
 
-		const result = await ResultAsync.fromPromise(prepared.first(), (e) => e);
+  async currentVoterCount() {
+    // TODO: Maybe add some cache here (;ater)
+    const prepared = this.db.prepare(
+      "SELECT COUNT(DISTINCT studentIdHash) FROM ballots",
+    );
 
-		if (result.isErr()) {
-			console.error(result.error);
-			return err("internal-error");
-		}
+    const result = await ResultAsync.fromPromise(prepared.first(), (e) => e);
 
-		return ok({
-			count: (result.value?.["COUNT(DISTINCT voterId)"] as number) || 0,
-		});
-	}
+    if (result.isErr()) {
+      console.error(result.error);
+      return err("internal-error");
+    }
 
-	private parseDbCandidateId(
-		dbCandidateId: string,
-	): Result<CandidateId, "fail-parsing-candidate-id"> {
-		if (dbCandidateId === "no-vote") return ok("no-vote");
-		if (dbCandidateId === "disapprove") return ok("disapprove");
-		const numId = Number.parseInt(dbCandidateId, 10);
-		if (Number.isNaN(numId)) {
-			return err("fail-parsing-candidate-id");
-		}
+    return ok({
+      count: (result.value?.["COUNT(DISTINCT studentIdHash)"] as number) || 0,
+    });
+  }
 
-		return ok(numId);
-	}
+  private parseDbchoice(dbchoice: string) {
+    if (dbchoice === "no-vote") return ok("no-vote" as const);
+    if (dbchoice === "disapprove") return ok("disapprove" as const);
+    if (!candidates.some((c) => c.candidate_id === dbchoice)) {
+      return err("no-candidate-found");
+    }
 
-	async getAllVotes() {
-		// this wont explode right?
-		const query = await env.DB.prepare("SELECT * FROM votes").all();
+    return ok(dbchoice as (typeof candidates)[number]["candidate_id"]);
+  }
 
-		if (query.error) {
-			console.error(query.error);
-			return err("internal-error");
-		}
+  async getTotalVotesCount() {
+    const prepared = this.db.prepare(
+      "SELECT COUNT(DISTINCT studentIdHash) as total FROM ballots",
+    );
 
-		return ok(
-			query.results as {
-				voterId: string;
-				position: Vote["position"];
-				candidateId: Vote["candidateId"];
-			}[],
-		);
-	}
+    const result = await ResultAsync.fromPromise(prepared.first(), (e) => e);
 
-	async getTotalVotesCount() {
-		const prepared = env.DB.prepare(
-			"SELECT COUNT(DISTINCT voterId) as total FROM votes",
-		);
+    if (result.isErr()) {
+      console.error(result.error);
+      return err("internal-error");
+    }
 
-		const result = await ResultAsync.fromPromise(prepared.first(), (e) => e);
+    return ok((result.value?.total as number) || 0);
+  }
 
-		if (result.isErr()) {
-			console.error(result.error);
-			return err("internal-error");
-		}
+  async getVoteCountsByCandidate() {
+    const prepared = this.db.prepare(
+      "SELECT position, choice, COUNT(*) as count FROM ballots GROUP BY position, choice",
+    );
 
-		return ok((result.value?.total as number) || 0);
-	}
+    const query = await prepared.all();
 
-	async getVoteCountsByCandidate() {
-		const prepared = env.DB.prepare(
-			"SELECT position, candidateId, COUNT(*) as count FROM votes GROUP BY position, candidateId",
-		);
+    if (query.error) {
+      console.error(query.error);
+      return err("internal-error");
+    }
 
-		const query = await prepared.all();
+    const counts = query.results as {
+      position: Position;
+      choice: string;
+      count: number;
+    }[];
 
-		if (query.error) {
-			console.error(query.error);
-			return err("internal-error");
-		}
+    const mapped = [] as {
+      position: Position;
+      choice: Choice;
+      count: number;
+    }[];
 
-		const counts = query.results as {
-			position: Position;
-			candidateId: string;
-			count: number;
-		}[];
+    for (const { choice, count, position } of counts) {
+      const parsed = this.parseDbchoice(choice);
+      if (parsed.isErr()) {
+        return err("internal-error");
+      }
+      mapped.push({
+        choice: parsed.value,
+        count,
+        position,
+      });
+    }
 
-		const mapped = [] as {
-			position: Position;
-			candidateId: CandidateId;
-			count: number;
-		}[];
+    return ok(mapped);
+  }
 
-		for (const { candidateId, count, position } of counts) {
-			const parsed = this.parseDbCandidateId(candidateId);
-			if (parsed.isErr()) {
-				return err("internal-error");
-			}
-			mapped.push({
-				candidateId: parsed.value,
-				count,
-				position,
-			});
-		}
+  async getCachedElectionResult() {
+    return ResultAsync.fromPromise(
+      this.kv.get<OfficialElectionResult>("election-result", "json"),
+      () => "internal-error" as const,
+    );
+  }
 
-		return ok(mapped);
-	}
-
-	async getCachedElectionResult() {
-		// cloudflare say this wont throw and i trust them
-		return (await env.KV.get(
-			"election-result",
-			"json",
-		)) as ElectionResult | null;
-	}
-
-	async setCachedElectionResult(electionResult: ElectionResult) {
-		// this one will throw if we put the value more than once in 1 second.
-		const promise = env.KV.put(
-			"election-result",
-			JSON.stringify(electionResult),
-			{
-				expirationTtl: 300, // seconds
-			},
-		);
-
-		return ResultAsync.fromPromise(promise, () => "internal-error" as const);
-	}
+  async setCachedElectionResult(electionResult: OfficialElectionResult) {
+    // this one will throw if we put the value more than once in 1 second.
+    return ResultAsync.fromPromise(
+      this.kv.put("election-result", JSON.stringify(electionResult), {
+        expirationTtl: 300, // seconds
+      }),
+      () => "internal-error" as const,
+    );
+  }
 }
