@@ -1,19 +1,16 @@
 ---
 import { Image } from "astro:assets";
 import Logo from "@/assets/logo-color-light.png";
-import Layout from "@/layouts/Layout.astro";
 import LoginButton from "../components/ui/SignInWithGoogle.tsx";
 ---
 
-<Layout>
-  <div class="flex flex-col items-center justify-center min-h-screen">
-    <div>
-      <Image src={Logo} alt="smo vidya election" class="w-60" />
-    </div>
-    <div class="h-5"></div>
-    <LoginButton client:load />
-    <div class="text-sm font-noto mt-4 text-pink-600">
-      ใช้ Email นิสิต (6xxxxxxx23@student.chula.ac.th) ในการเข้าสู่ระบบเท่านั้น
-    </div>
+<div class="flex flex-col items-center justify-center min-h-screen">
+  <div>
+    <Image src={Logo} alt="smo vidya election" class="w-60" />
   </div>
-</Layout>
+  <div class="h-5"></div>
+  <LoginButton client:load />
+  <div class="text-sm font-noto mt-4 text-pink-600">
+    ใช้ Email นิสิต (6xxxxxxx23@student.chula.ac.th) ในการเข้าสู่ระบบเท่านั้น
+  </div>
+</div>

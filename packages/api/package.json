@@ -22,7 +22,6 @@
     "@repo/constants": "workspace:*",
     "@sinclair/typebox": "^0.34.49",
     "elysia": "1",
-    "firebase-auth-cloudflare-workers": "^2.0.6",
     "jose": "^6.2.3",
     "neverthrow": "^8.2.0",
     "openapi-types": "^12.1.3"
