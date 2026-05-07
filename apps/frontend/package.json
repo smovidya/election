@@ -20,6 +20,7 @@
 		"@astrojs/preact": "^5.1.2",
 		"@astrojs/react": "^5.0.4",
 		"@elysia/eden": "^1.4.10",
+		"@fontsource-variable/noto-sans-thai-looped": "^5.2.3",
 		"@radix-ui/react-slot": "^1.2.4",
 		"@repo/api": "workspace:*",
 		"@repo/constants": "workspace:*",
