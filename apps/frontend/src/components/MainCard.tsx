@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import {
   event,
@@ -73,7 +73,14 @@ export default function MainCard({
 
   const t = i18n[lang];
 
-  const isLoggedIn = window && localStorage.getItem("session_token") != null;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    if (window !== undefined) {
+      setIsLoggedIn(
+        !!localStorage.getItem("session_token")
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const start = new Date(votingStartString);
@@ -188,8 +195,8 @@ export default function MainCard({
         <a
           href={isLoggedIn ? "/election" : "/login"}
           className={`px-12 py-3 rounded-2xl shadow-lg inline-flex items-center gap-2 ${canVote
-              ? "cursor-pointer bg-yellow"
-              : "pointer-events-none opacity-50"
+            ? "cursor-pointer bg-yellow"
+            : "pointer-events-none opacity-50"
             }`}
         >
           <img src={boxIconSrc} alt="" className="w-7 pointer-events-none" />
