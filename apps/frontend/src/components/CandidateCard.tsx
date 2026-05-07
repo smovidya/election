@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Candidate, Position, SupportedLanguage } from "@repo/constants";
+import { CornerDownLeft } from "lucide-react";
 
 interface Props {
 	candidate: Candidate;
@@ -40,28 +41,18 @@ export default function CandidateCard({
 	const experience =
 		candidate.personal_experience[lang] ??
 		candidate.personal_experience.th ??
-		"";
+        "";
 
+    const processedImageSrc = imageSrc
+    ? imageSrc.split(".")[0] + "_remove.png"
+    : undefined;
 	return (
 		<>
-			<div className="w-full bg-yellow pt-12 pb-24">
+			<div className="w-full bg-yellow pt-12 pb-24 ">
 				<div className="w-full max-w-3xl mx-auto px-8 sm:px-12">
-					<div className="flex justify-between items-center mb-4">
+					<div className="flex justify-between items-center mb-4 relative z-100">
 						<a href="/">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path d="M20 20v-7a4 4 0 0 0-4-4H4" />
-								<path d="M9 14 4 9l5-5" />
-							</svg>
+							<CornerDownLeft />
 						</a>
 						<button
 							className="text-xs font-semibold border border-black/30 rounded-lg px-3 py-1 bg-white/40 hover:bg-white/70 transition"
@@ -70,42 +61,44 @@ export default function CandidateCard({
 							{t.langToggle}
 						</button>
 					</div>
-					<div className="flex flex-row items-center w-full gap-x-8">
-						<div className="flex flex-col">
-							<h1 className="font-bold font-noto text-lg leading-tight">
+					<div className="flex flex-row items-center w-full pb-2 h-40 relative">
+						<div className="flex flex-col max-w-54 ">
+							<h1 className="font-bold font-noto text-2xl leading-tight mb-2">
 								{candidate?.full_name}
 							</h1>
 							<div className="font-light font-noto text-darkgray text-xs">
-								{t.candidateFor} {positionName}
+								{t.candidateFor} :
+                            </div>
+                            <div className="font-bold font-noto text-darkgray text-sm mb-1">
+								{positionName}
 							</div>
-							<div className="font-light font-noto text-darkgray text-xs mb-2">
-								{studyProgram} {t.year} {candidate.study_year}
+							<div className="font-light font-noto text-darkgray text-xs">
+								{studyProgram} <br/> {t.year} {candidate.study_year}
 							</div>
 						</div>
-						<div className="relative w-32 mt-0 mb-8 shrink-0">
+						<div className="absolute -right-10 -bottom-10 w-50 mt-0 shrink-0 z-2">
 							{imageSrc && (
 								<img
-									src={imageSrc}
+									src={processedImageSrc}
 									alt={candidate?.full_name}
-									className="w-full"
+									className="w-full -translate-y-2"
 									style={{ objectPosition: "top" }}
 								/>
 							)}
-							<div className="absolute top-0 left-0 w-full h-full bg-linear-to-b from-transparent via-transparent to-yellow/20 rounded-tr-[2.5rem]" />
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div className="w-full max-w-3xl mx-auto bg-white rounded-t-[2.5rem] pt-8 pb-8 -mt-24 px-8 sm:px-12">
-				{imageSrc && (
+			<div className="w-full max-w-3xl mx-auto bg-white rounded-t-[2.5rem] pt-8 pb-8 -mt-24 px-8 sm:px-12 relative z-10">
+				{/*{imageSrc && (
 					<img
 						src={imageSrc}
 						alt={candidate.full_name}
 						className="w-full rounded-2xl object-cover object-top mb-6"
 						style={{ maxHeight: "320px" }}
 					/>
-				)}
+				)}*/}
 				<h2 className="font-bold font-noto text-lg mb-4">{t.missionTitle}</h2>
 				<div className="font-noto text-sm text-black leading-relaxed space-y-4">
 					{mission.split("\n").map((line, i) => (

@@ -5,7 +5,7 @@ import CandidateLayout from "@/layouts/CandidateLayout.astro";
 import { getImage } from "astro:assets";
 
 const imageModules = import.meta.glob<{ default: ImageMetadata }>(
-	"../assets/*.{jpg,jpeg,png,webp}",
+	"../../assets/*.{jpg,jpeg,png,webp}",
 	{ eager: true },
 );
 
@@ -25,7 +25,7 @@ const position = running_positions.find(
 
 let imageSrc = "";
 if (candidate?.image) {
-	const key = `../assets${candidate.image}`;
+	const key = `../../assets${candidate.image}`;
 	const mod = imageModules[key];
 	if (mod?.default) {
 		const optimized = await getImage({ src: mod.default, format: "webp" });
