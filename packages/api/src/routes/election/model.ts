@@ -138,12 +138,12 @@ export class ElectionModel {
 
   async getCachedElectionResult() {
     return ResultAsync.fromPromise(
-      this.kv.get<OfficialElectionResult>("election-result", "json"),
+      this.kv.get<ElectionResult>("election-result", "json"),
       () => "internal-error" as const,
     );
   }
 
-  async setCachedElectionResult(electionResult: OfficialElectionResult) {
+  async setCachedElectionResult(electionResult: ElectionResult) {
     // this one will throw if we put the value more than once in 1 second.
     return ResultAsync.fromPromise(
       this.kv.put("election-result", JSON.stringify(electionResult), {

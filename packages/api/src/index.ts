@@ -254,6 +254,7 @@ export function createApp(adapter: Adapter, params: Params) {
             },
           },
         )
+        // Unofficial result
         .get(
           "/result",
           async ({ election, currentTime, status }) => {
@@ -326,7 +327,7 @@ export function createApp(adapter: Adapter, params: Params) {
             response: {
               200: t.Object({ success: t.Literal(true) }),
               401: t.Object({ error: AuthUnauthorizedError }),
-              403: t.Object({ error: t.Union([VoteError]) }),
+              403: t.Object({ error: VoteError }),
               500: t.Object({ error: t.String() }),
             },
           },
