@@ -16,5 +16,5 @@
     "url": "https://vidyachula.org"
   },
   "license": "MIT",
-  "packageManager": "pnpm@10.12.4"
+  "packageManager": "pnpm@11.0.8"
 }
