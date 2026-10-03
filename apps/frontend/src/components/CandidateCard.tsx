@@ -65,7 +65,7 @@ export default function CandidateCard({
     <>
       <div
         style={{ backgroundColor: headerColors.backgroundColor }}
-        className={`w-full pt-12 pb-24 ${headerColors.textClass}`}
+        className={`w-full overflow-x-clip pt-12 pb-24 ${headerColors.textClass}`}
       >
         <div className="w-full max-w-3xl mx-auto px-8 sm:px-12">
           <div className="flex justify-between items-center mb-4 relative z-100">
