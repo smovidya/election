@@ -1,8 +1,15 @@
-import React from "react";
+import { useEffect } from "react";
+import { completeOAuthSignIn } from "@/lib/auth";
 import Logo from "@/assets/logo-color-black.png";
 import LoginButton from "../components/ui/SignInWithGoogle.tsx";
 
 function LoginContainer() {
+	useEffect(() => {
+		void completeOAuthSignIn().catch((error: unknown) => {
+			alert(error instanceof Error ? error.message : "ไม่สามารถเข้าสู่ระบบได้ กรุณาลองอีกครั้ง");
+		});
+	}, []);
+
 	return (
 		<div className="w-full h-screen relative flex items-center justify-center">
 			<div
