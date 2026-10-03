@@ -6,6 +6,7 @@ import {
   type Candidate,
   type Party,
   type Position,
+  type LocalizedString,
 } from "@repo/constants";
 import { i18n } from "@/lib/i18n";
 import { CalendarDays, Clock3 } from "lucide-react";
@@ -16,7 +17,7 @@ interface Props {
   candidatesWithImages: CandidateWithImage[];
   parties: Party[];
   positions: Position[];
-  eventName: string;
+  eventName: LocalizedString;
   votingStartString: string;
   votingEndString: string;
   logoSrc: string;
@@ -160,7 +161,7 @@ export default function MainCard({
             {t.eventSubtitle}
           </h2>
           <h4 className="font-light font-noto text-xs text-lgray">
-            {lang === "th" ? eventName : "Academic Year 2026"}
+            {eventName[lang] ?? eventName.th ?? ""}
           </h4>
         </div>
 

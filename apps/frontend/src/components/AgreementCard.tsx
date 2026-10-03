@@ -8,6 +8,7 @@ import type {
 	Party,
 	Position,
 	SupportedLanguage,
+	LocalizedString,
 } from "@repo/constants";
 
 type CandidateWithImage = Candidate & { imageSrc: string };
@@ -16,7 +17,7 @@ interface Props {
 	candidatesWithImages: CandidateWithImage[];
 	parties: Party[];
 	positions: Position[];
-	eventName: string;
+	eventName: LocalizedString;
 	votingStartString: string;
 	votingEndString: string;
 }
@@ -129,9 +130,7 @@ export default function AgreementCard({
 				{/* Event info */}
 				<div className="mb-4 text-sm text-dgray space-y-1">
 					<p className="font-semibold text-black text-sm leading-snug">
-						{lang === "th"
-							? eventName
-							: "Re-election of the Science Student Union Committee, Faculty of Science, Chulalongkorn University 2026"}
+						{eventName[lang] ?? eventName.th ?? ""}
 					</p>
 					<p className="text-xs">
 						<span className="font-medium">{t.votingPeriod}: </span>
