@@ -17,6 +17,7 @@ if (typeof window !== "undefined") {
 		_locale.current = a;
 	}
 }
+export const localeChangeEvent = "election:locale-change";
 export const locale = {
 	get current() {
 		return _locale.current;
@@ -24,6 +25,7 @@ export const locale = {
 	set current(newValue) {
 		localStorage.setItem("locale", newValue);
 		_locale.current = newValue;
+		window.dispatchEvent(new Event(localeChangeEvent));
 		for (const r of reactInvalidators) {
 			r();
 		}
