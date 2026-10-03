@@ -1,3 +1,5 @@
+import { OfficialElectionResult } from "./types";
+
 export const full_name =
   "การเลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต ตำแหน่งอุปนายกคนที่ 2 คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569";
 export const short_name_th = "การเลือกตั้งซ่อมอุปนายก 2 สโม 69";
@@ -35,9 +37,9 @@ export const votingStart = new Date(votingStartString);
 export const votingEndString = "2026-10-05T17:00:00+07:00";
 export const votingEnd = new Date(votingEndString);
 
-export const isResultAnnounced = false;
+export const isResultAnnounced: boolean = false;
 
 export const officialElectionResult = {
   totalVotes: 0,
-  votesByPosition: {},
-};
+  votesByPosition: [],
+} satisfies OfficialElectionResult;
