@@ -58,3 +58,34 @@ pnpm --filter election-backend test
 
 The tests use an isolated local database and cover sessions, user switching,
 voting boundaries, ballot timestamps, duplicate voting, and production gates.
+
+## Production deployment
+
+Use Cloudflare account `e2069f9cc14d2fe64afc9d04ed6576bd`. Production has its own
+KV namespace; staging retains its existing namespace. Apply `db:seed:production`
+before deploying backend changes: it creates missing schema and the
+`ballots_record_voter` trigger without deleting existing votes.
+
+Vote submission uses one guarded SQL statement, with eligibility materialized
+before inserting ballots. The trigger records participation within that same
+statement. Concurrent duplicate submissions return `voted-already`; a failed
+ballot rolls back all ballots and participation. Keep the trigger installed when
+rolling back code; it is compatible with the previous writer.
+
+```sh
+export CLOUDFLARE_ACCOUNT_ID=e2069f9cc14d2fe64afc9d04ed6576bd
+pnpm --filter election-backend db:seed:production
+pnpm --filter election-backend deploy:production
+pnpm --filter election-frontend deploy:production
+```
+
+A first backend deployment requires a separate production `JWT_SECRET` Worker
+secret. The frontend deployment script builds in production mode before upload.
+The production URLs are `https://election.vidyachula.org` and
+`https://election-api.vidyachula.org`. Verify Google allows the JavaScript origin
+`https://election.vidyachula.org` and, for the redirect flow,
+`https://election.vidyachula.org/login`.
+
+The confirmed voting window is October 5, 2026, 07:00–17:00 Bangkok time;
+results stay hidden until `isResultAnnounced` is enabled and the window has closed.
+The integration tests also cover simultaneous submissions and statement rollback.

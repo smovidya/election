@@ -343,23 +343,15 @@ export function createApp(adapter: Adapter, params: Params) {
               }
             }
 
-            const isVotedResult = await election.isVoted({
-              voterId: user.value.studentId,
-            });
-            if (isVotedResult.isErr()) {
-              return status(500, { error: isVotedResult.error });
-            }
-
-            if (isVotedResult.value.isVoted) {
-              return status(403, { error: "voted-already" as const });
-            }
-
             const voteResult = await election.addVotes({
               voterId: user.value.studentId,
               votes: body.votes,
               currentTime,
             });
             if (voteResult.isErr()) {
+              if (voteResult.error === "voted-already") {
+                return status(403, { error: voteResult.error });
+              }
               return status(500, { error: voteResult.error });
             }
 

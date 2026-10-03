@@ -20,34 +20,33 @@ export class ElectionModel {
     currentTime?: Date;
   }) {
     const now = (currentTime ?? new Date()).toISOString();
-    const voteStatements = votes.map((vote) =>
-      this.db
-        .prepare(
-          "INSERT INTO ballots (id, studentIdHash, position, choice, createdAt) VALUES (?, ?, ?, ?, ?)",
-        )
-        .bind(
-          crypto.randomUUID(),
-          voterId,
-          vote.position,
-          String(vote.choice),
-          now,
-        ),
-    );
-    const addVoterStatement = this.db
-      .prepare(
-        "INSERT INTO voters (studentId, createdAt) VALUES (?, ?) ON CONFLICT(studentId) DO NOTHING",
+    // Materialize eligibility before inserting any rows. The trigger records the
+    // voter within this same SQL statement, so no separate read/write can race.
+    const statement = this.db.prepare(`
+      WITH eligible AS MATERIALIZED (
+        SELECT ? AS voterId, ? AS createdAt
+        WHERE NOT EXISTS (SELECT 1 FROM voters WHERE studentId = ?)
+          AND NOT EXISTS (SELECT 1 FROM ballots WHERE studentIdHash = ?)
       )
-      .bind(voterId, now);
-    voteStatements.push(addVoterStatement);
-
-    const result = await ResultAsync.fromPromise(
-      this.db.batch(voteStatements),
-      () => [],
+      INSERT INTO ballots (id, studentIdHash, position, choice, createdAt)
+      SELECT json_extract(value, '$.id'), eligible.voterId,
+             json_extract(value, '$.position'), json_extract(value, '$.choice'),
+             eligible.createdAt
+      FROM eligible CROSS JOIN json_each(?)
+      RETURNING id
+    `).bind(
+      voterId, now, voterId, voterId,
+      JSON.stringify(votes.map((vote) => ({ ...vote, id: crypto.randomUUID() }))),
     );
 
-    if (result.isErr()) return err("internal-error");
-
-    return result.value.every((r) => r.success) ? ok() : err("internal-error");
+    const result = await ResultAsync.fromPromise(statement.all(), (error) => error);
+    if (result.isErr()) {
+      console.error(result.error);
+      return err("internal-error" as const);
+    }
+    if (!result.value.success) return err("internal-error" as const);
+    if (result.value.results.length === 0) return err("voted-already" as const);
+    return ok();
   }
 
   async isVoted({ voterId }: { voterId: string }) {

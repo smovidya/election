@@ -2,6 +2,7 @@ import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { env } from "cloudflare:workers";
 import { CloudflareAdapter } from "elysia/adapter/cloudflare-worker";
 import { createApp } from "@repo/api";
+import { ElectionModel } from "../../../packages/api/src/routes/election/model";
 import { event, running_positions } from "../../../packages/constants/src";
 
 const before = new Date(event.votingStart.getTime() - 1000);
@@ -61,8 +62,55 @@ async function login(instance: TestApp, user = student) {
 
 beforeEach(async () => {
 	await env.DB.exec(
-		"CREATE TABLE IF NOT EXISTS ballots (id TEXT PRIMARY KEY, studentIdHash TEXT NOT NULL, position TEXT NOT NULL, choice TEXT NOT NULL, createdAt TEXT NOT NULL); CREATE TABLE IF NOT EXISTS voters (studentId TEXT PRIMARY KEY, createdAt TEXT NOT NULL); DELETE FROM ballots; DELETE FROM voters;",
+		"CREATE TABLE IF NOT EXISTS ballots (id TEXT PRIMARY KEY, studentIdHash TEXT NOT NULL, position TEXT NOT NULL, choice TEXT NOT NULL, createdAt TEXT NOT NULL); CREATE TABLE IF NOT EXISTS voters (studentId TEXT PRIMARY KEY, createdAt TEXT NOT NULL); CREATE TRIGGER IF NOT EXISTS ballots_record_voter AFTER INSERT ON ballots BEGIN INSERT INTO voters (studentId, createdAt) VALUES (NEW.studentIdHash, NEW.createdAt) ON CONFLICT(studentId) DO NOTHING; END; DELETE FROM ballots; DELETE FROM voters;",
 	);
+});
+
+describe("atomic vote submission", () => {
+  it("accepts exactly one of ten concurrent submissions", async () => {
+    const instance = app(false, event.votingStart);
+    const headers = await login(app());
+    const responses = await Promise.all(Array.from({ length: 10 }, () =>
+      request(instance, "/election/cast-vote", { votes }, headers),
+    ));
+    expect(responses.filter((response) => response.status === 200)).toHaveLength(1);
+    for (const response of responses.filter((response) => response.status !== 200)) {
+      expect(response.status).toBe(403);
+      expect(await response.json()).toEqual({ error: "voted-already" });
+    }
+    expect(await env.DB.prepare("SELECT COUNT(*) AS count FROM ballots").first("count"))
+      .toBe(votes.length);
+    expect(await env.DB.prepare("SELECT COUNT(*) AS count FROM voters").first("count"))
+      .toBe(1);
+  });
+
+  it("inserts every ballot before the participation trigger affects eligibility", async () => {
+    const model = new ElectionModel(env.DB, "test", env.KV as never);
+    const multipleVotes = [...votes, ...votes, ...votes];
+    expect((await model.addVotes({ voterId: student.studentId, votes: multipleVotes })).isOk())
+      .toBe(true);
+    expect(await env.DB.prepare("SELECT COUNT(*) AS count FROM ballots").first("count"))
+      .toBe(multipleVotes.length);
+    expect((await model.addVotes({ voterId: student.studentId, votes }))._unsafeUnwrapErr())
+      .toBe("voted-already");
+  });
+
+  it("rolls back all ballots and participation if a later ballot fails", async () => {
+    await env.DB.exec("CREATE TRIGGER test_ballot_failure BEFORE INSERT ON ballots WHEN NEW.choice = 'disapprove' BEGIN SELECT RAISE(ABORT, 'test failure'); END;");
+    try {
+      const model = new ElectionModel(env.DB, "test", env.KV as never);
+      const result = await model.addVotes({ voterId: student.studentId,
+        votes: [...votes, { ...votes[0]!, choice: "disapprove" }],
+      });
+      expect(result._unsafeUnwrapErr()).toBe("internal-error");
+      expect(await env.DB.prepare("SELECT COUNT(*) AS count FROM ballots").first("count"))
+        .toBe(0);
+      expect(await env.DB.prepare("SELECT COUNT(*) AS count FROM voters").first("count"))
+        .toBe(0);
+    } finally {
+      await env.DB.exec("DROP TRIGGER test_ballot_failure;");
+    }
+  });
 });
 
 describe("staging voting", () => {
