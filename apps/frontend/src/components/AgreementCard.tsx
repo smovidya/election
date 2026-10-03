@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { api, authHeader } from "@/lib/api";
 import { useLocale } from "@/lib/utils";
+import { i18n as sharedI18n } from "@/lib/i18n";
+import { getCandidateParty } from "@repo/constants";
 import type {
 	Candidate,
 	Party,
@@ -84,9 +86,6 @@ export default function AgreementCard({
 	const [error, setError] = useState(false);
 
 	const t = i18n[lang];
-	const find_party = (id: string) => {
-		return parties.find(item => item.party_id == id);
-	};
 
 	useEffect(() => {
 		const headers = authHeader();
@@ -112,7 +111,6 @@ export default function AgreementCard({
 		return value ?? t.loading;
 	};
 
-	const partyMap = Object.fromEntries(parties.map((p) => [p.party_id, p]));
 	const positionMap = Object.fromEntries(
 		positions.map((p) => [p.position_id, p]),
 	);
@@ -167,7 +165,7 @@ export default function AgreementCard({
 				<div className="space-y-3 mb-4">
 					{candidatesWithImages.map((c) => {
 						const position = positionMap[c.position_id];
-						const party = partyMap[c.party_id];
+						const party = getCandidateParty(c, parties);
 						return (
 							<div className="relative h-20">
 								<div
@@ -185,7 +183,7 @@ export default function AgreementCard({
 									)}
 									<div className="text-xs text-dgray min-w-0 pl-16">
 										<div className="font-semibold text-black text-sm truncate">
-											{c.full_name} <span className="text-xs text-gray-600 pl-1">({find_party(c.party_id)?.name[lang] ?? find_party(c.party_id)?.name.th})</span>
+											{c.full_name} <span className="text-xs text-gray-600 pl-1">({party?.name[lang] ?? party?.name.th ?? sharedI18n[lang].independentCandidate})</span>
 										</div>
 										<p className="truncate">
 											{position?.name[lang] ?? position?.name.th}

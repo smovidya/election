@@ -35,11 +35,14 @@ export type RunningPartyIDs = (typeof parties)[number]["party_id"];
 
 export interface Candidate {
   candidate_id: AlphaNumericString;
+  candidate_number?: number;
+  color?: string;
   full_name: string;
   study_year: number;
   study_program: LocalizedString;
   position_id: RunningPositionIDs;
-  party_id: RunningPartyIDs;
+  /** Omit or use null/"independent" for a candidate without a party. */
+  party_id?: RunningPartyIDs | "independent" | null;
   personal_vision: LocalizedString;
   personal_mission: LocalizedString;
   personal_experience: LocalizedString;

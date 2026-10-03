@@ -1,6 +1,7 @@
 import type { Candidate, Position, SupportedLanguage, Party } from "@repo/constants";
 import { CornerDownLeft } from "lucide-react";
 import { useLocale } from "@/lib/utils";
+import { getCandidateParty } from "@repo/constants";
 
 interface Props {
   candidate: Candidate;
@@ -44,10 +45,11 @@ export default function CandidateCard({
     candidate.personal_experience[lang] ??
     candidate.personal_experience.th ??
     "";
-  const partyColor = party?.color;
+  const candidateParty = getCandidateParty(candidate, party ? [party] : []);
+  const partyColor = candidate.color ?? candidateParty?.color;
   return (
     <>
-      <div style={{ backgroundColor: partyColor ?? "#FACC15" }} className={`w-full pt-12 pb-24 `}>
+      <div style={{ backgroundColor: partyColor ?? "#6b7280" }} className={`w-full pt-12 pb-24 `}>
         <div className="w-full max-w-3xl mx-auto px-8 sm:px-12">
           <div className="flex justify-between items-center mb-4 relative z-100">
             <a href="/">
@@ -105,6 +107,7 @@ export default function CandidateCard({
           ))}
         </div>
 
+        {experience && <>
         <div className="border-t border-black w-full my-6" />
         <h2 className="font-bold font-noto text-base leading-tight mb-4">
           {t.experienceTitle}
@@ -114,6 +117,7 @@ export default function CandidateCard({
             <p key={i}>{line}</p>
           ))}
         </div>
+        </>}
       </div>
     </>
   );

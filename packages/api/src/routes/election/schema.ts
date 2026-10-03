@@ -1,5 +1,5 @@
 import { type Static, t } from "elysia";
-import { running_positions, candidates } from "@repo/constants";
+import { running_positions, candidates, parties, getCandidateParty } from "@repo/constants";
 
 export const Position = t.Union([
   ...running_positions.map((position) =>
@@ -18,7 +18,7 @@ export const Choice = t.Union(
   [
     ...candidates.map((candidate) =>
       t.Literal(candidate.candidate_id, {
-        description: `ลงคะแนนให้ ${candidate.full_name} (${candidate.party_id})`,
+        description: `ลงคะแนนให้ ${candidate.full_name} (${getCandidateParty(candidate, parties)?.party_id ?? "independent"})`,
       }),
     ),
     t.Literal("no-vote", {

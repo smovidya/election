@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api, authHeader } from "@/lib/api";
 import { useLocale } from "@/lib/utils";
 import {
+  getCandidateParty,
   type Candidate,
   type Party,
   type Position,
@@ -107,7 +108,6 @@ export default function MainCard({
       .catch(() => { });
   }, []);
 
-  const partyMap = Object.fromEntries(parties.map((p) => [p.party_id, p]));
   const canVote = countdown.phase === "during";
 
   return (
@@ -233,18 +233,20 @@ export default function MainCard({
         />
 
         {/* Party policies */}
-        <div className="w-full flex flex-col shadow-lg rounded-xl py-7 px-5 font-noto mb-5">
-          {parties.map((party) => (
-            <div key={party.party_id}>
-              <h1 className="text-md text-center font-semibold text-black mb-2">
-                {t.policiesTitle} {party.name[lang] ?? party.name.th}
-              </h1>
-              <p className="text-xs text-lgray font-light leading-relaxed whitespace-pre-line">
-                {party.visions[lang] ?? party.visions.th}
-              </p>
-            </div>
-          ))}
-        </div>
+        {parties.length > 0 && (
+          <div className="w-full flex flex-col shadow-lg rounded-xl py-7 px-5 font-noto mb-5">
+            {parties.map((party) => (
+              <div key={party.party_id}>
+                <h1 className="text-md text-center font-semibold text-black mb-2">
+                  {t.policiesTitle} {party.name[lang] ?? party.name.th}
+                </h1>
+                <p className="text-xs text-lgray font-light leading-relaxed whitespace-pre-line">
+                  {party.visions[lang] ?? party.visions.th}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Candidates */}
         <div className="flex flex-col items-center w-full px-3">
@@ -258,7 +260,7 @@ export default function MainCard({
           </div>
           <div className="w-full">
             {candidatesWithImages.map((candidate, idx) => {
-              const party = partyMap[candidate.party_id];
+              const party = getCandidateParty(candidate, parties);
               const position = positions.find(
                 (p) => p.position_id === candidate.position_id,
               );
@@ -270,19 +272,22 @@ export default function MainCard({
                 >
                   <div
                     className="w-20 h-full flex flex-col justify-center text-center shrink-0"
-                    style={{ backgroundColor: party?.color ?? "#e5e7eb" }}
+                    style={{ backgroundColor: candidate.color ?? party?.color ?? "#6b7280" }}
                   >
                     <span className="font-semibold text-[0.625rem] leading-tight text-white">
                       {t.numberLabel}
                     </span>
                     <span className="text-5xl font-normal text-white">
-                      {idx + 1}
+                      {candidate.candidate_number ?? idx + 1}
                     </span>
                   </div>
                   <div className="flex-1 flex flex-row items-center justify-between bg-[#F3F3F3] min-w-0">
                     <div className="pl-3 pr-2 min-w-0">
+                      <p className="font-noto font-semibold text-xs text-lgray">
+                        {candidate.full_name}
+                      </p>
                       <p className="font-noto text-xs text-lgray truncate">
-                        {party?.name[lang] ?? party?.name.th}
+                        {party?.name[lang] ?? party?.name.th ?? t.independentCandidate}
                       </p>
                       <p className="font-noto font-normal text-md text-lgray whitespace-pre-line">
                         {position?.name[lang] ?? position?.name.th}

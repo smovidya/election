@@ -42,59 +42,65 @@
 </h2>
 
 <form {onsubmit}>
-  <!-- TODO: if we have multiple candidate per pos, this is needed to be rewrite -->
-  {#each candidates as c}
+  {#each running_positions as position}
+    {@const positionCandidates = candidates.filter((c) => c.position_id === position.position_id)}
+    {@const singleCandidate = positionCandidates.length === 1}
     <section class="w-full mb-8">
       <h3 class="text-xl font-semibold">
-        {t.position}{getPositionName(c.position_id)}
+        {t.position}{getPositionName(position.position_id)}
       </h3>
 
       <p class="text-gray-600 mb-6">
-        {t.instruction}
+        {singleCandidate ? t.instruction : t.selectCandidateInstruction}
       </p>
 
-      <CandidateCard
-        candidate={c}
-        candidateNumber={1}
-        image={images.get(c.candidate_id)}
-      />
-
+      {#each positionCandidates as c, index}
+        <CandidateCard
+          candidate={c}
+          candidateNumber={index + 1}
+          image={images.get(c.candidate_id)}
+        />
       <div class="space-y-2">
         <label class="flex items-center space-x-3">
           <input
             type="radio"
-            bind:group={votes[c.position_id]}
-            name={c.candidate_id}
+            bind:group={votes[position.position_id]}
+            name={position.position_id}
             value={c.candidate_id}
             class="h-5 w-5"
             required
           />
-          <span class="text-gray-700">{t.approve}</span>
+          <span class="text-gray-700">{singleCandidate ? t.approve : `${t.selectCandidate} ${c.candidate_number ?? index + 1}: ${c.full_name}`}</span>
         </label>
+      </div>
+      <div class="mb-6"></div>
+      {/each}
+      <div class="space-y-2">
+        {#if singleCandidate}
         <label class="flex items-center space-x-3">
           <input
             type="radio"
-            bind:group={votes[c.position_id]}
-            name={c.candidate_id}
+            bind:group={votes[position.position_id]}
+            name={position.position_id}
             value="disapprove"
             class="h-5 w-5"
           />
           <span class="text-gray-700">{t.disapprove}</span>
         </label>
+        {/if}
         <label class="flex items-center space-x-3">
           <input
             type="radio"
-            bind:group={votes[c.position_id]}
-            name={c.candidate_id}
+            bind:group={votes[position.position_id]}
+            name={position.position_id}
             value="no-vote"
             class="h-5 w-5"
           />
-          <span class="text-gray-700">{t.abstain}</span>
+          <span class="text-gray-700">{singleCandidate ? t.abstain : t.noVote}</span>
         </label>
       </div>
     </section>
   {/each}
-  <!-- President -->
 
   <hr class="my-8 border-gray-300" />
 

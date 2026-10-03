@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { parties, type Candidate, type SupportedLanguage } from "@repo/constants";
+  import { parties, getCandidateParty, type Candidate, type SupportedLanguage } from "@repo/constants";
   import { i18n } from "@/lib/i18n";
   import { locale } from "@/lib/utils";
 
@@ -13,21 +13,21 @@
 
   const t = $derived(i18n[locale.current]);
   const langId = $derived(locale.current);
+  const party = $derived(getCandidateParty(c, parties));
 </script>
 
 <div class="flex h-32 mb-6 gap-1">
   <div
     class="flex flex-col w-1/5 items-center justify-center shadow-lg"
-    style="background: {parties.find((it) => it.party_id === c.party_id)!
-      .color};"
+    style="background: {c.color ?? party?.color ?? '#6b7280'};"
   >
     <span class="text-xs font-bold text-white">{t.numberLabel}</span>
-    <span class="text-2xl font-bold text-white">{candidateNumber}</span>
+    <span class="text-2xl font-bold text-white">{c.candidate_number ?? candidateNumber}</span>
   </div>
 
   <div class="p-3 w-3/5 bg-white shadow-lg">
     <p class="font-bold text-sm">
-      {t.party}{parties.find((it) => it.party_id === c.party_id)!.name[langId]}
+      {party ? t.party + (party.name[langId] ?? party.name.th ?? '') : t.independentCandidate}
     </p>
     <p class="font-bold text-sm">{c.full_name}</p>
     <div class="h-2.5"></div>

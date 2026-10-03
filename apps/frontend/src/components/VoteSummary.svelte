@@ -21,32 +21,36 @@
   }
 </script>
 
-<!-- REwrite needed, if there are more than 1 party -->
 <h1 class="text-xl font-bold text-center mt-16">{t.reviewTitle}</h1>
 <h2 class="text-base text-gray-500 text-center text-pretty">
   {t.reviewSubtitle}
 </h2>
 
 <div class="space-y-8">
-  {#each candidates as c, index}
-    {@const vote = votes[c.position_id]}
+  {#each running_positions as position}
+    {@const vote = votes[position.position_id]}
+    {@const positionCandidates = candidates.filter((c) => c.position_id === position.position_id)}
+    {@const selectedCandidate = positionCandidates.find((c) => c.candidate_id === vote)}
+    {@const singleCandidate = positionCandidates.length === 1}
     <section class="mb-12 mt-12">
       <h3 class="text-xl font-semibold mb-4">
-        {t.position}{getPositionName(c.position_id)}
+        {t.position}{getPositionName(position.position_id)}
       </h3>
 
+      {#if selectedCandidate}
       <CandidateCard
-        candidate={c}
-        candidateNumber={1}
-        image={images.get(c.candidate_id)}
+        candidate={selectedCandidate}
+        candidateNumber={positionCandidates.indexOf(selectedCandidate) + 1}
+        image={images.get(selectedCandidate.candidate_id)}
       />
+      {/if}
 
       <div class="mt-4 font-semibold">
-        {#if vote === c.candidate_id}
+        {#if selectedCandidate}
           <span
             class="px-4 py-2 rounded-lg bg-green-100 text-green-800 border-green-300 border"
           >
-            {t.approve}
+            {singleCandidate ? t.approve : t.selectCandidate}
           </span>
         {:else if vote === "disapprove"}
           <span
@@ -58,7 +62,7 @@
           <span
             class="px-4 py-2 rounded-lg bg-neutral-100 text-neutral-800 border-neutral-300 border"
           >
-            {t.abstain}
+            {singleCandidate ? t.abstain : t.noVote}
           </span>
         {/if}
       </div>

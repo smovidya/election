@@ -2,7 +2,10 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "election-frontend",
 	"compatibility_date": "2026-05-05",
-	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
 	"assets": {
 		// "binding": "ASSETS",
 		"directory": "./dist"
@@ -19,7 +22,8 @@
 		"production": {
 			"vars": {
 				"ENVIRONMENT": "production",
-				"PUBLIC_BACKEND_URL": "https://election-api.vidyachula.org"
+				"PUBLIC_BACKEND_URL": "https://election-api.vidyachula.org",
+				"GOOGLE_CLIENT_ID": "878635631561-996p9vdbemp1n3r7dcs91i9f0e6i25fi.apps.googleusercontent.com"
 			},
 			"route": {
 				"pattern": "election.vidyachula.org",
@@ -29,7 +33,8 @@
 		"staging": {
 			"vars": {
 				"ENVIRONMENT": "staging",
-				"PUBLIC_BACKEND_URL": "https://election-api-staging.vidyachula.org"
+				"PUBLIC_BACKEND_URL": "https://election-api-staging.vidyachula.org",
+				"GOOGLE_CLIENT_ID": "878635631561-996p9vdbemp1n3r7dcs91i9f0e6i25fi.apps.googleusercontent.com"
 			},
 			"route": {
 				"pattern": "election-staging.vidyachula.org",
