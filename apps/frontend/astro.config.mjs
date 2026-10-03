@@ -30,6 +30,12 @@ export default defineConfig({
 	// adapter: cloudflare(),
 	env: {
 		schema: {
+			APP_ENV: envField.enum({
+				context: "client",
+				access: "public",
+				values: ["dev", "staging", "production"],
+				default: "production",
+			}),
 			API_URL: envField.string({
 				context: "client",
 				access: "public",
