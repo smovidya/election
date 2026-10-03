@@ -1,10 +1,18 @@
 import { OfficialElectionResult } from "./types";
 
-export const full_name =
-  "การเลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต ตำแหน่งอุปนายกคนที่ 2 คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569";
-export const short_name_th = "การเลือกตั้งซ่อมอุปนายก 2 สโม 69";
-export const description =
-  "การเลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต ตำแหน่งอุปนายกคนที่ 2 คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569 จะจัดขึ้นเพื่อเลือกตั้งคณะกรรมการบริหารสโมสรนิสิตในตำแหน่งตำแหน่งอุปนายกคนที่ 2 ที่ยังว่างอยู่";
+export const full_name = {
+  th: "การเลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต ตำแหน่งอุปนายกคนที่ 2 คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569",
+  en: "By-election for the Student Union Executive Committee, 2nd Vice President, Faculty of Science, Chulalongkorn University, Academic Year 2026",
+};
+export const short_name = {
+  th: "การเลือกตั้งซ่อมอุปนายก 2 สโม 69",
+  en: "By-election of VP2, SUCU 2026",
+}
+
+export const description = {
+  th: "การเลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต ตำแหน่งอุปนายกคนที่ 2 คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569 จะจัดขึ้นเพื่อเลือกตั้งคณะกรรมการบริหารสโมสรนิสิตในตำแหน่งตำแหน่งอุปนายกคนที่ 2 ที่ยังว่างอยู่",
+  en: "The by-election for the Student Union Executive Committee, 2nd Vice President, Faculty of Science, Chulalongkorn University, Academic Year 2026 is held to elect a new Vice President 2 to fill the vacant position in the Student Union Executive Committee.",
+};
 // export const eligibleVoters = 3001;
 
 /**
