@@ -118,7 +118,7 @@ export default function AgreementCard({
 		<div className="bg-yellow min-h-screen p-3 flex items-center justify-center font-noto">
 			<div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
 				{/* Lang switcher */}
-				<div className="flex justify-end mb-4">
+				<div className="flex justify-end mb-4 float-end">
 					<button
 						className="text-xs font-semibold border border-dgray rounded-lg px-3 py-1 hover:bg-yellow/30 transition"
 						onClick={() => setLang(lang === "th" ? "en" : "th")}
