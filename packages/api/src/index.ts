@@ -22,6 +22,7 @@ import { err, fromPromise } from "neverthrow";
 
 export type Params = {
   isDev: boolean;
+  isStaging?: boolean;
   DB?: D1Database;
   KV?: KVNamespace;
   SITE_URL?: string;
@@ -335,9 +336,11 @@ export function createApp(adapter: Adapter, params: Params) {
               return status(401, { error: "invalid-token" as const });
             }
 
-            const periodCheck = election.votingPeriodChecker({ currentTime });
-            if (periodCheck.isErr()) {
-              return status(403, { error: periodCheck.error });
+            if (!params.isStaging) {
+              const periodCheck = election.votingPeriodChecker({ currentTime });
+              if (periodCheck.isErr()) {
+                return status(403, { error: periodCheck.error });
+              }
             }
 
             const isVotedResult = await election.isVoted({
