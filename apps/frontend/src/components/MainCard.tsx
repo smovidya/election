@@ -10,6 +10,7 @@ import {
 } from "@repo/constants";
 import { i18n } from "@/lib/i18n";
 import { CalendarDays, Clock3 } from "lucide-react";
+import AddToCalendar from "./AddToCalendar";
 
 type CandidateWithImage = Candidate & { imageSrc: string };
 
@@ -140,7 +141,7 @@ export default function MainCard({
     <div className="flex flex-col w-full h-auto bg-yellow select-none">
       {/* Yellow section */}
       <div className="pt-10 mb-10 px-10">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-4 float-end">
           <button
             className="text-xs font-semibold border border-black/30 rounded-lg px-3 py-1 bg-white/40 hover:bg-white/70 transition"
             onClick={() => setLang(lang === "th" ? "en" : "th")}
@@ -202,7 +203,11 @@ export default function MainCard({
               aria-hidden="true"
             />
             <div className="min-w-0 text-xs text-lgray">
-              <p className="mb-1 font-semibold text-black">{t.votingStarts}</p>
+              <AddToCalendar
+                name={eventName}
+                start={votingStartString}
+                end={votingEndString}
+              />
               <time
                 dateTime={votingStartString}
                 className="block font-medium text-black"
