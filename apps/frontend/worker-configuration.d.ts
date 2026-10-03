@@ -14,27 +14,16 @@ declare namespace Cloudflare {
 	}
 	interface Env {
 		ENVIRONMENT: "production" | "staging" | "dev";
-		PUBLIC_BACKEND_URL:
-			| "https://election-api.vidyachula.org"
-			| "https://election-api-staging.vidyachula.org"
-			| "http://localhost:8787";
+		PUBLIC_BACKEND_URL: "https://election-api.vidyachula.org" | "https://election-api-staging.vidyachula.org" | "http://localhost:8787";
 		GOOGLE_CLIENT_ID?: "878635631561-996p9vdbemp1n3r7dcs91i9f0e6i25fi.apps.googleusercontent.com";
 	}
 }
 interface Env extends Cloudflare.Env {}
 type StringifyValues<EnvType extends Record<string, unknown>> = {
-	[Binding in keyof EnvType]: EnvType[Binding] extends string
-		? EnvType[Binding]
-		: string;
+	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv
-		extends StringifyValues<
-			Pick<
-				Cloudflare.Env,
-				"ENVIRONMENT" | "PUBLIC_BACKEND_URL" | "GOOGLE_CLIENT_ID"
-			>
-		> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "ENVIRONMENT" | "PUBLIC_BACKEND_URL" | "GOOGLE_CLIENT_ID">> {}
 }
 
 // Begin runtime types

@@ -126,8 +126,9 @@ pnpm --filter election-backend run db:seed:production
 
 ```ts
 // ชื่อการเลือกตั้ง
-export const full_name = "การเลือกตั้ง...";
-export const short_name_th = "...";
+export const full_name = { th: "การเลือกตั้ง...", en: "Election..." };
+export const short_name = { th: "...", en: "..." };
+export const description = { th: "รายละเอียด...", en: "Description..." };
 
 // วันเวลาเปิด-ปิดโหวต (ISO 8601, timezone +07:00)
 export const votingStartString = "YYYY-MM-DDTHH:mm:ss+07:00";
