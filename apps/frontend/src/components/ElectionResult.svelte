@@ -1,92 +1,92 @@
 <script lang="ts">
-  import CandidateCard from "@/components/CandidateCard.svelte";
-  import VoterCount from "@/components/VoterCount.svelte";
-  import { candidates, type SupportedLanguage } from "@repo/constants";
-  import { api } from "@/lib/api";
-  import { i18n } from "@/lib/i18n";
-  import { locale } from "@/lib/utils";
+import CandidateCard from "@/components/CandidateCard.svelte";
+import VoterCount from "@/components/VoterCount.svelte";
+import { candidates, type SupportedLanguage } from "@repo/constants";
+import { api } from "@/lib/api";
+import { i18n } from "@/lib/i18n";
+import { locale } from "@/lib/utils";
 
-  // Assuming Position and Choice types as specified
-  type Position = string;
-  type Choice = string | "disapprove" | "no-vote";
+// Assuming Position and Choice types as specified
+type Position = string;
+type Choice = string | "disapprove" | "no-vote";
 
-  const t = $derived(i18n[locale.current]);
+const t = $derived(i18n[locale.current]);
 
-  type ElectionResultType = {
-    totalVotes: number;
-    votesByPosition: Record<Position, Record<Choice, number>>;
-  };
+type ElectionResultType = {
+	totalVotes: number;
+	votesByPosition: Record<Position, Record<Choice, number>>;
+};
 
-  const getResults = async () => {
-    // const res = await api.election.result.get();
-    // if (res.error) throw new Error("Failed to fetch results");
-    // return res.data as ElectionResultType;
-    const res: ElectionResultType = {
-      totalVotes: 1323,
-      votesByPosition: {
-        sfds: {
-          "no-vote": 1223,
-          disapprove: 1223,
-          c1: 1,
-        },
-      },
-    };
+const getResults = async () => {
+	// const res = await api.election.result.get();
+	// if (res.error) throw new Error("Failed to fetch results");
+	// return res.data as ElectionResultType;
+	const res: ElectionResultType = {
+		totalVotes: 1323,
+		votesByPosition: {
+			sfds: {
+				"no-vote": 1223,
+				disapprove: 1223,
+				c1: 1,
+			},
+		},
+	};
 
-    return res;
-  };
+	return res;
+};
 
-  let resultsPromise = getResults();
+let resultsPromise = getResults();
 
-  const calculatePercent = (count: number, total: number) => {
-    if (total === 0) return "0.0%";
-    return `${((count / total) * 100).toFixed(1)}%`;
-  };
+const calculatePercent = (count: number, total: number) => {
+	if (total === 0) return "0.0%";
+	return `${((count / total) * 100).toFixed(1)}%`;
+};
 
-  // Process candidates from result
-  const getPositions = (result: ElectionResultType) => {
-    return Object.entries(result.votesByPosition)
-      .map(([positionId, votes]) => {
-        // Calculate total votes for this position
-        const totalVotesForPosition = Object.values(votes).reduce(
-          (sum, count) => sum + count,
-          0,
-        );
+// Process candidates from result
+const getPositions = (result: ElectionResultType) => {
+	return Object.entries(result.votesByPosition)
+		.map(([positionId, votes]) => {
+			// Calculate total votes for this position
+			const totalVotesForPosition = Object.values(votes).reduce(
+				(sum, count) => sum + count,
+				0,
+			);
 
-        const disapproveCount = votes["disapprove"] || 0;
+			const disapproveCount = votes["disapprove"] || 0;
 
-        // Create an array of candidate results for this position
-        const candidateResults = Object.entries(votes)
-          .filter(
-            ([choice, _]) => choice !== "disapprove" && choice !== "no-vote",
-          )
-          .map(([candidateId, count], index) => {
-            const candidateInfo = candidates.find(
-              (c) => c.candidate_id === candidateId,
-            );
-            return {
-              position: positionId,
-              candidateNumber: index + 1,
-              candidate: candidateInfo,
-              image: candidateInfo?.image,
-              approve: calculatePercent(count, totalVotesForPosition),
-              abstain: calculatePercent(
-                votes["no-vote"] || 0,
-                totalVotesForPosition,
-              ),
-              disapprove: calculatePercent(
-                disapproveCount,
-                totalVotesForPosition,
-              ),
-              votesReceivedCount: `${count}${t.votesSuffix}`,
-              disapproveCount: `${disapproveCount}${t.votesSuffix}`,
-              abstainCount: `${votes["no-vote"] || 0}${t.votesSuffix}`,
-            };
-          });
+			// Create an array of candidate results for this position
+			const candidateResults = Object.entries(votes)
+				.filter(
+					([choice, _]) => choice !== "disapprove" && choice !== "no-vote",
+				)
+				.map(([candidateId, count], index) => {
+					const candidateInfo = candidates.find(
+						(c) => c.candidate_id === candidateId,
+					);
+					return {
+						position: positionId,
+						candidateNumber: index + 1,
+						candidate: candidateInfo,
+						image: candidateInfo?.image,
+						approve: calculatePercent(count, totalVotesForPosition),
+						abstain: calculatePercent(
+							votes["no-vote"] || 0,
+							totalVotesForPosition,
+						),
+						disapprove: calculatePercent(
+							disapproveCount,
+							totalVotesForPosition,
+						),
+						votesReceivedCount: `${count}${t.votesSuffix}`,
+						disapproveCount: `${disapproveCount}${t.votesSuffix}`,
+						abstainCount: `${votes["no-vote"] || 0}${t.votesSuffix}`,
+					};
+				});
 
-        return candidateResults;
-      })
-      .flat();
-  };
+			return candidateResults;
+		})
+		.flat();
+};
 </script>
 
 {#await resultsPromise}

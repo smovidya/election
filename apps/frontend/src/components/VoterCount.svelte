@@ -1,44 +1,44 @@
 <script lang="ts">
-  import { i18n } from "@/lib/i18n";
-  import { locale } from "@/lib/utils";
-  import type { SupportedLanguage } from "@repo/constants";
+import { i18n } from "@/lib/i18n";
+import { locale } from "@/lib/utils";
+import type { SupportedLanguage } from "@repo/constants";
 
-  interface Props {
-    totalVotes?: number;
-    loading?: boolean;
-  }
+interface Props {
+	totalVotes?: number;
+	loading?: boolean;
+}
 
-  let { totalVotes = 326, loading = false }: Props = $props();
+let { totalVotes = 326, loading = false }: Props = $props();
 
-  const t = $derived(i18n[locale.current]);
+const t = $derived(i18n[locale.current]);
 
-  let currentCount = $state(0);
+let currentCount = $state(0);
 
-  $effect(() => {
-    let start = 0;
-    let end = totalVotes;
-    let duration = 2000;
-    let startTime = performance.now();
-    let animationFrame: number;
+$effect(() => {
+	let start = 0;
+	let end = totalVotes;
+	let duration = 2000;
+	let startTime = performance.now();
+	let animationFrame: number;
 
-    loading = false; // We start animating immediately when totalVotes is provided
+	loading = false; // We start animating immediately when totalVotes is provided
 
-    function updateCount(currentTime: number) {
-      const elapsedTime = currentTime - startTime;
-      const progress = Math.min(elapsedTime / duration, 1);
-      currentCount = Math.floor(progress * (end - start) + start);
+	function updateCount(currentTime: number) {
+		const elapsedTime = currentTime - startTime;
+		const progress = Math.min(elapsedTime / duration, 1);
+		currentCount = Math.floor(progress * (end - start) + start);
 
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(updateCount);
-      }
-    }
+		if (progress < 1) {
+			animationFrame = requestAnimationFrame(updateCount);
+		}
+	}
 
-    animationFrame = requestAnimationFrame(updateCount);
+	animationFrame = requestAnimationFrame(updateCount);
 
-    return () => {
-      cancelAnimationFrame(animationFrame);
-    };
-  });
+	return () => {
+		cancelAnimationFrame(animationFrame);
+	};
+});
 </script>
 
 <div class="flex flex-col items-center">

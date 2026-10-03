@@ -1,37 +1,37 @@
 <script lang="ts">
-  import CandidateCard from "./CandidateCard.svelte";
-  import {
-    candidates,
-    running_positions,
-    type Candidate,
-    type SupportedLanguage,
-  } from "@repo/constants";
-  import { i18n } from "@/lib/i18n";
-  import { locale } from "@/lib/utils";
+import CandidateCard from "./CandidateCard.svelte";
+import {
+	candidates,
+	running_positions,
+	type Candidate,
+	type SupportedLanguage,
+} from "@repo/constants";
+import { i18n } from "@/lib/i18n";
+import { locale } from "@/lib/utils";
 
-  type CandidateId = Candidate["candidate_id"];
+type CandidateId = Candidate["candidate_id"];
 
-  type Position = string;
-  type Choice = string;
-  interface Props {
-    images: Map<CandidateId, string>;
-    onSubmit: () => any;
-    votes: Record<Position, Choice>;
-  }
+type Position = string;
+type Choice = string;
+interface Props {
+	images: Map<CandidateId, string>;
+	onSubmit: () => any;
+	votes: Record<Position, Choice>;
+}
 
-  const { images = new Map(), onSubmit, votes = $bindable() }: Props = $props();
+const { images = new Map(), onSubmit, votes = $bindable() }: Props = $props();
 
-  const t = $derived(i18n[locale.current]);
-  const langId = $derived(locale.current);
+const t = $derived(i18n[locale.current]);
+const langId = $derived(locale.current);
 
-  function getPositionName(id: string) {
-    return running_positions.find((it) => it.position_id === id)!.name[langId];
-  }
+function getPositionName(id: string) {
+	return running_positions.find((it) => it.position_id === id)!.name[langId];
+}
 
-  function onsubmit(event: SubmitEvent) {
-    event.preventDefault();
-    onSubmit();
-  }
+function onsubmit(event: SubmitEvent) {
+	event.preventDefault();
+	onSubmit();
+}
 </script>
 
 <h1 class="text-xl font-bold text-center mt-16 mb-3 whitespace-pre-line">

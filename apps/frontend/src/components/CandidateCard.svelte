@@ -1,19 +1,24 @@
 <script lang="ts">
-  import { parties, getCandidateParty, type Candidate, type SupportedLanguage } from "@repo/constants";
-  import { i18n } from "@/lib/i18n";
-  import { locale } from "@/lib/utils";
+import {
+	parties,
+	getCandidateParty,
+	type Candidate,
+	type SupportedLanguage,
+} from "@repo/constants";
+import { i18n } from "@/lib/i18n";
+import { locale } from "@/lib/utils";
 
-  interface Props {
-    candidate: Candidate;
-    image?: string;
-    candidateNumber: number;
-  }
+interface Props {
+	candidate: Candidate;
+	image?: string;
+	candidateNumber: number;
+}
 
-  const { candidate: c, image, candidateNumber }: Props = $props();
+const { candidate: c, image, candidateNumber }: Props = $props();
 
-  const t = $derived(i18n[locale.current]);
-  const langId = $derived(locale.current);
-  const party = $derived(getCandidateParty(c, parties));
+const t = $derived(i18n[locale.current]);
+const langId = $derived(locale.current);
+const party = $derived(getCandidateParty(c, parties));
 </script>
 
 <div class="flex h-32 mb-6 gap-1">

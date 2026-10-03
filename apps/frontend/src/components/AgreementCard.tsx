@@ -10,7 +10,7 @@ import type {
 	SupportedLanguage,
 } from "@repo/constants";
 
-type CandidateWithImage = Candidate & { imageSrc: string; };
+type CandidateWithImage = Candidate & { imageSrc: string };
 
 interface Props {
 	candidatesWithImages: CandidateWithImage[];
@@ -94,16 +94,14 @@ export default function AgreementCard({
 			return;
 		}
 
-		api.auth.me
-			.get({ headers })
-			.then(({ data, error }) => {
-				if (error || !data) {
-					setError(true);
-					return;
-				}
-				setStudentId(data.studentId);
-				setStudentName(data.studentName);
-			});
+		api.auth.me.get({ headers }).then(({ data, error }) => {
+			if (error || !data) {
+				setError(true);
+				return;
+			}
+			setStudentId(data.studentId);
+			setStudentName(data.studentName);
+		});
 	}, []);
 
 	const displayValue = (value: string | null) => {
@@ -171,19 +169,25 @@ export default function AgreementCard({
 								<div
 									key={c.candidate_id}
 									className="flex items-center gap-3 rounded-xl border border-gray-200 p-2"
-								// style={{ borderLeftColor: party?.color, borderLeftWidth: 4 }}
+									// style={{ borderLeftColor: party?.color, borderLeftWidth: 4 }}
 								>
 									{c.imageSrc && (
 										<img
 											src={c.imageSrc}
 											alt={c.full_name}
-
 											className=" w-16 -top-4 left-1 absolute"
 										/>
 									)}
 									<div className="text-xs text-dgray min-w-0 pl-16">
 										<div className="font-semibold text-black text-sm truncate">
-											{c.full_name} <span className="text-xs text-gray-600 pl-1">({party?.name[lang] ?? party?.name.th ?? sharedI18n[lang].independentCandidate})</span>
+											{c.full_name}{" "}
+											<span className="text-xs text-gray-600 pl-1">
+												(
+												{party?.name[lang] ??
+													party?.name.th ??
+													sharedI18n[lang].independentCandidate}
+												)
+											</span>
 										</div>
 										<p className="truncate">
 											{position?.name[lang] ?? position?.name.th}

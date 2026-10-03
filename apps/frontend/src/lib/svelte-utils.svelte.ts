@@ -1,7 +1,7 @@
 export class State<T> {
-  current: T
+	current: T;
 
-  constructor(initialValue: T) {
-    this.current = $state(initialValue)
-  }
+	constructor(initialValue: T) {
+		this.current = $state(initialValue);
+	}
 }

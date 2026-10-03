@@ -5,19 +5,19 @@ import react from "@astrojs/react";
 import svelte from "@astrojs/svelte";
 
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  output: "static",
-  integrations: [react(), svelte()],
-  // adapter: cloudflare(),
-  env: {
-    schema: {
-      API_URL: envField.string({
-        context: "client",
-        access: "public",
-        default: "http://localhost:8787",
-      }),
-    },
-  },
+	vite: {
+		plugins: [tailwindcss()],
+	},
+	output: "static",
+	integrations: [react(), svelte()],
+	// adapter: cloudflare(),
+	env: {
+		schema: {
+			API_URL: envField.string({
+				context: "client",
+				access: "public",
+				default: "http://localhost:8787",
+			}),
+		},
+	},
 });

@@ -1,53 +1,53 @@
 <script lang="ts">
-  import { api, authHeader } from "@/lib/api";
-  import { onMount } from "svelte";
-  import VoteRouter from "./VoteRouter.svelte";
-  import LogoImg from "@/assets/logo-black.png";
-  import { event, type SupportedLanguage } from "@repo/constants";
-  import { i18n } from "@/lib/i18n";
-  import Redirect from "./Redirect.svelte";
-  import { locale } from "@/lib/utils";
+import { api, authHeader } from "@/lib/api";
+import { onMount } from "svelte";
+import VoteRouter from "./VoteRouter.svelte";
+import LogoImg from "@/assets/logo-black.png";
+import { event, type SupportedLanguage } from "@repo/constants";
+import { i18n } from "@/lib/i18n";
+import Redirect from "./Redirect.svelte";
+import { locale } from "@/lib/utils";
 
-  interface Props {
-    candidateImages: [string, string][]; // we cant pass map from astro (i think)
-  }
+interface Props {
+	candidateImages: [string, string][]; // we cant pass map from astro (i think)
+}
 
-  let { candidateImages }: Props = $props();
+let { candidateImages }: Props = $props();
 
-  // this needed to be in global store
-  const t = $derived(i18n[locale.current]);
-  function toggleLanguage() {
-    locale.current = locale.current === "th" ? "en" : "th";
-  }
+// this needed to be in global store
+const t = $derived(i18n[locale.current]);
+function toggleLanguage() {
+	locale.current = locale.current === "th" ? "en" : "th";
+}
 
-  let eligibility = $state(null) as null | {
-    reason?: string;
-    eligible?: boolean;
-  };
+let eligibility = $state(null) as null | {
+	reason?: string;
+	eligible?: boolean;
+};
 
-  onMount(() => {
-    load();
-  });
+onMount(() => {
+	load();
+});
 
-  async function load() {
-    const headers = authHeader();
-    if (!headers) {
-      // redirect back to login page
-      window.location.href = "/";
-      return;
-    }
+async function load() {
+	const headers = authHeader();
+	if (!headers) {
+		// redirect back to login page
+		window.location.href = "/";
+		return;
+	}
 
-    const { data, error } = await api.election.eligibility.get({
-      headers,
-    });
+	const { data, error } = await api.election.eligibility.get({
+		headers,
+	});
 
-    if (error) {
-      alert(`${t.errorTitle}`);
-      eligibility = {};
-      return;
-    }
-    eligibility = data;
-  }
+	if (error) {
+		alert(`${t.errorTitle}`);
+		eligibility = {};
+		return;
+	}
+	eligibility = data;
+}
 </script>
 
 <div class="flex flex-col w-full min-h-screen bg-yellow select-none">

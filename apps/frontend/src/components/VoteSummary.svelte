@@ -1,24 +1,28 @@
 <script lang="ts">
-  import { candidates, running_positions, type SupportedLanguage } from "@repo/constants";
-  import CandidateCard from "./CandidateCard.svelte";
-  import { i18n } from "@/lib/i18n";
-  import { locale } from "@/lib/utils";
+import {
+	candidates,
+	running_positions,
+	type SupportedLanguage,
+} from "@repo/constants";
+import CandidateCard from "./CandidateCard.svelte";
+import { i18n } from "@/lib/i18n";
+import { locale } from "@/lib/utils";
 
-  interface Props {
-    images: Map<string, string>;
-    votes: Record<string, string>;
-    onBack: () => any;
-    onConfirm: () => Promise<any>;
-  }
+interface Props {
+	images: Map<string, string>;
+	votes: Record<string, string>;
+	onBack: () => any;
+	onConfirm: () => Promise<any>;
+}
 
-  let { votes, images, onBack, onConfirm }: Props = $props();
+let { votes, images, onBack, onConfirm }: Props = $props();
 
-  const t = $derived(i18n[locale.current]);
-  const langId = $derived(locale.current);
+const t = $derived(i18n[locale.current]);
+const langId = $derived(locale.current);
 
-  function getPositionName(id: string) {
-    return running_positions.find((it) => it.position_id === id)!.name[langId];
-  }
+function getPositionName(id: string) {
+	return running_positions.find((it) => it.position_id === id)!.name[langId];
+}
 </script>
 
 <h1 class="text-xl font-bold text-center mt-16">{t.reviewTitle}</h1>

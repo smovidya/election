@@ -1,67 +1,66 @@
 <script lang="ts">
-  import VotePage from "@/components/VotePage.svelte";
-  import LogoImg from "@/assets/logo-black.png";
-  import { event, type SupportedLanguage } from "@repo/constants";
-  import { i18n } from "@/lib/i18n";
-  import VoteSummary from "./VoteSummary.svelte";
-  import { api, authHeader } from "@/lib/api";
-  import { locale } from "@/lib/utils";
+import VotePage from "@/components/VotePage.svelte";
+import LogoImg from "@/assets/logo-black.png";
+import { event, type SupportedLanguage } from "@repo/constants";
+import { i18n } from "@/lib/i18n";
+import VoteSummary from "./VoteSummary.svelte";
+import { api, authHeader } from "@/lib/api";
+import { locale } from "@/lib/utils";
 
-  type Page = "vote" | "review";
+type Page = "vote" | "review";
 
-  interface Props {
-    candidateImages: [string, string][]; // we cant pass map from astro (i think)
-  }
+interface Props {
+	candidateImages: [string, string][]; // we cant pass map from astro (i think)
+}
 
-  let { candidateImages }: Props = $props();
-  const images = $derived(new Map(candidateImages));
+let { candidateImages }: Props = $props();
+const images = $derived(new Map(candidateImages));
 
-  const t = $derived(i18n[locale.current]);
+const t = $derived(i18n[locale.current]);
 
-  let page = $state("vote" as Page);
-  let votes: Record<string, string> = $state({});
-  
+let page = $state("vote" as Page);
+let votes: Record<string, string> = $state({});
 
-  let submitting = $state(false);
-  async function sumbitVote() {
-    if (submitting) {
-      return;
-    }
-    submitting = true;
+let submitting = $state(false);
+async function sumbitVote() {
+	if (submitting) {
+		return;
+	}
+	submitting = true;
 
-    const token = window.localStorage.getItem("session_token");
-    if (!token) {
-      console.error("No token found");
-      submitting = false;
-      return;
-    }
+	const token = window.localStorage.getItem("session_token");
+	if (!token) {
+		console.error("No token found");
+		submitting = false;
+		return;
+	}
 
-    const formattedVotes = [];
-    for (const [key, value] of Object.entries(votes)) {
-      formattedVotes.push({
-        choice: value,
-        position: key,
-      });
-    }
+	const formattedVotes = [];
+	for (const [key, value] of Object.entries(votes)) {
+		formattedVotes.push({
+			choice: value,
+			position: key,
+		});
+	}
 
-    const { error, data } = await api.election["cast-vote"].post(
-      {
-        votes: formattedVotes as any,
-      },
-      {
-        headers: authHeader()!,
-      },
-    );
+	const { error, data } = await api.election["cast-vote"].post(
+		{
+			votes: formattedVotes as any,
+		},
+		{
+			headers: authHeader()!,
+		},
+	);
 
-    console.log({ data, error });
-    if (error) {
-      alert(`${t.errorPrefix} ${JSON.stringify(error)}`);
-    } else {
-      window.location.href = "/finish";
-    }
+	console.log({ data, error });
+	if (error) {
+		alert(`${t.errorPrefix} ${JSON.stringify(error)}`);
+	} else {
+		window.location.href = "/finish";
+	}
 
-    submitting = false;
-  }
+	submitting = false;
+}
 </script>
 
 <div

@@ -8,10 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-
 const _locale = new State<SupportedLanguage>("th");
 if (typeof window !== "undefined") {
-	const a = localStorage.getItem("locale") as any ?? "th";
+	const a = (localStorage.getItem("locale") as any) ?? "th";
 	if (a !== "en" && a !== "th") {
 		_locale.current = "th";
 	} else {
@@ -28,9 +27,8 @@ export const locale = {
 		for (const r of reactInvalidators) {
 			r();
 		}
-	}
+	},
 };
-
 
 let reactInvalidators: (() => any)[] = [];
 
@@ -38,12 +36,12 @@ export function useLocale() {
 	const [_, invalidate] = useState(0);
 	useEffect(() => {
 		const fn = () => {
-			invalidate(i => i + 1);
+			invalidate((i) => i + 1);
 		};
 		reactInvalidators.push(fn);
 
 		return () => {
-			reactInvalidators = reactInvalidators.filter(it => it === fn);
+			reactInvalidators = reactInvalidators.filter((it) => it === fn);
 		};
 	}, []);
 

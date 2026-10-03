@@ -5,22 +5,22 @@ import { candidates } from "@repo/constants";
 import { getImage } from "astro:assets";
 
 const imageModules = import.meta.glob<{ default: ImageMetadata }>(
-  "../assets/*.{jpg,jpeg,png,webp}",
-  { eager: true },
+	"../assets/*.{jpg,jpeg,png,webp}",
+	{ eager: true },
 );
 
 const candidateImages = await Promise.all(
-  candidates.map(async (candidate) => {
-    const filename = candidate.image ?? "";
-    const key = `../assets${filename}`;
-    const mod = imageModules[key];
-    let imageSrc = "";
-    if (mod) {
-      const optimized = await getImage({ src: mod.default, format: "webp" });
-      imageSrc = optimized.src;
-    }
-    return [candidate.candidate_id, imageSrc] as [string, string];
-  }),
+	candidates.map(async (candidate) => {
+		const filename = candidate.image ?? "";
+		const key = `../assets${filename}`;
+		const mod = imageModules[key];
+		let imageSrc = "";
+		if (mod) {
+			const optimized = await getImage({ src: mod.default, format: "webp" });
+			imageSrc = optimized.src;
+		}
+		return [candidate.candidate_id, imageSrc] as [string, string];
+	}),
 );
 ---
 
