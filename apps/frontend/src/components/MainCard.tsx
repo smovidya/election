@@ -11,6 +11,7 @@ import {
 import { i18n } from "@/lib/i18n";
 import { CalendarDays, Clock3 } from "lucide-react";
 import AddToCalendar from "./AddToCalendar";
+import { electionNow } from "@/lib/clock";
 
 type CandidateWithImage = Candidate & { imageSrc: string };
 
@@ -37,7 +38,7 @@ interface Countdown {
 }
 
 function computeCountdown(start: Date, end: Date): Countdown {
-  const now = Date.now();
+  const now = electionNow();
   const target = now < start.getTime() ? start : end;
   const phase: Phase =
     now < start.getTime() ? "before" : now < end.getTime() ? "during" : "ended";
@@ -69,9 +70,8 @@ export default function MainCard({
   lineSrc,
 }: Props) {
   const [lang, setLang] = useLocale();
-  const [countdown, setCountdown] = useState<Countdown>(() =>
-    computeCountdown(new Date(votingStartString), new Date(votingEndString)),
-  );
+  // Read the browser clock after hydration; SSR cannot see a tab's mock time.
+  const [countdown, setCountdown] = useState<Countdown | null>(null);
   const [voterCount, setVoterCount] = useState<number | null>(null);
 
   const t = i18n[lang];
@@ -93,6 +93,7 @@ export default function MainCard({
   useEffect(() => {
     const start = new Date(votingStartString);
     const end = new Date(votingEndString);
+    setCountdown(computeCountdown(start, end));
     const id = setInterval(
       () => setCountdown(computeCountdown(start, end)),
       1000,
@@ -112,13 +113,17 @@ export default function MainCard({
       .catch(() => {});
   }, []);
 
-  const canVote = countdown.phase === "during";
-  const countdownUnits = [
-    ...(countdown.days > 0 ? [{ value: countdown.days, label: t.days }] : []),
-    { value: countdown.hours, label: t.hours },
-    { value: countdown.minutes, label: t.minutes },
-    { value: countdown.seconds, label: t.seconds },
-  ];
+  const canVote = countdown?.phase === "during";
+  const countdownUnits = countdown
+    ? [
+        ...(countdown.days > 0
+          ? [{ value: countdown.days, label: t.days }]
+          : []),
+        { value: countdown.hours, label: t.hours },
+        { value: countdown.minutes, label: t.minutes },
+        { value: countdown.seconds, label: t.seconds },
+      ]
+    : [];
   const formatVotingDate = (value: string) =>
     new Intl.DateTimeFormat(lang === "th" ? "th-TH" : "en-GB", {
       timeZone: "Asia/Bangkok",
@@ -171,13 +176,15 @@ export default function MainCard({
           <div className="px-4 py-5 text-center">
             <h2 className="mb-4 flex items-center justify-center gap-2 text-sm font-medium text-lgray">
               <Clock3 size={16} aria-hidden="true" />
-              {countdown.phase === "before"
-                ? t.countdownBefore
-                : canVote
-                  ? t.countdownDuring
-                  : t.countdownEnded}
+              {!countdown
+                ? t.loading
+                : countdown.phase === "before"
+                  ? t.countdownBefore
+                  : canVote
+                    ? t.countdownDuring
+                    : t.countdownEnded}
             </h2>
-            {countdown.phase !== "ended" && (
+            {countdown && countdown.phase !== "ended" && (
               <div
                 role="timer"
                 aria-live="off"

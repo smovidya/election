@@ -1,6 +1,7 @@
 {
   "name": "election-backend",
   "scripts": {
+    "test": "vitest run",
     "dev": "pnpm generate-types && wrangler dev",
     "deploy:production": "wrangler deploy --env production",
     "deploy:staging": "wrangler deploy --env staging",

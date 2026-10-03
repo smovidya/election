@@ -1,15 +1,32 @@
 // @ts-check
-import { defineConfig, envField } from "astro/config";
-import tailwindcss from "@tailwindcss/vite";
+
 import react from "@astrojs/react";
 import svelte from "@astrojs/svelte";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig, envField } from "astro/config";
 
 export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 	},
 	output: "static",
-	integrations: [react(), svelte()],
+	integrations: [
+		react(),
+		svelte(),
+		{
+			name: "election-dev-tools",
+			hooks: {
+				"astro:config:setup": ({ addDevToolbarApp }) => {
+					addDevToolbarApp({
+						id: "election-dev-tools",
+						name: "Election mocks",
+						icon: "🗳️",
+						entrypoint: "./src/dev-toolbar/election.ts",
+					});
+				},
+			},
+		},
+	],
 	// adapter: cloudflare(),
 	env: {
 		schema: {
