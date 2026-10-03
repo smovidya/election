@@ -23,9 +23,10 @@ vi.stubGlobal(
 );
 afterAll(() => vi.unstubAllGlobals());
 
-function app(isDev = true, now = before) {
+function app(isDev = true, now = before, isStaging = false) {
 	return createApp(CloudflareAdapter, {
 		isDev,
+		isStaging,
 		DB: env.DB,
 		// Worker runtime types and @cloudflare/workers-types use different KV declarations.
 		KV: env.KV as never,
@@ -62,6 +63,98 @@ beforeEach(async () => {
 	await env.DB.exec(
 		"CREATE TABLE IF NOT EXISTS ballots (id TEXT PRIMARY KEY, studentIdHash TEXT NOT NULL, position TEXT NOT NULL, choice TEXT NOT NULL, createdAt TEXT NOT NULL); CREATE TABLE IF NOT EXISTS voters (studentId TEXT PRIMARY KEY, createdAt TEXT NOT NULL); DELETE FROM ballots; DELETE FROM voters;",
 	);
+});
+
+describe("staging voting", () => {
+	it("accepts votes outside the election window while production rejects them", async () => {
+		const after = new Date(event.votingEnd.getTime() + 1000);
+		for (const [index, time] of [before, after].entries()) {
+			const headers = await login(app(), {
+				studentId: index === 0 ? "6930000023" : "6930000123",
+				studentName: "Staging voter",
+			});
+			const staging = app(false, time, true);
+			expect((await request(staging, "/auth/dev-login", student)).status).toBe(
+				404,
+			);
+			expect(
+				(await request(staging, "/election/cast-vote", { votes })).status,
+			).toBe(401);
+			const productionVote = await request(
+				app(false, time),
+				"/election/cast-vote",
+				{ votes },
+				headers,
+			);
+			expect(productionVote.status).toBe(403);
+			expect(await productionVote.json()).toEqual({
+				error: index === 0 ? "election-not-started" : "election-ended",
+			});
+			const stagingVote = await request(
+				staging,
+				"/election/cast-vote",
+				{ votes },
+				headers,
+			);
+			expect(stagingVote.status).toBe(200);
+			expect(await stagingVote.json()).toEqual({ success: true });
+		}
+	});
+
+	it("still allows only one vote per student and keeps real timestamps", async () => {
+		const headers = await login(app());
+		const staging = app(false, before, true);
+		expect(
+			(await request(staging, "/election/cast-vote", { votes }, headers))
+				.status,
+		).toBe(200);
+		const duplicate = await request(
+			staging,
+			"/election/cast-vote",
+			{ votes },
+			headers,
+		);
+		expect(duplicate.status).toBe(403);
+		expect(await duplicate.json()).toEqual({ error: "voted-already" });
+		expect(
+			await (
+				await request(staging, "/election/eligibility", undefined, headers)
+			).json(),
+		).toMatchObject({ eligible: false, reason: "voted-already" });
+		expect(
+			await env.DB.prepare("SELECT COUNT(*) FROM ballots").first("COUNT(*)"),
+		).toBe(running_positions.length);
+		expect(
+			await env.DB.prepare("SELECT createdAt FROM ballots LIMIT 1").first(
+				"createdAt",
+			),
+		).toBe(before.toISOString());
+		// The bypass concerns voting only; results still respect the election window.
+		expect(await (await request(staging, "/election/result")).json()).toEqual({
+			error: "election-not-started",
+		});
+	});
+
+	it("still expires sessions after 30 minutes", async () => {
+		const headers = await login(app());
+		const token = headers.Authorization.slice(7);
+		const claims = JSON.parse(
+			atob(token.split(".")[1]!.replace(/-/g, "+").replace(/_/g, "/")),
+		);
+		expect(claims.exp - claims.iat).toBe(30 * 60);
+		try {
+			vi.setSystemTime(new Date((claims.exp + 1) * 1000));
+			const response = await request(
+				app(false, before, true),
+				"/election/cast-vote",
+				{ votes },
+				headers,
+			);
+			expect(response.status).toBe(401);
+		} finally {
+			vi.useRealTimers();
+		}
+	});
 });
 
 describe("development mocks", () => {
