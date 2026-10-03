@@ -2,6 +2,8 @@
 import "../styles/global.css";
 import "../styles/fonts.css";
 import { event } from "@repo/constants";
+import { APP_ENV } from "astro:env/client";
+import StagingBanner from "../components/StagingBanner.astro";
 ---
 
 <!doctype html>
@@ -46,6 +48,7 @@ import { event } from "@repo/constants";
   </noscript>
 
   <body class="max-w-md mx-auto">
+    {APP_ENV === "staging" && <StagingBanner />}
     <main class="contents">
       <slot />
     </main>
