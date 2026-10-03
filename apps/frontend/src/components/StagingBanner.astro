@@ -1,0 +1,35 @@
+---
+import { i18n } from "@/lib/i18n";
+
+interface Props {
+  receipt?: boolean;
+}
+
+const { receipt = false } = Astro.props;
+const key = receipt ? "stagingReceipt" : "stagingBanner";
+---
+
+<aside
+  data-staging-banner={receipt ? "receipt" : "page"}
+  class="w-full px-4 py-3 text-center font-noto text-sm font-semibold leading-relaxed"
+  style="background-color: #facc15; color: #1c1917;"
+>
+  <span data-staging-message={key}>{i18n.th[key]}</span>
+</aside>
+
+<script>
+  import { i18n } from "@/lib/i18n";
+  import { locale, localeChangeEvent } from "@/lib/utils";
+
+  function updateBanners() {
+    document.querySelectorAll<HTMLElement>("[data-staging-message]").forEach((element) => {
+      const key = element.dataset.stagingMessage;
+      if (key === "stagingBanner" || key === "stagingReceipt") {
+        element.textContent = i18n[locale.current][key];
+        element.lang = locale.current;
+      }
+    });
+  }
+  updateBanners();
+  window.addEventListener(localeChangeEvent, updateBanners);
+</script>

@@ -12,6 +12,7 @@ import { i18n } from "@/lib/i18n";
 import { CalendarDays, Clock3 } from "lucide-react";
 import AddToCalendar from "./AddToCalendar";
 import { electionNow } from "@/lib/clock";
+import { APP_ENV } from "astro:env/client";
 
 type CandidateWithImage = Candidate & { imageSrc: string };
 
@@ -113,7 +114,8 @@ export default function MainCard({
       .catch(() => {});
   }, []);
 
-  const canVote = countdown?.phase === "during";
+  const isStaging = APP_ENV === "staging";
+  const canVote = isStaging || countdown?.phase === "during";
   const countdownUnits = countdown
     ? [
         ...(countdown.days > 0
@@ -176,7 +178,9 @@ export default function MainCard({
           <div className="px-4 py-5 text-center">
             <h2 className="mb-4 flex items-center justify-center gap-2 text-sm font-medium text-lgray">
               <Clock3 size={16} aria-hidden="true" />
-              {!countdown
+              {isStaging
+                ? t.stagingVotingOpen
+                : !countdown
                 ? t.loading
                 : countdown.phase === "before"
                   ? t.countdownBefore
@@ -184,7 +188,7 @@ export default function MainCard({
                     ? t.countdownDuring
                     : t.countdownEnded}
             </h2>
-            {countdown && countdown.phase !== "ended" && (
+            {!isStaging && countdown && countdown.phase !== "ended" && (
               <div
                 role="timer"
                 aria-live="off"
