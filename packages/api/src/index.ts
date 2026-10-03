@@ -10,7 +10,7 @@ import {
   AuthUnauthorizedError,
   AuthForbiddenError,
   User,
-} from "$lib/auth";
+} from "./lib/auth";
 import {
   ElectionService,
   ElectionPeriodError,
@@ -27,6 +27,7 @@ export type Params = {
   SITE_URL?: string;
   GOOGLE_CLIENT_ID?: string;
   JWT_SECRET: string;
+  now?: () => Date;
 };
 
 export type AppEnv = {
@@ -70,25 +71,18 @@ export function createApp(adapter: Adapter, params: Params) {
       }),
     )
     .derive(({ headers }) => {
-      const now = new Date();
-      if (env.IS_DEV && headers.authorization?.startsWith("Basic ")) {
-        const [_, rawToken] = headers.authorization.split(" ");
-
-        if (rawToken) {
-          const token = Buffer.from(rawToken, "base64").toString("utf-8");
-          const [__, ...time] = token.split(":"); // js is shit
-
-          console.log("[DEV] Mock time:", time.join(":") || "now");
-
-          if (time.length) {
-            const date = new Date(time.join(":"));
-            if (!Number.isNaN(date.valueOf())) {
-              // sometime we will get an invalid date
-              return {
-                currentTime: date,
-              };
-            }
-          }
+      const now = params.now?.() ?? new Date();
+      const mockTime = headers["x-dev-time"];
+      if (env.IS_DEV && mockTime) {
+        // Require an explicit timezone so browser and Worker agree.
+        const date = new Date(mockTime);
+        if (
+          /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(
+            mockTime,
+          ) &&
+          !Number.isNaN(date.valueOf())
+        ) {
+          return { currentTime: date };
         }
       }
 
@@ -98,7 +92,9 @@ export function createApp(adapter: Adapter, params: Params) {
     })
     .derive(async ({ headers, jwt }) => {
       const auth = new AuthService(headers, env);
-      const [_, token] = headers.authorization?.split(" ") ?? [];
+      const token = headers.authorization?.startsWith("Bearer ")
+        ? headers.authorization.slice(7)
+        : undefined;
       if (!token) {
         return {
           auth,
@@ -175,6 +171,33 @@ export function createApp(adapter: Adapter, params: Params) {
           ),
           MeSuccessResponse: User,
         })
+        .post(
+          "/dev-login",
+          async ({ body, jwt, status }) => {
+            if (!env.IS_DEV)
+              return status(404, { error: "not-found" as const });
+            const now = Math.floor(Date.now() / 1000);
+            return {
+              jwtSessionToken: await jwt.sign({
+                t: "session",
+                ...body,
+                exp: now + 60 * 30,
+                nbf: now - 60,
+              }),
+            };
+          },
+          {
+            body: t.Object({
+              studentId: t.String({ pattern: "^\\d{8}23$" }),
+              studentName: t.String({ minLength: 1, maxLength: 100 }),
+            }),
+            response: {
+              200: "LoginSuccessResponse",
+              404: t.Object({ error: t.Literal("not-found") }),
+            },
+            detail: { hide: true },
+          },
+        )
         .post(
           "/login",
           async ({ body, jwt, auth, status }) => {
@@ -331,6 +354,7 @@ export function createApp(adapter: Adapter, params: Params) {
             const voteResult = await election.addVotes({
               voterId: user.value.studentId,
               votes: body.votes,
+              currentTime,
             });
             if (voteResult.isErr()) {
               return status(500, { error: voteResult.error });

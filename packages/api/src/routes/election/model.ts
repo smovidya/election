@@ -10,8 +10,16 @@ export class ElectionModel {
     public kv: AppEnv["KV"],
   ) {}
 
-  async addVotes({ voterId, votes }: { voterId: string; votes: Vote[] }) {
-    const now = new Date().toISOString();
+  async addVotes({
+    voterId,
+    votes,
+    currentTime,
+  }: {
+    voterId: string;
+    votes: Vote[];
+    currentTime?: Date;
+  }) {
+    const now = (currentTime ?? new Date()).toISOString();
     const voteStatements = votes.map((vote) =>
       this.db
         .prepare(

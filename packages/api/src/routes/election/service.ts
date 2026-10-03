@@ -67,8 +67,16 @@ export class ElectionService {
   // 	currentTime,
   // }: { voterId: string; votes: Vote[]; currentTime: Date }) {}
 
-  async addVotes({ voterId, votes }: { voterId: string; votes: Vote[] }) {
-    return await this.model.addVotes({ voterId, votes });
+  async addVotes({
+    voterId,
+    votes,
+    currentTime,
+  }: {
+    voterId: string;
+    votes: Vote[];
+    currentTime?: Date;
+  }) {
+    return await this.model.addVotes({ voterId, votes, currentTime });
   }
 
   async isVoted({ voterId }: { voterId: string }) {

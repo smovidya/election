@@ -2,9 +2,11 @@
 import { Image } from "astro:assets";
 import BigBox from "@/pics/finish/BigBox.webp";
 import Logo from "@/assets/logo-color-black.png";
-import download from "@/pics/finish/download.webp";
 import link from "@/pics/finish/link.webp";
+import { i18n } from "@/lib/i18n";
 import Layout from "../layouts/Layout.astro";
+
+const t = i18n.th;
 ---
 
 <Layout>
@@ -13,55 +15,72 @@ import Layout from "../layouts/Layout.astro";
     class="w-full min-h-screen bg-white flex justify-center"
   >
     <div class="w-[390px] flex flex-col items-center justify-center px-4 py-6">
-      <Image src={Logo} alt={"logo"} class="w-30 my-2" />
+      <Image src={Logo} alt="SMO Vidya" class="w-30 my-2" />
 
       <div
         class="font-noto mb-7 font-medium text-pink text-lg text-center whitespace-pre-line"
       >
-        <h class="leading-relaxed text-pink-500">
-          คุณได้ลงคะแนนเสียง เสร็จสิ้นเป็นที่เรียบร้อยแล้ว
-        </h>
+        <h1 data-finish-i18n="finishSuccess" class="leading-relaxed text-pink-500">{t.finishSuccess}</h1>
       </div>
 
-      <Image src={BigBox} alt={"bigbox"} class="w-25 my-2" />
+      <Image src={BigBox} alt="" class="w-25 my-2" />
 
       <div
         class="font-noto font-medium text-black text-md text-center whitespace-pre-line my-5 leading-relaxed"
       >
-        <h>
-          ขอขอบคุณที่ร่วมเป็นส่วนหนึ่งในการลงคะแนนเสียง
-          เลือกตั้งคณะกรรมการบริหารสโมสรนิสิต คณะวิทยาศาสตร์
-          จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2568
-        </h>
+        <p data-finish-i18n="finishThankYou">{t.finishThankYou}</p>
       </div>
 
       <div id="buttonGroup" class="flex flex-row gap-3 my-3">
+        <button id="finishLanguageBtn" type="button" class="text-xs font-semibold border border-dgray rounded-lg px-3 py-1 hover:bg-yellow/30 transition" aria-label="Switch to English" lang="en">{t.langToggle}</button>
         <button
           id="screenshotBtn"
+          type="button"
           class="bg-yellow py-3 rounded-2xl shadow-lg inline-flex items-center gap-2 px-10"
         >
-          <Image src={link} alt={"share"} class="w-5" />
-          <h1 class="font-medium font-noto text-base text-brown">แชร์</h1>
+          <Image src={link} alt="" class="w-5" />
+          <span data-finish-i18n="share" class="font-medium font-noto text-base text-brown">{t.share}</span>
         </button>
       </div>
 
       <div
         class="font-noto font-normal text-dgray text-sm text-center whitespace-pre-line my-3 leading-loose"
       >
-        <h>
-          สามารถติดตามผลการเลือกตั้งได้ที่ Instagram : smovidya_official และ
-          Facebook : สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย - CU
-          Smovidya
-        </h>
+        <p data-finish-i18n="followResults">{t.followResults}</p>
       </div>
     </div>
   </div>
 </Layout>
 
 <script>
+  import { i18n } from "@/lib/i18n";
+  import { locale } from "@/lib/utils";
+
   document.addEventListener("DOMContentLoaded", () => {
     const screenshotBtn = document.getElementById("screenshotBtn");
     const buttonGroup = document.getElementById("buttonGroup");
+    const languageBtn = document.getElementById("finishLanguageBtn");
+    type FinishText = "finishSuccess" | "finishThankYou" | "share" | "followResults";
+
+    const renderLanguage = () => {
+      const lang = locale.current;
+      const t = i18n[lang];
+      document.documentElement.lang = lang;
+      document.querySelectorAll<HTMLElement>("[data-finish-i18n]").forEach((element) => {
+        const key = element.dataset.finishI18n as FinishText;
+        element.textContent = t[key];
+      });
+      if (languageBtn) {
+        languageBtn.textContent = t.langToggle;
+        languageBtn.lang = lang === "th" ? "en" : "th";
+        languageBtn.setAttribute("aria-label", lang === "th" ? "Switch to English" : "เปลี่ยนเป็นภาษาไทย");
+      }
+    };
+    renderLanguage();
+    languageBtn?.addEventListener("click", () => {
+      locale.current = locale.current === "th" ? "en" : "th";
+      renderLanguage();
+    });
 
     const hideButtons = () => {
       if (buttonGroup) buttonGroup.style.display = "none";
@@ -137,6 +156,7 @@ import Layout from "../layouts/Layout.astro";
 
     if (screenshotBtn) {
       screenshotBtn.addEventListener("click", async () => {
+        const t = i18n[locale.current];
         try {
           const canvas = await captureScreenshot();
 
@@ -155,8 +175,8 @@ import Layout from "../layouts/Layout.astro";
           // ถ้า browser รองรับ Web Share API + share ไฟล์ได้
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
-              title: "ผลการลงคะแนนเสียง",
-              text: "ฉันได้ลงคะแนนเสียงเลือกตั้งสโมสรนิสิตคณะวิทยาศาสตร์ จุฬาฯ เรียบร้อยแล้ว!",
+              title: t.shareTitle,
+              text: t.shareText,
               files: [file],
             });
           } else {
@@ -170,7 +190,7 @@ import Layout from "../layouts/Layout.astro";
         } catch (error: any) {
           // ผู้ใช้กด cancel ไม่ต้องแสดง error
           if (error?.name !== "AbortError") {
-            alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+            alert(t.errorTryAgain);
           }
         }
       });
