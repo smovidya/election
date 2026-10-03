@@ -35,6 +35,14 @@ Wrangler uses local D1/KV by default. Changing users does not erase votes.
 
 ## API and tests
 
+Staging builds use `APP_ENV=staging` from `apps/frontend/.env.staging` and display
+a yellow testing banner on every page, plus a testing label in shared receipts.
+Voting is available before and after the election window on staging only.
+Google login, 30-minute session expiry, eligibility, and one vote per student
+still apply. Results keep their normal announcement restrictions. Production
+builds use `APP_ENV=production` and retain the voting window. Frontend environment
+flags are set during the Astro build, not from Wrangler runtime variables.
+
 In development, `POST /auth/dev-login` accepts `{ studentId, studentName }` and
 returns `{ jwtSessionToken }`. Send that token as `Authorization: Bearer …`.
 An independent `X-Dev-Time` header accepts an ISO timestamp with seconds and an
