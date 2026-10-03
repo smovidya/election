@@ -73,7 +73,7 @@ async function load() {
         {t.eventSubtitle}
       </h2>
       <h4 class="font-light font-noto text-xs text-lgray">
-        {locale.current === "th" ? event.full_name : "Academic Year 2026"}
+        {event.full_name[locale.current] ?? event.full_name.th}
       </h4>
       <!-- <div class="mt-6">
         <p class="text-center text-lgray font-light text-xs">
