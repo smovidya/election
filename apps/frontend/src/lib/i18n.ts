@@ -2,6 +2,10 @@ import { event } from "@repo/constants";
 
 export const i18n = {
   th: {
+    stagingBanner: "[ทดสอบระบบ] คะแนนที่ลงในระบบนี้ไม่นับรวมในการเลือกตั้งจริง",
+    stagingReceipt:
+      "ใบยืนยันการลงคะแนนขณะทดสอบ ไม่ใช่การลงคะแนนในการเลือกตั้งจริง",
+    stagingVotingOpen: "ระบบทดสอบเปิดให้ลงคะแนนได้ทุกเวลา",
     langToggle: "EN",
     eventTitle: "เลือกตั้งซ่อมคณะกรรมการบริหารสโมสรนิสิต",
     eventSubtitle: "คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
@@ -71,6 +75,10 @@ export const i18n = {
     errorTryAgain: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
   },
   en: {
+    stagingBanner:
+      "Testing environment — votes here do not count toward the official election.",
+    stagingReceipt: "Test voting receipt — not an official election vote.",
+    stagingVotingOpen: "Test voting is available at any time",
     langToggle: "TH",
     eventTitle: "Re-Election of the Student Union Committee",
     eventSubtitle: "Faculty of Science, Chulalongkorn University",
