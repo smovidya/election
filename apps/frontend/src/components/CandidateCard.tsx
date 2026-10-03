@@ -148,7 +148,7 @@ export default function CandidateCard({
         {experience && (
           <>
             <div className="border-t border-black w-full my-6" />
-            <h2 className="font-bold font-noto text-base leading-tight mb-4">
+            <h2 className="font-bold font-noto text-lg leading-tight mb-4">
               {t.experienceTitle}
             </h2>
             <div className="space-y-3 text-sm font-noto">
