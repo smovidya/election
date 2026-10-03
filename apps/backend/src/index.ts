@@ -4,6 +4,7 @@ import { env } from 'cloudflare:workers';
 
 const app = createApp(CloudflareAdapter, {
 	isDev: env.ENVIRONMENT === 'dev',
+	isStaging: env.ENVIRONMENT === 'staging',
 	DB: env.DB,
 	// @ts-expect-error - KVNamespace typing is weird
 	KV: env.KV,
