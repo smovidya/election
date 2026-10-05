@@ -27,7 +27,7 @@ astro preferences enable devToolbar`.
 Changes reload the page. Frozen time persists across navigation in the same tab.
 The countdown, backend voting checks, results time checks, and ballot/voter
 timestamps use the same time. OAuth and session expiry continue using real time.
-Results still require `isResultAnnounced` in `packages/constants/src/event.ts`.
+Results use `resultStatus` in `packages/constants/src/event.ts`.
 
 The toolbar runs only under `astro dev`. The backend accepts development login
 and time headers only when `ENVIRONMENT=dev`; staging and production disable both.
@@ -87,5 +87,39 @@ The production URLs are `https://election.vidyachula.org` and
 `https://election.vidyachula.org/login`.
 
 The confirmed voting window is October 5, 2026, 07:00–17:00 Bangkok time;
-results stay hidden until `isResultAnnounced` is enabled and the window has closed.
+results stay hidden until `resultStatus` is `unofficial` or `official` and the window has closed.
 The integration tests also cover simultaneous submissions and statement rollback.
+
+## Publishing results
+
+Set `resultStatus` in `packages/constants/src/event.ts`:
+
+- `"hidden"`: the homepage hides results and the API rejects result requests.
+- `"unofficial"`: the homepage displays the database tally as unofficial results.
+- `"official"`: the homepage and API use `officialElectionResult` as certified results,
+  bypassing the database tally and its cache.
+
+All modes keep results unavailable before voting closes. Redeploy **both** apps
+using the production deployment commands above after changing the status or counts.
+No database seed is needed for a result-only change.
+
+Before switching to `"official"`, replace `officialElectionResult` with verified
+counts for every position and choice. For the current by-election, the format is:
+
+```ts
+export const officialElectionResult: OfficialElectionResult = {
+  totalVotes: 0, // Replace with the certified number of voters.
+  votesByPosition: [{
+    position_id: "vp2",
+    votesByChoice: [
+      { choice: "c1", count: 0 }, // Replace all counts with certified values.
+      { choice: "c2", count: 0 },
+      { choice: "c3", count: 0 },
+      { choice: "no-vote", count: 0 },
+      { choice: "disapprove", count: 0 },
+    ],
+  }],
+};
+```
+
+The empty default official result is rejected rather than published as zero votes.

@@ -298,7 +298,7 @@ export function createApp(adapter: Adapter, params: Params) {
             },
           },
         )
-        // Unofficial result
+        // Published result: database tally or certified counts, selected by resultStatus.
         .get(
           "/result",
           async ({ election, currentTime, status }) => {

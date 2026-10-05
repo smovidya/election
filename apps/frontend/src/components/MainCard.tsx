@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { api, authHeader } from "@/lib/api";
 import { useLocale } from "@/lib/utils";
 import {
@@ -26,6 +26,8 @@ interface Props {
   logoSrc: string;
   boxIconSrc: string;
   lineSrc: string;
+  resultStatus: "hidden" | "unofficial" | "official";
+  children?: ReactNode;
 }
 
 type Phase = "before" | "during" | "ended";
@@ -69,6 +71,8 @@ export default function MainCard({
   logoSrc,
   boxIconSrc,
   lineSrc,
+  resultStatus,
+  children,
 }: Props) {
   const [lang, setLang] = useLocale();
   // Read the browser clock after hydration; SSR cannot see a tab's mock time.
@@ -116,6 +120,7 @@ export default function MainCard({
 
   const isStaging = APP_ENV === "staging";
   const canVote = isStaging || countdown?.phase === "during";
+  const showResults = resultStatus !== "hidden" && countdown?.phase === "ended";
   const countdownUnits = countdown
     ? [
         ...(countdown.days > 0
@@ -174,7 +179,7 @@ export default function MainCard({
         </div>
 
         {/* Countdown */}
-        <section className="w-full overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-lg">
+        {!showResults && <section className="w-full overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-lg">
           <div className="px-4 py-5 text-center">
             <h2 className="mb-4 flex items-center justify-center gap-2 text-sm font-medium text-lgray">
               <Clock3 size={16} aria-hidden="true" />
@@ -236,11 +241,15 @@ export default function MainCard({
               <p className="mt-1">{t.bangkokTime}</p>
             </div>
           </div>
-        </section>
+        </section>}
       </div>
 
       {/* White section */}
       <div className="flex flex-col w-full rounded-t-4xl bg-white items-center pt-13 px-10">
+        {/* Keep the nested Astro island mounted while the election phase changes. */}
+        <div className="w-full" hidden={!showResults}>{children}</div>
+
+        {!showResults && <>
         {/* Vote button */}
         <span className="font-semibold font-noto text-md text-dgray mb-3">
           {t.voteLabel}
@@ -283,6 +292,8 @@ export default function MainCard({
           alt=""
           className="w-full my-10 pointer-events-none"
         />
+
+        </>}
 
         {/* Party policies */}
         {parties.length > 0 && (

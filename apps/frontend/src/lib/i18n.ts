@@ -2,6 +2,10 @@ import { event } from "@repo/constants";
 
 export const i18n = {
   th: {
+    unofficialResults: "ผลการเลือกตั้งอย่างไม่เป็นทางการ",
+    officialResults: "ผลการเลือกตั้งอย่างเป็นทางการ",
+    resultsError: "เกิดข้อผิดพลาดในการโหลดผลการเลือกตั้ง",
+    retry: "ลองอีกครั้ง",
     stagingBanner: "[ทดสอบระบบ] คะแนนที่ลงในระบบนี้ไม่นับรวมในการเลือกตั้งจริง",
     stagingReceipt:
       "ใบยืนยันการลงคะแนนขณะทดสอบ ไม่ใช่การลงคะแนนในการเลือกตั้งจริง",
@@ -75,6 +79,10 @@ export const i18n = {
     errorTryAgain: "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
   },
   en: {
+    unofficialResults: "Unofficial results",
+    officialResults: "Official results",
+    resultsError: "Unable to load election results.",
+    retry: "Try again",
     stagingBanner:
       "Testing environment — votes here do not count toward the official election.",
     stagingReceipt: "Test voting receipt — not an official election vote.",

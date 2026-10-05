@@ -46,4 +46,10 @@ const [logo, boxIcon, line] = await Promise.all([
   logoSrc={logo.src}
   boxIconSrc={boxIcon.src}
   lineSrc={line.src}
-/>
+  resultStatus={event.resultStatus}
+>
+  <ElectionResult
+    client:load
+    candidateImages={Object.fromEntries(candidatesWithImages.map(candidate => [candidate.candidate_id, candidate.imageSrc]))}
+  />
+</MainCard>

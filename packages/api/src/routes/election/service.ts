@@ -54,7 +54,7 @@ export class ElectionService {
       return err("election-not-ended");
     }
 
-    if (!event.isResultAnnounced) {
+    if (event.resultStatus === "hidden") {
       return err("announcement-not-started");
     }
 
@@ -88,6 +88,23 @@ export class ElectionService {
   }
 
   async getElectionResults() {
+    // Certified results must never be replaced by the cached database tally.
+    if (event.resultStatus === "official") {
+      const official = event.officialElectionResult;
+      if (running_positions.some((position) =>
+        !official.votesByPosition.some((result) => result.position_id === position.position_id)
+      )) {
+        return err("official-result-not-configured");
+      }
+      return ok({
+        totalVotes: official.totalVotes,
+        votesByPosition: Object.fromEntries(official.votesByPosition.map((position) => [
+          position.position_id,
+          Object.fromEntries(position.votesByChoice.map(({ choice, count }) => [choice, count])),
+        ])) as ElectionResult["votesByPosition"],
+      });
+    }
+
     const cached = await this.model.getCachedElectionResult();
     if (cached.isOk() && cached.value !== null) {
       return ok(cached.value);

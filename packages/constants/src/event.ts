@@ -45,9 +45,12 @@ export const votingStart = new Date(votingStartString);
 export const votingEndString = "2026-10-05T17:00:00+07:00";
 export const votingEnd = new Date(votingEndString);
 
-export const isResultAnnounced: boolean = true;
+/** Redeploy both apps after changing the result status. */
+export const resultStatus: "hidden" | "unofficial" | "official" = "unofficial";
 
-export const officialElectionResult = {
+/** Certified counts used only when resultStatus is "official". */
+
+export const officialElectionResult: OfficialElectionResult = {
   totalVotes: 0,
   votesByPosition: [],
 } satisfies OfficialElectionResult;
